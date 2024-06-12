@@ -22,11 +22,11 @@ X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_
 # Initialize and train the random forest regressor with verbose output
 model = RandomForestRegressor(n_estimators=100, random_state=42, verbose=2)
 # Cross-Validation Scores
-cv_scores = cross_val_score(model, X_train, y_train, cv=5, scoring='neg_mean_squared_error')
+cv_scores = cross_val_score(model, X_train, y_train, cv=2, scoring='neg_mean_squared_error')
 print(f"Cross-Validation MSE: {-np.mean(cv_scores)}")
 
 # Learning Curve
-train_sizes, train_scores, test_scores = learning_curve(model, X_train, y_train, cv=5, scoring='neg_mean_squared_error', train_sizes=np.linspace(0.1, 1.0, 10))
+train_sizes, train_scores, test_scores = learning_curve(model, X_train, y_train, cv=2, scoring='neg_mean_squared_error', train_sizes=np.linspace(0.8, 1.0, 2))
 
 # Calculate mean and standard deviation
 train_scores_mean = -np.mean(train_scores, axis=1)

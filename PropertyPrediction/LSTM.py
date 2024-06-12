@@ -21,8 +21,8 @@ Dataset = pd.read_csv('Datasets/FinalDataset.csv')
 
 # Tokenize SMILES strings
 tokenizer = Tokenizer(char_level=True)  # Tokenize at character level
-tokenizer.fit_on_texts(Dataset['SMILES'])
-sequences = tokenizer.texts_to_sequences(Dataset['SMILES'])
+tokenizer.fit_on_texts(Dataset['smiles'])
+sequences = tokenizer.texts_to_sequences(Dataset['smiles'])
 max_sequence_length = max(len(seq) for seq in sequences)
 
 # Pad sequences to ensure uniform input length
@@ -44,7 +44,7 @@ model.add(Dense(1))  # Output layer
 model.compile(optimizer='adam', loss='mean_squared_error')
 
 # Train the model
-history = model.fit(X_train, y_train, epochs=100, batch_size=8, validation_split=0.2, verbose=1)
+history = model.fit(X_train, y_train, epochs=20, batch_size=8, validation_split=0.2, verbose=1)
 
 # Predict on the test set
 y_pred = model.predict(X_test)

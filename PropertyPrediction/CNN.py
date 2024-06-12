@@ -14,23 +14,19 @@ from tensorflow.keras.preprocessing.text import Tokenizer
 from tensorflow.keras.preprocessing.sequence import pad_sequences
 import matplotlib.pyplot as plt
 
-# Example dataset
-data = {
-    'SMILES': ['CCO', 'CC', 'CCCC', 'CCOCC', 'CCN'],
-    'Viscosity': [1.2, 0.8, 1.5, 1.0, 0.9]
-}
+# Load in dataset
 
-df = pd.DataFrame(data)
+Dataset = pd.read_csv('Datasets/FinalDataset.csv')
 
-# Tokenize SMILES strings
+# Tokenize smiles strings
 tokenizer = Tokenizer(char_level=True)  # Tokenize at character level
-tokenizer.fit_on_texts(df['SMILES'])
-sequences = tokenizer.texts_to_sequences(df['SMILES'])
+tokenizer.fit_on_texts(Dataset['smiles'])
+sequences = tokenizer.texts_to_sequences(Dataset['smiles'])
 max_sequence_length = max(len(seq) for seq in sequences)
 
 # Pad sequences to ensure uniform input length
 X = pad_sequences(sequences, maxlen=max_sequence_length, padding='post')
-y = df['Viscosity'].values
+y = Dataset['visco@40C[cP]'].values
 
 # Split the dataset into training and testing sets
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
