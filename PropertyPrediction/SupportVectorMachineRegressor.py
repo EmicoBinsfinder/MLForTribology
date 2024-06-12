@@ -1,53 +1,19 @@
 """
-Script to train a Decision Tree to predict molecule viscosity
+Script to train a Support Vector Machine 
 """
 
-### Imports
+import numpy as np
 import pandas as pd
+from sklearn.model_selection import train_test_split, cross_val_score, learning_curve
+from sklearn.svm import SVR
+from sklearn.metrics import mean_squared_error
+from sklearn.preprocessing import StandardScaler
 from rdkit import Chem
 from rdkit.Chem import Descriptors
 from rdkit.ML.Descriptors.MoleculeDescriptors import MolecularDescriptorCalculator
-from sklearn.model_selection import train_test_split, GridSearchCV, cross_val_score, learning_curve
-from sklearn.tree import DecisionTreeRegressor
-from sklearn.metrics import mean_squared_error
-from sklearn.tree import export_graphviz
-import graphviz
-import pydotplus
-from IPython.display import Image
-from tqdm import tqdm
 import matplotlib.pyplot as plt
-import numpy as np
 
-# Progress tracking
-tqdm.pandas()
-
-### Load in dataset
-# Dataset = pd.read_csv('Datasets/FinalDataset.csv')
-
-### Creating Molecular Descriptors for Use with Decision Tree
-
-def smiles_to_descriptors(smiles):
-    mol = Chem.MolFromSmiles(smiles)
-    if mol is None:
-        return None
-    calculator = MolecularDescriptorCalculator([desc[0] for desc in Descriptors._descList])
-    descriptors = calculator.CalcDescriptors(mol)
-    return descriptors
-
-# Dataset['Descriptors'] = Dataset['smiles'].progress_apply(smiles_to_descriptors)
-
-# Remove Nan Rows which are rows where descriptor generation failed
-# Dataset = Dataset.dropna(subset=['Descriptors'])
-
-# # Create a DataFrame with descriptors and viscosity values only
-# descriptors_df = pd.DataFrame(Dataset['Descriptors'].tolist())
-
-# # Add viscosity column to descriptors DataFrame
-# descriptors_df['Viscosity'] = Dataset['visco@40C[cP]']
-
-# # Save Decision Tree Dataset
-# descriptors_df.to_csv('Datasets/DecisionTreeDataset_313K.csv')
-
+# Load in dataset
 descriptors_df = pd.read_csv('Datasets/DecisionTreeDataset_313K.csv')
 
 # Separate features and target variable
@@ -57,8 +23,14 @@ y = descriptors_df['Viscosity']
 # Split the dataset into training and testing sets
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
 
-# Initialize and train the decision tree regressor
-model = DecisionTreeRegressor(random_state=42)
+# Initialize and train the random forest regressor with verbose output
+# Standardize features
+scaler = StandardScaler()
+X_train_scaled = scaler.fit_transform(X_train)
+X_test_scaled = scaler.transform(X_test)
+
+# Initialize and train the SVR model
+model = SVR(kernel='rbf', C=1.0, epsilon=0.1, verbose=1)
 
 # Cross-Validation Scores
 cv_scores = cross_val_score(model, X_train, y_train, cv=5, scoring='neg_mean_squared_error')
