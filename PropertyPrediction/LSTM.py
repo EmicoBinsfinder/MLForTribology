@@ -1,7 +1,7 @@
 """
 Script to train an LSTM for viscosity prediction
 
-Will look into using xLSTM
+Will look into using xLSTM or Bidirectional LSTM
 """
 
 import numpy as np

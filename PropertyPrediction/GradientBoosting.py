@@ -15,6 +15,7 @@ import matplotlib.pyplot as plt
 
 # Load in dataset
 descriptors_df = pd.read_csv('Datasets/DecisionTreeDataset_313K.csv')
+print(len(descriptors_df))
 
 # Separate features and target variable
 X = descriptors_df.drop(columns=['Viscosity'])
@@ -29,13 +30,12 @@ X_train_scaled = scaler.fit_transform(X_train)
 X_test_scaled = scaler.transform(X_test)
 
 # Initialize the Gradient Boosting Regressor model
-model = GradientBoostingRegressor(n_estimators=100, learning_rate=0.1, max_depth=3, random_state=42)
+model = GradientBoostingRegressor(n_estimators=100, learning_rate=0.1, max_depth=3, random_state=42, verbose=2)
 
 # Generate learning curves
 train_sizes, train_scores, test_scores = learning_curve(
-    model, X_train_scaled, y_train, cv=5, scoring='neg_mean_squared_error', 
-    train_sizes=np.linspace(0.1, 1.0, 10), n_jobs=-1
-)
+    model, X_train_scaled, y_train, cv=2, scoring='neg_mean_squared_error', 
+    train_sizes=[1.0])
 
 # Calculate mean and standard deviation
 train_scores_mean = -np.mean(train_scores, axis=1)
