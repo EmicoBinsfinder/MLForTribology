@@ -1,23 +1,22 @@
-"""
-Script to train a Transformer for viscosity prediction
-"""
-
 import numpy as np
 import pandas as pd
-from sklearn.model_selection import train_test_split
+from itertools import product
+from sklearn.model_selection import train_test_split, KFold
 from sklearn.preprocessing import StandardScaler
-from sklearn.metrics import mean_squared_error
+from sklearn.metrics import mean_squared_error, r2_score
 import tensorflow as tf
-from tensorflow.keras.models import Model
+from tensorflow.keras.models import Model, load_model
 from tensorflow.keras.layers import Input, Embedding, MultiHeadAttention, LayerNormalization, Dense, Dropout, Flatten
 from tensorflow.keras.preprocessing.text import Tokenizer
 from tensorflow.keras.preprocessing.sequence import pad_sequences
+from tensorflow.keras.callbacks import EarlyStopping, ModelCheckpoint
 import matplotlib.pyplot as plt
+import shap
 
-# Load in Dataset
+# Load Dataset
 Dataset = pd.read_csv('Datasets/FinalDataset.csv')
 
-# Tokenize smiles strings
+# Tokenize SMILES strings
 tokenizer = Tokenizer(char_level=True)  # Tokenize at character level
 tokenizer.fit_on_texts(Dataset['smiles'])
 sequences = tokenizer.texts_to_sequences(Dataset['smiles'])
@@ -27,52 +26,123 @@ max_sequence_length = max(len(seq) for seq in sequences)
 X = pad_sequences(sequences, maxlen=max_sequence_length, padding='post')
 y = Dataset['visco@40C[cP]'].values
 
-# Split the dataset into training and testing sets
+# Define the hyperparameter grid
+param_grid = {
+    'head_size': [32, 64, 128],
+    'num_heads': [5, 10, 25, 50],
+    'ff_dim': [32, 64, 128],
+    'dropout': [0.0, 0.1, 0.3, 0.5],
+    'num_transformer_blocks': [1, 2, 3],
+    'dense_units': [16, 32, 64],
+    'optimizer': ['adam', 'rmsprop']
+}
+
+training_params = {
+    'epochs': [500],
+    'batch_size': [16, 32, 64, 128]
+}
+
+# Function to create the model
+def create_model(head_size, num_heads, ff_dim, dropout, num_transformer_blocks, dense_units, optimizer):
+    def transformer_encoder(inputs, head_size, num_heads, ff_dim, dropout=0):
+        # Normalization and Attention
+        x = LayerNormalization(epsilon=1e-6)(inputs)
+        x = MultiHeadAttention(key_dim=head_size, num_heads=num_heads, dropout=dropout)(x, x)
+        x = Dropout(dropout)(x)
+        res = x + inputs
+
+        # Feed Forward Part
+        x = LayerNormalization(epsilon=1e-6)(res)
+        x = Dense(ff_dim, activation="relu")(x)
+        x = Dropout(dropout)(x)
+        x = Dense(inputs.shape[-1])(x)
+        return x + res
+
+    inputs = Input(shape=(max_sequence_length,))
+    x = Embedding(input_dim=len(tokenizer.word_index) + 1, output_dim=64)(inputs)
+    for _ in range(num_transformer_blocks):
+        x = transformer_encoder(x, head_size, num_heads, ff_dim, dropout)
+    x = Flatten()(x)
+    x = Dense(dense_units, activation='relu')(x)
+    outputs = Dense(1)(x)
+
+    model = Model(inputs, outputs)
+    model.compile(optimizer=optimizer, loss='mean_squared_error')
+    return model
+
+# Perform manual grid search with cross-validation
+def manual_grid_search(model_params_grid, training_params_grid, X, y, k=5):
+    model_keys, model_values = zip(*model_params_grid.items())
+    train_keys, train_values = zip(*training_params_grid.items())
+    best_score = float('inf')
+    best_params = None
+
+    for model_v, train_v in product(product(*model_values), product(*train_values)):
+        model_params = dict(zip(model_keys, model_v))
+        train_params = dict(zip(train_keys, train_v))
+        kf = KFold(n_splits=k, shuffle=True, random_state=42)
+        val_scores = []
+
+        print(f"Training model with parameters: {model_params} and training parameters: {train_params}")
+
+        for train_index, val_index in kf.split(X):
+            X_train, X_val = X[train_index], X[val_index]
+            y_train, y_val = y[train_index], y[val_index]
+
+            model = create_model(**model_params)
+            model.fit(X_train, y_train, epochs=train_params['epochs'], batch_size=train_params['batch_size'],
+                      validation_data=(X_val, y_val),
+                      callbacks=[EarlyStopping(monitor='val_loss', patience=10)], verbose=1)
+
+            y_val_pred = model.predict(X_val)
+            val_score = mean_squared_error(y_val, y_val_pred)
+            val_scores.append(val_score)
+
+        avg_val_score = np.mean(val_scores)
+        print(f"Model Params: {model_params}, Train Params: {train_params}, Avg. Validation MSE: {avg_val_score}")
+
+        if avg_val_score < best_score:
+            best_score = avg_val_score
+            best_params = {**model_params, **train_params}
+
+    return best_params
+
+# Perform grid search
+best_params = manual_grid_search(param_grid, training_params, X, y)
+print(f"Best hyperparameters: {best_params}")
+
+# Train final model with best hyperparameters
+best_model = create_model(**{k: v for k, v in best_params.items() if k in param_grid})
+best_model.fit(X, y, epochs=best_params['epochs'], batch_size=best_params['batch_size'],
+               callbacks=[ModelCheckpoint(filepath='best_model.h5', save_best_only=True)])
+
+# Load the best model
+best_model = load_model('best_model.h5')
+
+# Make predictions with the best model
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+y_pred = best_model.predict(X_test)
 
-# Build the Transformer model
-def transformer_encoder(inputs, head_size, num_heads, ff_dim, dropout=0):
-    # Normalization and Attention
-    x = LayerNormalization(epsilon=1e-6)(inputs)
-    x = MultiHeadAttention(key_dim=head_size, num_heads=num_heads, dropout=dropout)(x, x)
-    x = Dropout(dropout)(x)
-    res = x + inputs
-
-    # Feed Forward Part
-    x = LayerNormalization(epsilon=1e-6)(res)
-    x = Dense(ff_dim, activation="relu")(x)
-    x = Dropout(dropout)(x)
-    x = Dense(inputs.shape[-1])(x)
-    return x + res
-
-input_shape = X_train.shape[1:]
-inputs = Input(shape=input_shape)
-x = Embedding(input_dim=len(tokenizer.word_index) + 1, output_dim=64)(inputs)
-x = transformer_encoder(x, head_size=64, num_heads=2, ff_dim=32, dropout=0.1)
-x = Flatten()(x)
-x = Dense(32, activation='relu')(x)
-outputs = Dense(1)(x)
-
-model = Model(inputs, outputs)
-
-# Compile the model
-model.compile(optimizer='adam', loss='mean_squared_error')
-
-# Train the model
-history = model.fit(X_train, y_train, epochs=20, batch_size=8, validation_split=0.2, verbose=1)
-
-# Predict on the test set
-y_pred = model.predict(X_test)
-
-# Evaluate the model
+# Evaluate the best model
 mse = mean_squared_error(y_test, y_pred)
-print(f'Mean Squared Error: {mse}')
+r2 = r2_score(y_test, y_pred)
+print(f'Best model MSE: {mse}')
+print(f'Best model R2: {r2}')
 
-# Plot training & validation loss values
-plt.plot(history.history['loss'])
-plt.plot(history.history['val_loss'])
-plt.title('Model loss')
-plt.ylabel('Loss')
-plt.xlabel('Epoch')
-plt.legend(['Train', 'Validation'], loc='upper right')
-plt.show()
+# Perform individual predictions based on input SMILES strings
+def predict_smiles(smiles_string):
+    sequence = tokenizer.texts_to_sequences([smiles_string])
+    padded_sequence = pad_sequences(sequence, maxlen=max_sequence_length, padding='post')
+    prediction = best_model.predict(padded_sequence)
+    return prediction[0]
+
+# Example prediction
+example_smiles = "CCO"
+print(f'Predicted viscosity for {example_smiles}: {predict_smiles(example_smiles)}')
+
+# SHAP values for feature importance
+explainer = shap.KernelExplainer(best_model.predict, X_train[:100])  # Using a small subset for explanation
+shap_values = explainer.shap_values(X_test[:10])  # Again, a small subset for the example
+
+# Plot SHAP values
+shap.summary_plot(shap_values, X_test[:10], feature_names=tokenizer.index_word)

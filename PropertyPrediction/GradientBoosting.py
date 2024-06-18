@@ -1,27 +1,24 @@
-"""
-Script to train a Gradient boosted model 
-"""
-
 import numpy as np
 import pandas as pd
-from sklearn.model_selection import train_test_split, learning_curve
-from sklearn.ensemble import GradientBoostingRegressor
-from sklearn.metrics import mean_squared_error
+import time
+from sklearn.model_selection import train_test_split, GridSearchCV
+from sklearn.metrics import mean_squared_error, r2_score
 from sklearn.preprocessing import StandardScaler
-from rdkit import Chem
-from rdkit.Chem import Descriptors
-from rdkit.ML.Descriptors.MoleculeDescriptors import MolecularDescriptorCalculator
+from joblib import dump
 import matplotlib.pyplot as plt
+import xgboost as xgb
 
-# Load in dataset
-descriptors_df = pd.read_csv('Datasets/DecisionTreeDataset_313K.csv')
+# Load dataset
+descriptors_df = pd.read_csv('DecisionTreeDataset_313K.csv')
+descriptors_df = descriptors_df.dropna()
+
 print(len(descriptors_df))
 
 # Separate features and target variable
 X = descriptors_df.drop(columns=['Viscosity'])
 y = descriptors_df['Viscosity']
 
-# Split the dataset into training and testing sets
+# Split dataset into training and testing sets
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
 
 # Standardize features
@@ -29,44 +26,90 @@ scaler = StandardScaler()
 X_train_scaled = scaler.fit_transform(X_train)
 X_test_scaled = scaler.transform(X_test)
 
-# Initialize the Gradient Boosting Regressor model
-model = GradientBoostingRegressor(n_estimators=100, learning_rate=0.1, max_depth=3, random_state=42, verbose=2)
+# Convert to DMatrix for XGBoost
+dtrain = xgb.DMatrix(X_train_scaled, label=y_train)
+dtest = xgb.DMatrix(X_test_scaled, label=y_test)
 
-# Generate learning curves
-train_sizes, train_scores, test_scores = learning_curve(
-    model, X_train_scaled, y_train, cv=2, scoring='neg_mean_squared_error', 
-    train_sizes=[1.0])
+# Define hyperparameters for grid search
+param_grid = {
+    'n_estimators': [100, 200],
+    'learning_rate': [0.1, 0.05],
+    'max_depth': [3, 4, 5],
+    'tree_method': ['hist'],  # Use GPU
+    'device': ['cuda']
+}
 
-# Calculate mean and standard deviation
-train_scores_mean = -np.mean(train_scores, axis=1)
-train_scores_std = np.std(train_scores, axis=1)
-test_scores_mean = -np.mean(test_scores, axis=1)
-test_scores_std = np.std(test_scores, axis=1)
+# Initialize lists to store results
+results = []
 
-# Plot the learning curve
-plt.figure()
-plt.title("Learning Curve for Gradient Boosting Regressor")
-plt.xlabel("Training examples")
-plt.ylabel("Mean Squared Error")
-plt.grid()
+# Perform 5-fold cross-validation with varying dataset sizes and grid search
+train_sizes = [0.2, 0.4, 0.6, 0.8, 0.99]
+for size in train_sizes:
+    X_partial, _, y_partial, _ = train_test_split(X_train_scaled, y_train, train_size=size, random_state=42)
+    dpartial = xgb.DMatrix(X_partial, label=y_partial)
+    
+    grid_search = GridSearchCV(
+        estimator=xgb.XGBRegressor(use_label_encoder=False, eval_metric='rmse'),
+        param_grid=param_grid,
+        cv=5,
+        scoring='neg_mean_squared_error',
+        verbose=2,
+        n_jobs=-1
+    )
+    
+    # Measure training time
+    start_time = time.time()
+    grid_search.fit(X_partial, y_partial)
+    end_time = time.time()
+    avg_train_time = (end_time - start_time) / (len(param_grid['n_estimators']) * len(param_grid['learning_rate']) * len(param_grid['max_depth']))
 
-# Plot the mean train and test scores with standard deviation
-plt.fill_between(train_sizes, train_scores_mean - train_scores_std, 
-                 train_scores_mean + train_scores_std, alpha=0.1, color="r")
-plt.fill_between(train_sizes, test_scores_mean - test_scores_std, 
-                 test_scores_mean + test_scores_std, alpha=0.1, color="g")
-plt.plot(train_sizes, train_scores_mean, 'o-', color="r", label="Training score")
-plt.plot(train_sizes, test_scores_mean, 'o-', color="g", label="Cross-validation score")
+    # Store results
+    best_model = grid_search.best_estimator_
+    cv_score = -grid_search.best_score_
+    results.append({
+        'Train Size': size,
+        'Best Params': grid_search.best_params_,
+        'CV Score': cv_score,
+        'Train Time': avg_train_time
+    })
 
-plt.legend(loc="best")
+    # Predict on the test set and evaluate
+    y_pred = best_model.predict(X_test_scaled)
+    test_mse = mean_squared_error(y_test, y_pred)
+    test_r2 = r2_score(y_test, y_pred)
+    results[-1]['Test MSE'] = test_mse
+    results[-1]['Test R2'] = test_r2
+
+    print(f"Training size: {size}, Best Params: {grid_search.best_params_}, CV MSE: {cv_score}, Test MSE: {test_mse}, Test R2: {test_r2}, Train Time: {avg_train_time}")
+
+# Save the best model
+best_model_idx = np.argmin([result['CV Score'] for result in results])
+best_model = grid_search.best_estimator_
+dump(best_model, 'best_xgboost_model.joblib')
+
+# Save results to a CSV file
+results_df = pd.DataFrame(results)
+results_df.to_csv('xgboost_model_training_results.csv', index=False)
+
+# Plot performance of each model tested
+plt.figure(figsize=(10, 6))
+for result in results:
+    plt.plot(result['Train Size'], result['CV Score'], 'o-', label=f"Params: {result['Best Params']}")
+plt.xlabel('Training Set Size')
+plt.ylabel('Cross-Validation MSE')
+plt.title('Model Performance During Grid Search and Cross-Validation')
+plt.legend()
+plt.grid(True)
+plt.savefig('xgboost_model_performance.png')
 plt.show()
 
-# Train the model
-model.fit(X_train_scaled, y_train)
-
-# Predict on the test set
-y_pred = model.predict(X_test_scaled)
-
-# Evaluate the model
-mse = mean_squared_error(y_test, y_pred)
-print(f'Mean Squared Error: {mse}')
+# Feature importance
+feature_importance = best_model.feature_importances_
+sorted_idx = np.argsort(feature_importance)
+plt.figure(figsize=(10, 6))
+plt.barh(range(X.shape[1]), feature_importance[sorted_idx], align='center')
+plt.yticks(range(X.shape[1]), np.array(X.columns)[sorted_idx])
+plt.xlabel('Feature Importance')
+plt.title('Feature Importance for XGBoost Regressor')
+plt.savefig('feature_importance.png')
+plt.show()
