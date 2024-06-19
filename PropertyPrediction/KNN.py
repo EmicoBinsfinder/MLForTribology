@@ -11,14 +11,6 @@ from rdkit import Chem
 from rdkit.Chem import Descriptors
 from rdkit.ML.Descriptors.MoleculeDescriptors import MolecularDescriptorCalculator
 
-# Function to convert SMILES to descriptors
-def smiles_to_descriptors(smiles):
-    mol = Chem.MolFromSmiles(smiles)
-    if mol is None:
-        return None
-    calculator = MolecularDescriptorCalculator([desc[0] for desc in Descriptors._descList])
-    descriptors = calculator.CalcDescriptors(mol)
-    return descriptors
 
 # Load dataset
 descriptors_df = pd.read_csv('Datasets/DecisionTreeDataset_313K.csv')

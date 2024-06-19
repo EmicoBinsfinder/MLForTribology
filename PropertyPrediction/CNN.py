@@ -11,6 +11,7 @@ from tensorflow.keras.preprocessing.text import Tokenizer
 from tensorflow.keras.preprocessing.sequence import pad_sequences
 from tensorflow.keras.callbacks import EarlyStopping, ModelCheckpoint
 import matplotlib.pyplot as plt
+import shap
 
 # Load dataset
 Dataset = pd.read_csv('FinalDataset.csv')
@@ -118,3 +119,23 @@ plt.ylabel('Loss')
 plt.xlabel('Epoch')
 plt.legend(['Train', 'Validation'], loc='upper right')
 plt.show()
+
+
+# Perform individual predictions based on input SMILES strings
+def predict_smiles(smiles_string):
+    sequence = tokenizer.texts_to_sequences([smiles_string])
+    padded_sequence = pad_sequences(sequence, maxlen=max_sequence_length, padding='post')
+    prediction = best_model.predict(padded_sequence)
+    return prediction[0]
+
+# Example prediction
+example_smiles = "CCO"
+print(f'Predicted viscosity for {example_smiles}: {predict_smiles(example_smiles)}')
+
+# SHAP values for feature importance
+explainer = shap.KernelExplainer(best_model.predict, X_train[:100])  # Using a small subset for explanation
+shap_values = explainer.shap_values(X_test[:10])  # Again, a small subset for the example
+
+# Plot SHAP values
+shap.summary_plot(shap_values, X_test[:10], feature_names=tokenizer.index_word)
+# Save the SHAP plot

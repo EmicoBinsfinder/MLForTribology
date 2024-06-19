@@ -23,7 +23,7 @@ param_grid = {
     'max_depth': [None, 10, 20],
     'min_samples_split': [2, 5, 10],
     'min_samples_leaf': [1, 2, 4],
-    'max_features': ['auto', 'sqrt', 'log2']
+    'max_features': ['sqrt', 'log2']
 }
 
 # Perform manual grid search with cross-validation
@@ -40,13 +40,13 @@ def manual_grid_search(param_grid, X, y, k=5):
         print(f"Training model with parameters: {params}")
 
         for train_index, val_index in kf.split(X):
-            X_train, X_val = X[train_index], X[val_index]
-            y_train, y_val = y[train_index], y[val_index]
+            X_train_fold, X_val_fold = X.iloc[train_index], X.iloc[val_index]
+            y_train_fold, y_val_fold = y.iloc[train_index], y.iloc[val_index]
 
             model = RandomForestRegressor(**params, random_state=42)
-            model.fit(X_train, y_train)
-            y_val_pred = model.predict(X_val)
-            val_score = mean_squared_error(y_val, y_val_pred)
+            model.fit(X_train_fold, y_train_fold)
+            y_val_pred = model.predict(X_val_fold)
+            val_score = mean_squared_error(y_val_fold, y_val_pred)
             val_scores.append(val_score)
 
         avg_val_score = np.mean(val_scores)

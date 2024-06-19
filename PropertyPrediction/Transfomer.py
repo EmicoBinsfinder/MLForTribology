@@ -146,3 +146,5 @@ shap_values = explainer.shap_values(X_test[:10])  # Again, a small subset for th
 
 # Plot SHAP values
 shap.summary_plot(shap_values, X_test[:10], feature_names=tokenizer.index_word)
+# Save the SHAP plot
+plt.savefig('shap_summary_plot.png')

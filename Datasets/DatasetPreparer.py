@@ -15,7 +15,9 @@ from rdkit import Chem
 from rdkit.Chem import AllChem
 from rdkit.Chem import rdFingerprintGenerator
 import selfies as sf
-
+from rdkit import Chem
+from rdkit.Chem import Descriptors
+from rdkit.ML.Descriptors.MoleculeDescriptors import MolecularDescriptorCalculator
 
 ### Load in original dataset
 OriginalDataset = pd.read_csv('Dataset/OriginalDataset.csv', index_col=False)
@@ -61,10 +63,13 @@ condition = RingsFilteredDataset['visco@100C[cP]'] <= RingsFilteredDataset['visc
 RingsFilteredDataset['WhackVisc'] = RingsFilteredDataset['visco@100C[cP]'].where(condition)
 FilteredDataset = RingsFilteredDataset.dropna(subset=['WhackVisc'])
 
-
-
-
 FilteredDataset.to_csv('Dataset/FinalDataset.csv', index=False)
 
-
-
+# Function to convert SMILES to descriptors
+def smiles_to_descriptors(smiles):
+    mol = Chem.MolFromSmiles(smiles)
+    if mol is None:
+        return None
+    calculator = MolecularDescriptorCalculator([desc[0] for desc in Descriptors._descList])
+    descriptors = calculator.CalcDescriptors(mol)
+    return descriptors
