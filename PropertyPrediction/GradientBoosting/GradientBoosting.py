@@ -30,10 +30,6 @@ scaler = StandardScaler()
 X_train_scaled = scaler.fit_transform(X_train)
 X_test_scaled = scaler.transform(X_test)
 
-# Convert to DMatrix for XGBoost
-dtrain = xgb.DMatrix(X_train_scaled, label=y_train)
-dtest = xgb.DMatrix(X_test_scaled, label=y_test)
-
 # Define hyperparameters for grid search
 param_grid = {
     'n_estimators': [100, 200, 300],
@@ -48,10 +44,8 @@ results = []
 
 # Perform 5-fold cross-validation with varying dataset sizes and grid search
 train_sizes = [0.2, 0.4, 0.6, 0.8]
-header_written = False
 for size in train_sizes:
     X_partial, _, y_partial, _ = train_test_split(X_train_scaled, y_train, train_size=size, random_state=42)
-    dpartial = xgb.DMatrix(X_partial, label=y_partial)
     
     grid_search = GridSearchCV(
         estimator=xgb.XGBRegressor(use_label_encoder=False, eval_metric='rmse'),
@@ -59,7 +53,8 @@ for size in train_sizes:
         cv=5,
         scoring='neg_mean_squared_error',
         verbose=2,
-        n_jobs=-1
+        n_jobs=-1,
+        return_train_score=True
     )
     
     # Measure training time
@@ -68,39 +63,41 @@ for size in train_sizes:
     end_time = time.time()
     avg_train_time = (end_time - start_time) / (len(param_grid['n_estimators']) * len(param_grid['learning_rate']) * len(param_grid['max_depth']))
 
-    # Store results
+    # Collect and save results for each parameter combination
+    for i in range(len(grid_search.cv_results_['params'])):
+        result = {
+            'Train Size': size,
+            'Params': grid_search.cv_results_['params'][i],
+            'Mean Train Score': -grid_search.cv_results_['mean_train_score'][i],
+            'Mean Test Score': -grid_search.cv_results_['mean_test_score'][i],
+            'Std Test Score': grid_search.cv_results_['std_test_score'][i],
+            'Train Time': avg_train_time
+        }
+        
+        # Save results to a CSV file in append mode
+        results_df = pd.DataFrame([result])
+        results_df.to_csv('xgboost_model_training_results.csv', mode='a', header=not os.path.isfile('xgboost_model_training_results.csv'), index=False)
+
+    # Store best results
     best_model = grid_search.best_estimator_
     cv_score = -grid_search.best_score_
-    results.append({
-        'Train Size': size,
-        'Best Params': grid_search.best_params_,
-        'CV Score': cv_score,
-        'Train Time': avg_train_time
-    })
 
     # Predict on the test set and evaluate
     y_pred = best_model.predict(X_test_scaled)
     test_mse = mean_squared_error(y_test, y_pred)
     test_r2 = r2_score(y_test, y_pred)
-    results[-1]['Test MSE'] = test_mse
-    results[-1]['Test R2'] = test_r2
 
     print(f"Training size: {size}, Best Params: {grid_search.best_params_}, CV MSE: {cv_score}, Test MSE: {test_mse}, Test R2: {test_r2}, Train Time: {avg_train_time}")
 
-    # Save results to a CSV file in append mode
-    results_df = pd.DataFrame([results[-1]])
-    results_df.to_csv('xgboost_model_training_results.csv', mode='a', header=not header_written, index=False)
-    header_written = True
-
 # Save the best model
-best_model_idx = np.argmin([result['CV Score'] for result in results])
+best_model_idx = np.argmin([result['Mean Test Score'] for result in results])
 best_model = grid_search.best_estimator_
 dump(best_model, 'best_xgboost_model.joblib')
 
 # Plot performance of each model tested
 plt.figure(figsize=(10, 6))
 for result in results:
-    plt.plot(result['Train Size'], result['CV Score'], 'o-', label=f"Params: {result['Best Params']}")
+    plt.plot(result['Train Size'], result['Mean Test Score'], 'o-', label=f"Params: {result['Params']}")
 plt.xlabel('Training Set Size')
 plt.ylabel('Cross-Validation MSE')
 plt.title('Model Performance During Grid Search and Cross-Validation')

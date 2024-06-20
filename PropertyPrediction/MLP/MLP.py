@@ -13,9 +13,8 @@ from tensorflow.keras.callbacks import EarlyStopping, ModelCheckpoint
 import matplotlib.pyplot as plt
 import os
 from os.path import join
-import shap
 
-RDS = True
+RDS = False
 CWD = os.getcwd()
 
 # Load dataset
@@ -37,13 +36,13 @@ y = Dataset['visco@40C[cP]'].values
 
 # Define the hyperparameter grid
 param_grid = {
-    'optimizer': ['adam', 'rmsprop'],
-    'dense_units': [16, 32, 64, 128],
-    'num_layers': [1, 2, 3, 4, 5]
+    'optimizer': ['adam'],#, 'rmsprop'],
+    'dense_units': [16, 32],#, 64, 128],
+    'num_layers': [1],#, 2, 3, 4, 5]
 }
 
 training_params = {
-    'epochs': [500],
+    'epochs': [1],
     'batch_size': [8, 16, 32, 64]
 }
 
@@ -62,7 +61,7 @@ def create_model(optimizer='adam', dense_units=32, num_layers=1):
     return model
 
 # Perform manual grid search with cross-validation
-def manual_grid_search(model_params_grid, training_params_grid, X, y, data_sizes, k=2):
+def manual_grid_search(model_params_grid, training_params_grid, X, y, data_sizes, k=5):
     model_keys, model_values = zip(*model_params_grid.items())
     train_keys, train_values = zip(*training_params_grid.items())
     best_score = float('inf')
@@ -114,16 +113,6 @@ def manual_grid_search(model_params_grid, training_params_grid, X, y, data_sizes
 # Perform grid search
 best_params = manual_grid_search(param_grid, training_params, X, y, data_sizes)
 print(f"Best hyperparameters: {best_params}")
-
-# SHAP values for feature importance
-# explainer = shap.KernelExplainer(best_model.predict, X_train[:100])  # Using a small subset for explanation
-# shap_values = explainer.shap_values(X_test[:10])  # Again, a small subset for the example
-
-# # Plot SHAP values
-# shap.summary_plot(shap_values, X_test[:10], feature_names=tokenizer.index_word)
-# # Save the SHAP plot
-# plt.savefig('shap_summary_plot.png')
-
 
 # Train final model with best hyperparameters
 # best_model = create_model(**{k: v for k, v in best_params.items() if k in param_grid})
