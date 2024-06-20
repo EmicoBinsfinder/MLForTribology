@@ -11,9 +11,18 @@ import matplotlib.pyplot as plt
 import joblib
 import time
 import csv
+import os
+from os.path import join
 
-# Load in dataset
-descriptors_df = pd.read_csv('Datasets/DecisionTreeDataset_313K.csv')
+RDS = False
+CWD = os.getcwd()
+
+# Load dataset
+
+if RDS:
+    descriptors_df = pd.read_csv('/rds/general/user/eeo21/home/HIGH_THROUGHPUT_STUDIES/MLForTribology/Datasets/DecisionTreeDataset_313K.csv')
+else:
+    descriptors_df = pd.read_csv('Datasets/DecisionTreeDataset_313K.csv')
 
 # Separate features and target variable
 X = descriptors_df.drop(columns=['Viscosity'])
@@ -25,8 +34,8 @@ model = SVR()
 
 # Define the parameter grid for grid search
 param_grid = {
-    'C': [0.1, 1, 10, 100],
-    'epsilon': [0.01, 0.1, 1],
+    'C': [0.01, 0.1, 1, 10, 100, 1000],
+    'epsilon': [0.001, 0.01, 0.1, 1],
     'kernel': ['linear', 'poly', 'rbf', 'sigmoid']
 }
 
@@ -34,7 +43,7 @@ param_grid = {
 kf = KFold(n_splits=5, shuffle=True, random_state=42)
 
 # Initialize GridSearchCV
-grid_search = GridSearchCV(estimator=model, param_grid=param_grid, scoring='neg_mean_squared_error', cv=kf, verbose=1)
+grid_search = GridSearchCV(estimator=model, param_grid=param_grid, scoring='neg_mean_squared_error', cv=kf, verbose=2)
 
 # Track time for training each model
 start_time = time.time()
@@ -53,7 +62,7 @@ best_model = grid_search.best_estimator_
 print(f"Best parameters: {grid_search.best_params_}")
 
 # Save the best model
-joblib.dump(best_model, 'best_svr_model.pkl')
+joblib.dump(best_model, join(CWD,'best_svr_model.pkl'))
 
 # Prepare to plot performance
 results = grid_search.cv_results_
@@ -68,10 +77,11 @@ plt.xlabel('Model')
 plt.ylabel('Mean Squared Error')
 plt.grid()
 plt.legend(loc='best', bbox_to_anchor=(1.05, 1), title="Parameters")
+plt.savefig(join(CWD,'svr_model_performance.png'))
 plt.show()
 
 # Output results to a CSV file
-with open('grid_search_results.csv', mode='w', newline='') as file:
+with open(join(CWD,'grid_search_results.csv'), mode='w', newline='') as file:
     writer = csv.writer(file)
     writer.writerow(['Rank', 'Parameters', 'Mean Test Score', 'Standard Deviation Test Score'])
     for rank, params, mean_score, std_score in zip(results['rank_test_score'], results['params'], results['mean_test_score'], results['std_test_score']):
@@ -97,10 +107,32 @@ def predict_from_smiles(smiles_string):
     return prediction
 
 # Example prediction
-smiles_example = "CCO"
-prediction = predict_from_smiles(smiles_example)
-print(f"Predicted property for {smiles_example}: {prediction[0]}")
+# smiles_example = "CCO"
+# prediction = predict_from_smiles(smiles_example)
+# print(f"Predicted property for {smiles_example}: {prediction[0]}")
 
 # Additional measures for benchmarking
 total_models_trained = len(param_grid['C']) * len(param_grid['epsilon']) * len(param_grid['kernel']) * kf.get_n_splits()
 print(f"Total models trained: {total_models_trained}")
+
+# Perform 5-fold cross-validation with varying dataset sizes
+dataset_sizes = [0.2, 0.4, 0.6, 0.8]
+cv_scores = []
+
+for size in dataset_sizes:
+    subset_X, _, subset_y, _ = train_test_split(X, y, train_size=size, random_state=42)
+    scores = cross_val_score(best_model, scaler.fit_transform(subset_X), subset_y, cv=5, scoring='neg_mean_squared_error')
+    cv_scores.append(-scores.mean())
+
+# Plot cross-validation results for different dataset sizes
+plt.figure(figsize=(10, 6))
+plt.plot(dataset_sizes, cv_scores, marker='o')
+plt.title('5-Fold Cross-Validation Scores for Different Dataset Sizes')
+plt.xlabel('Dataset Size')
+plt.ylabel('Mean Squared Error')
+plt.grid(True)
+plt.savefig(join(CWD, 'cv_scores_dataset_sizes.png'))
+
+# Save cross-validation results to a CSV file
+cv_results_df = pd.DataFrame({'Dataset Size': dataset_sizes, 'Mean Squared Error': cv_scores})
+cv_results_df.to_csv(join(CWD,'cv_results_dataset_sizes.csv'), index=False)

@@ -12,9 +12,17 @@ from tensorflow.keras.preprocessing.sequence import pad_sequences
 from tensorflow.keras.callbacks import EarlyStopping, ModelCheckpoint
 import matplotlib.pyplot as plt
 import shap
+import os
 
-# Load Dataset
-Dataset = pd.read_csv('Datasets/FinalDataset.csv')
+RDS = True
+CWD = os.getcwd()
+
+# Load dataset
+
+if RDS:
+    Dataset = pd.read_csv('/rds/general/user/eeo21/home/HIGH_THROUGHPUT_STUDIES/MLForTribology/Datasets/FinalDataset.csv')
+else:
+    Dataset = pd.read_csv('Datasets/FinalDataset.csv')
 
 # Tokenize SMILES strings
 tokenizer = Tokenizer(char_level=True)  # Tokenize at character level
@@ -30,7 +38,7 @@ y = Dataset['visco@40C[cP]'].values
 param_grid = {
     'head_size': [32, 64, 128],
     'num_heads': [5, 10, 25, 50],
-    'ff_dim': [32, 64, 128],
+    'ff_dim': [32, 64, 128, 256],
     'dropout': [0.0, 0.1, 0.3, 0.5],
     'num_transformer_blocks': [1, 2, 3],
     'dense_units': [16, 32, 64],
@@ -71,53 +79,73 @@ def create_model(head_size, num_heads, ff_dim, dropout, num_transformer_blocks, 
     return model
 
 # Perform manual grid search with cross-validation
-def manual_grid_search(model_params_grid, training_params_grid, X, y, k=5):
+def manual_grid_search(model_params_grid, training_params_grid, X, y, train_sizes, k=5):
     model_keys, model_values = zip(*model_params_grid.items())
     train_keys, train_values = zip(*training_params_grid.items())
     best_score = float('inf')
     best_params = None
+    header_written = False
 
-    for model_v, train_v in product(product(*model_values), product(*train_values)):
-        model_params = dict(zip(model_keys, model_v))
-        train_params = dict(zip(train_keys, train_v))
-        kf = KFold(n_splits=k, shuffle=True, random_state=42)
-        val_scores = []
+    for size in train_sizes:
+        X_train_partial, _, y_train_partial, _ = train_test_split(X, y, train_size=size, random_state=42)
+        
+        for model_v, train_v in product(product(*model_values), product(*train_values)):
+            model_params = dict(zip(model_keys, model_v))
+            train_params = dict(zip(train_keys, train_v))
+            kf = KFold(n_splits=k, shuffle=True, random_state=42)
+            val_scores = []
 
-        print(f"Training model with parameters: {model_params} and training parameters: {train_params}")
+            print(f"Training model with parameters: {model_params}, training parameters: {train_params}, and train size: {size}")
 
-        for train_index, val_index in kf.split(X):
-            X_train, X_val = X[train_index], X[val_index]
-            y_train, y_val = y[train_index], y[val_index]
+            for train_index, val_index in kf.split(X_train_partial):
+                X_train, X_val = X_train_partial[train_index], X_train_partial[val_index]
+                y_train, y_val = y_train_partial[train_index], y_train_partial[val_index]
 
-            model = create_model(**model_params)
-            model.fit(X_train, y_train, epochs=train_params['epochs'], batch_size=train_params['batch_size'],
-                      validation_data=(X_val, y_val),
-                      callbacks=[EarlyStopping(monitor='val_loss', patience=10)], verbose=1)
+                model = create_model(**model_params)
+                model.fit(X_train, y_train, epochs=train_params['epochs'], batch_size=train_params['batch_size'],
+                          validation_data=(X_val, y_val),
+                          callbacks=[EarlyStopping(monitor='val_loss', patience=10)], verbose=1)
 
-            y_val_pred = model.predict(X_val)
-            val_score = mean_squared_error(y_val, y_val_pred)
-            val_scores.append(val_score)
+                y_val_pred = model.predict(X_val)
+                val_score = mean_squared_error(y_val, y_val_pred)
+                val_scores.append(val_score)
 
-        avg_val_score = np.mean(val_scores)
-        print(f"Model Params: {model_params}, Train Params: {train_params}, Avg. Validation MSE: {avg_val_score}")
+            avg_val_score = np.mean(val_scores)
+            print(f"Model Params: {model_params}, Train Params: {train_params}, Avg. Validation MSE: {avg_val_score}")
 
-        if avg_val_score < best_score:
-            best_score = avg_val_score
-            best_params = {**model_params, **train_params}
+            # Save each model's performance to a CSV file
+            result = {
+                'Train Size': size,
+                'Model Params': model_params,
+                'Train Params': train_params,
+                'Validation MSE': avg_val_score
+            }
+            results_df = pd.DataFrame([result])
+            results_df.to_csv('transformer_model_training_results.csv', mode='a', header=not header_written, index=False)
+            header_written = True
+
+            if avg_val_score < best_score:
+                best_score = avg_val_score
+                best_params = {**model_params, **train_params}
 
     return best_params
 
+# Define train sizes
+train_sizes = [0.2, 0.4, 0.6, 0.8]
+
 # Perform grid search
-best_params = manual_grid_search(param_grid, training_params, X, y)
+best_params = manual_grid_search(param_grid, training_params, X, y, train_sizes)
 print(f"Best hyperparameters: {best_params}")
 
 # Train final model with best hyperparameters
 best_model = create_model(**{k: v for k, v in best_params.items() if k in param_grid})
-best_model.fit(X, y, epochs=best_params['epochs'], batch_size=best_params['batch_size'],
-               callbacks=[ModelCheckpoint(filepath='best_model.h5', save_best_only=True)])
+best_model.fit(X, y, epochs=best_params['epochs'], batch_size=best_params['batch_size'])
+
+# Save the best model
+best_model.save('best_transformer_model.h5')
 
 # Load the best model
-best_model = load_model('best_model.h5')
+best_model = load_model('best_transformer_model.h5')
 
 # Make predictions with the best model
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)

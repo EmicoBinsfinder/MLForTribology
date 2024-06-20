@@ -1,66 +1,90 @@
 import numpy as np
 import pandas as pd
 from itertools import product
-from sklearn.model_selection import train_test_split, cross_val_score, learning_curve, KFold
+from sklearn.model_selection import train_test_split, KFold, cross_val_score, learning_curve
 from sklearn.ensemble import RandomForestRegressor
 from sklearn.metrics import mean_squared_error
 import matplotlib.pyplot as plt
 import joblib
+import os
+
+RDS = False
+CWD = os.getcwd()
 
 # Load dataset
-descriptors_df = pd.read_csv('Datasets/DecisionTreeDataset_313K.csv')
+if RDS:
+    descriptors_df = pd.read_csv('/rds/general/user/eeo21/home/HIGH_THROUGHPUT_STUDIES/MLForTribology/Datasets/DecisionTreeDataset_313K.csv')
+else:
+    descriptors_df = pd.read_csv('Datasets/DecisionTreeDataset_313K.csv')
 
 # Separate features and target variable
 X = descriptors_df.drop(columns=['Viscosity'])
 y = descriptors_df['Viscosity']
 
-# Split the dataset into training and testing sets
-X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
-
 # Define the hyperparameter grid
 param_grid = {
-    'n_estimators': [50, 100, 200],
-    'max_depth': [None, 10, 20],
-    'min_samples_split': [2, 5, 10],
-    'min_samples_leaf': [1, 2, 4],
+    'n_estimators': [100, 200, 300, 400, 500],
+    'max_depth': [None, 10, 20, 30, 40, 50],
+    'min_samples_split': [2, 5, 10, 15],
+    'min_samples_leaf': [1, 2, 4, 6, 8],
     'max_features': ['sqrt', 'log2']
 }
 
 # Perform manual grid search with cross-validation
-def manual_grid_search(param_grid, X, y, k=5):
+def manual_grid_search(param_grid, X, y, train_sizes, k=5):
     keys, values = zip(*param_grid.items())
     best_score = float('inf')
     best_params = None
+    header_written = False
 
-    for v in product(*values):
-        params = dict(zip(keys, v))
-        kf = KFold(n_splits=k, shuffle=True, random_state=42)
-        val_scores = []
+    for size in train_sizes:
+        X_train_partial, _, y_train_partial, _ = train_test_split(X, y, train_size=size, random_state=42)
+        
+        for v in product(*values):
+            params = dict(zip(keys, v))
+            kf = KFold(n_splits=k, shuffle=True, random_state=42)
+            val_scores = []
 
-        print(f"Training model with parameters: {params}")
+            print(f"Training model with parameters: {params} and train size: {size}")
 
-        for train_index, val_index in kf.split(X):
-            X_train_fold, X_val_fold = X.iloc[train_index], X.iloc[val_index]
-            y_train_fold, y_val_fold = y.iloc[train_index], y.iloc[val_index]
+            for train_index, val_index in kf.split(X_train_partial):
+                X_train_fold, X_val_fold = X_train_partial.iloc[train_index], X_train_partial.iloc[val_index]
+                y_train_fold, y_val_fold = y_train_partial.iloc[train_index], y_train_partial.iloc[val_index]
 
-            model = RandomForestRegressor(**params, random_state=42)
-            model.fit(X_train_fold, y_train_fold)
-            y_val_pred = model.predict(X_val_fold)
-            val_score = mean_squared_error(y_val_fold, y_val_pred)
-            val_scores.append(val_score)
+                model = RandomForestRegressor(**params, random_state=42)
+                model.fit(X_train_fold, y_train_fold)
+                y_val_pred = model.predict(X_val_fold)
+                val_score = mean_squared_error(y_val_fold, y_val_pred)
+                val_scores.append(val_score)
 
-        avg_val_score = np.mean(val_scores)
-        print(f"Params: {params}, Avg. Validation MSE: {avg_val_score}")
+            avg_val_score = np.mean(val_scores)
+            print(f"Params: {params}, Train Size: {size}, Avg. Validation MSE: {avg_val_score}")
 
-        if avg_val_score < best_score:
-            best_score = avg_val_score
-            best_params = params
+            # Save each model's performance to a CSV file
+            result = {
+                'Train Size': size,
+                'Params': params,
+                'Validation MSE': avg_val_score
+            }
+            results_df = pd.DataFrame([result])
+            results_df.to_csv('random_forest_model_training_results.csv', mode='a', header=not header_written, index=False)
+            header_written = True
+
+            if avg_val_score < best_score:
+                best_score = avg_val_score
+                best_params = params
 
     return best_params
 
+# Define train sizes
+train_sizes = [0.2, 0.4, 0.6, 0.8]
+
 # Perform grid search
-best_params = manual_grid_search(param_grid, X_train, y_train)
+best_params = manual_grid_search(param_grid, X, y, train_sizes)
 print(f"Best hyperparameters: {best_params}")
+
+# Split the dataset into training and testing sets
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
 
 # Train final model with best hyperparameters
 best_model = RandomForestRegressor(**best_params, random_state=42, verbose=2)
@@ -106,4 +130,4 @@ plt.plot(train_sizes, train_scores_mean, 'o-', color="r", label="Training score"
 plt.plot(train_sizes, test_scores_mean, 'o-', color="g", label="Cross-validation score")
 
 plt.legend(loc="best")
-plt.show()
+plt.savefig('training.png')

@@ -11,9 +11,19 @@ from tensorflow.keras.preprocessing.text import Tokenizer
 from tensorflow.keras.preprocessing.sequence import pad_sequences
 from tensorflow.keras.callbacks import EarlyStopping, ModelCheckpoint
 import matplotlib.pyplot as plt
+import os
+from os.path import join
+import shap
+
+RDS = True
+CWD = os.getcwd()
 
 # Load dataset
-Dataset = pd.read_csv('Datasets/FinalDataset.csv')
+
+if RDS:
+    Dataset = pd.read_csv('/rds/general/user/eeo21/home/HIGH_THROUGHPUT_STUDIES/MLForTribology/Datasets/FinalDataset.csv')
+else:
+    Dataset = pd.read_csv('Datasets/FinalDataset.csv')
 
 # Tokenize SMILES strings
 tokenizer = Tokenizer(char_level=True)  # Tokenize at character level
@@ -28,17 +38,17 @@ y = Dataset['visco@40C[cP]'].values
 # Define the hyperparameter grid
 param_grid = {
     'optimizer': ['adam', 'rmsprop'],
-    'dense_units': [16, 32, 64],
+    'dense_units': [16, 32, 64, 128],
     'num_layers': [1, 2, 3, 4, 5]
 }
 
 training_params = {
-    'epochs': [250],
-    'batch_size': [8, 16, 32]
+    'epochs': [500],
+    'batch_size': [8, 16, 32, 64]
 }
 
 # Different data sizes to be tested
-data_sizes = [0.6, 0.8, 1.0]  # 60%, 80%, and 100% of the data
+data_sizes = [0.2, 0.4, 0.6, 0.8]  # 60%, 80%, and 100% of the data
 
 # Function to create the model
 def create_model(optimizer='adam', dense_units=32, num_layers=1):
@@ -52,7 +62,7 @@ def create_model(optimizer='adam', dense_units=32, num_layers=1):
     return model
 
 # Perform manual grid search with cross-validation
-def manual_grid_search(model_params_grid, training_params_grid, X, y, data_sizes, k=5):
+def manual_grid_search(model_params_grid, training_params_grid, X, y, data_sizes, k=2):
     model_keys, model_values = zip(*model_params_grid.items())
     train_keys, train_values = zip(*training_params_grid.items())
     best_score = float('inf')
@@ -105,29 +115,39 @@ def manual_grid_search(model_params_grid, training_params_grid, X, y, data_sizes
 best_params = manual_grid_search(param_grid, training_params, X, y, data_sizes)
 print(f"Best hyperparameters: {best_params}")
 
+# SHAP values for feature importance
+# explainer = shap.KernelExplainer(best_model.predict, X_train[:100])  # Using a small subset for explanation
+# shap_values = explainer.shap_values(X_test[:10])  # Again, a small subset for the example
+
+# # Plot SHAP values
+# shap.summary_plot(shap_values, X_test[:10], feature_names=tokenizer.index_word)
+# # Save the SHAP plot
+# plt.savefig('shap_summary_plot.png')
+
+
 # Train final model with best hyperparameters
-best_model = create_model(**{k: v for k, v in best_params.items() if k in param_grid})
-final_data_size = best_params['data_size']
-X_train_final, _, y_train_final, _ = train_test_split(X, y, train_size=final_data_size, random_state=42)
-history = best_model.fit(X_train_final, y_train_final, epochs=best_params['epochs'], batch_size=best_params['batch_size'],
-                         callbacks=[ModelCheckpoint(filepath='best_model.h5', save_best_only=True)])
+# best_model = create_model(**{k: v for k, v in best_params.items() if k in param_grid})
+# final_data_size = best_params['data_size']
+# X_train_final, _, y_train_final, _ = train_test_split(X, y, train_size=final_data_size, random_state=42)
+# history = best_model.fit(X_train_final, y_train_final, epochs=best_params['epochs'], batch_size=best_params['batch_size'])
 
-# Load the best model
-best_model = load_model('best_model.h5')
+# # Load the best model
+# best_model = load_model(join(CWD, 'checkpoint.model.keras'))
 
-# Make predictions with the best model
-X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
-y_pred = best_model.predict(X_test)
+# # Make predictions with the best model
+# X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+# y_pred = best_model.predict(X_test)
 
-# Evaluate the best model
-mse = mean_squared_error(y_test, y_pred)
-print(f'Best model MSE: {mse}')
+# # Evaluate the best model
+# mse = mean_squared_error(y_test, y_pred)
+# print(f'Best model MSE: {mse}')
 
-# Plot training & validation loss values
-plt.plot(history.history['loss'])
-plt.plot(history.history['val_loss'])
-plt.title('Model loss')
-plt.ylabel('Loss')
-plt.xlabel('Epoch')
-plt.legend(['Train', 'Validation'], loc='upper right')
-plt.show()
+# # Plot training & validation loss values
+# plt.plot(history.history['loss'])
+# plt.plot(history.history['val_loss'])
+# plt.title('Model loss')
+# plt.ylabel('Loss')
+# plt.xlabel('Epoch')
+# plt.legend(['Train', 'Validation'], loc='upper right')
+# plt.savefig(join(CWD))
+# plt.show()

@@ -7,12 +7,16 @@ from sklearn.preprocessing import StandardScaler
 from joblib import dump
 import matplotlib.pyplot as plt
 import xgboost as xgb
+import os
+
+RDS = True
+CWD = os.getcwd()
 
 # Load dataset
-descriptors_df = pd.read_csv('DecisionTreeDataset_313K.csv')
-descriptors_df = descriptors_df.dropna()
-
-print(len(descriptors_df))
+if RDS:
+    descriptors_df = pd.read_csv('/rds/general/user/eeo21/home/HIGH_THROUGHPUT_STUDIES/MLForTribology/Datasets/DecisionTreeDataset_313K.csv')
+else:
+    descriptors_df = pd.read_csv('Datasets/DecisionTreeDataset_313K.csv')
 
 # Separate features and target variable
 X = descriptors_df.drop(columns=['Viscosity'])
@@ -32,9 +36,9 @@ dtest = xgb.DMatrix(X_test_scaled, label=y_test)
 
 # Define hyperparameters for grid search
 param_grid = {
-    'n_estimators': [100, 200],
-    'learning_rate': [0.1, 0.05],
-    'max_depth': [3, 4, 5],
+    'n_estimators': [100, 200, 300],
+    'learning_rate': [0.01, 0.05, 0.1],
+    'max_depth': [3, 4, 5, 6],
     'tree_method': ['hist'],  # Use GPU
     'device': ['cuda']
 }
@@ -43,7 +47,8 @@ param_grid = {
 results = []
 
 # Perform 5-fold cross-validation with varying dataset sizes and grid search
-train_sizes = [0.2, 0.4, 0.6, 0.8, 0.99]
+train_sizes = [0.2, 0.4, 0.6, 0.8]
+header_written = False
 for size in train_sizes:
     X_partial, _, y_partial, _ = train_test_split(X_train_scaled, y_train, train_size=size, random_state=42)
     dpartial = xgb.DMatrix(X_partial, label=y_partial)
@@ -82,14 +87,15 @@ for size in train_sizes:
 
     print(f"Training size: {size}, Best Params: {grid_search.best_params_}, CV MSE: {cv_score}, Test MSE: {test_mse}, Test R2: {test_r2}, Train Time: {avg_train_time}")
 
+    # Save results to a CSV file in append mode
+    results_df = pd.DataFrame([results[-1]])
+    results_df.to_csv('xgboost_model_training_results.csv', mode='a', header=not header_written, index=False)
+    header_written = True
+
 # Save the best model
 best_model_idx = np.argmin([result['CV Score'] for result in results])
 best_model = grid_search.best_estimator_
 dump(best_model, 'best_xgboost_model.joblib')
-
-# Save results to a CSV file
-results_df = pd.DataFrame(results)
-results_df.to_csv('xgboost_model_training_results.csv', index=False)
 
 # Plot performance of each model tested
 plt.figure(figsize=(10, 6))
