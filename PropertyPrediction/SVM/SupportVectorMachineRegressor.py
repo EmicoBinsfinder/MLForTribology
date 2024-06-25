@@ -18,7 +18,6 @@ RDS = False
 CWD = os.getcwd()
 
 # Load dataset
-
 if RDS:
     descriptors_df = pd.read_csv('/rds/general/user/eeo21/home/HIGH_THROUGHPUT_STUDIES/MLForTribology/Datasets/DecisionTreeDataset_313K.csv')
 else:
@@ -34,8 +33,8 @@ model = SVR()
 
 # Define the parameter grid for grid search
 param_grid = {
-    'C': [0.01, 0.1, 1, 10, 100, 1000],
-    'epsilon': [0.001, 0.01, 0.1, 1],
+    'C': [0.01, 0.1, 1, 10],
+    'epsilon': [0.001, 0.01, 0.1, 0.2],
     'kernel': ['linear', 'poly', 'rbf', 'sigmoid']
 }
 
@@ -48,8 +47,29 @@ grid_search = GridSearchCV(estimator=model, param_grid=param_grid, scoring='neg_
 # Track time for training each model
 start_time = time.time()
 
-# Perform grid search
-grid_search.fit(scaler.fit_transform(X), y)
+# Perform grid search and save results incrementally
+results = []
+for C in param_grid['C']:
+    for epsilon in param_grid['epsilon']:
+        for kernel in param_grid['kernel']:
+            current_params = {'C': [C], 'epsilon': [epsilon], 'kernel': [kernel]}
+            grid_search = GridSearchCV(estimator=model, param_grid=current_params, scoring='neg_mean_squared_error', cv=kf, verbose=2)
+            grid_search.fit(scaler.fit_transform(X), y)
+
+            # Save intermediate results
+            for i in range(len(grid_search.cv_results_['mean_test_score'])):
+                result = {
+                    'params': grid_search.cv_results_['params'][i],
+                    'mean_test_score': -grid_search.cv_results_['mean_test_score'][i],
+                    'std_test_score': grid_search.cv_results_['std_test_score'][i],
+                    'rank_test_score': grid_search.cv_results_['rank_test_score'][i]
+                }
+                results.append(result)
+                with open(join(CWD, 'incremental_grid_search_results.csv'), mode='a', newline='') as file:
+                    writer = csv.writer(file)
+                    if file.tell() == 0:
+                        writer.writerow(['Parameters', 'Mean Test Score', 'Standard Deviation Test Score', 'Rank'])
+                    writer.writerow([result['params'], result['mean_test_score'], result['std_test_score'], result['rank_test_score']])
 
 # Calculate average time to train each model
 end_time = time.time()
@@ -62,7 +82,7 @@ best_model = grid_search.best_estimator_
 print(f"Best parameters: {grid_search.best_params_}")
 
 # Save the best model
-joblib.dump(best_model, join(CWD,'best_svr_model.pkl'))
+joblib.dump(best_model, join(CWD, 'best_svr_model.pkl'))
 
 # Prepare to plot performance
 results = grid_search.cv_results_
@@ -77,11 +97,11 @@ plt.xlabel('Model')
 plt.ylabel('Mean Squared Error')
 plt.grid()
 plt.legend(loc='best', bbox_to_anchor=(1.05, 1), title="Parameters")
-plt.savefig(join(CWD,'svr_model_performance.png'))
+plt.savefig(join(CWD, 'svr_model_performance.png'))
 plt.show()
 
-# Output results to a CSV file
-with open(join(CWD,'grid_search_results.csv'), mode='w', newline='') as file:
+# Output final results to a CSV file
+with open(join(CWD, 'grid_search_results.csv'), mode='w', newline='') as file:
     writer = csv.writer(file)
     writer.writerow(['Rank', 'Parameters', 'Mean Test Score', 'Standard Deviation Test Score'])
     for rank, params, mean_score, std_score in zip(results['rank_test_score'], results['params'], results['mean_test_score'], results['std_test_score']):
@@ -116,7 +136,7 @@ total_models_trained = len(param_grid['C']) * len(param_grid['epsilon']) * len(p
 print(f"Total models trained: {total_models_trained}")
 
 # Perform 5-fold cross-validation with varying dataset sizes
-dataset_sizes = [0.2, 0.4, 0.6, 0.8]
+dataset_sizes = [0.2, 0.4]#, 0.6, 0.8]
 cv_scores = []
 
 for size in dataset_sizes:
@@ -135,4 +155,4 @@ plt.savefig(join(CWD, 'cv_scores_dataset_sizes.png'))
 
 # Save cross-validation results to a CSV file
 cv_results_df = pd.DataFrame({'Dataset Size': dataset_sizes, 'Mean Squared Error': cv_scores})
-cv_results_df.to_csv(join(CWD,'cv_results_dataset_sizes.csv'), index=False)
+cv_results_df.to_csv(join(CWD, 'cv_results_dataset_sizes.csv'), index=False)

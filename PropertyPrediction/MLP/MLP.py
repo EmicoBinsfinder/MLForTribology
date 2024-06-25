@@ -36,9 +36,9 @@ y = Dataset['visco@40C[cP]'].values
 
 # Define the hyperparameter grid
 param_grid = {
-    'optimizer': ['adam'],#, 'rmsprop'],
-    'dense_units': [16, 32],#, 64, 128],
-    'num_layers': [1],#, 2, 3, 4, 5]
+    'optimizer': ['adam', 'rmsprop'],
+    'dense_units': [16, 32, 64, 128],
+    'num_layers': [1, 2, 3, 4, 5]
 }
 
 training_params = {
@@ -105,9 +105,10 @@ def manual_grid_search(model_params_grid, training_params_grid, X, y, data_sizes
                 best_score = avg_val_score
                 best_params = result
 
-    # Save results to CSV
-    results_df = pd.DataFrame(results)
-    results_df.to_csv('model_performance.csv', index=False)
+            # Save results to CSV
+            results_df = pd.DataFrame(results)
+            results_df.to_csv('model_performance.csv', index=False)
+
     return best_params
 
 # Perform grid search
