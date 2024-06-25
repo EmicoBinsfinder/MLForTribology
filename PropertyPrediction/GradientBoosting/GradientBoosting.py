@@ -9,7 +9,7 @@ import matplotlib.pyplot as plt
 import xgboost as xgb
 import os
 
-RDS = True
+RDS = False
 CWD = os.getcwd()
 
 # Load dataset
@@ -32,9 +32,9 @@ X_test_scaled = scaler.transform(X_test)
 
 # Define hyperparameters for grid search
 param_grid = {
-    'n_estimators': [100, 200, 300],
-    'learning_rate': [0.01, 0.05, 0.1],
-    'max_depth': [3, 4, 5, 6],
+    'n_estimators': [100, 200, 300, 500, 1000, 2000, 5000],
+    'learning_rate': [0.01, 0.05, 0.1, 0.2, 0.5],
+    'max_depth': [3, 4, 5, 6, 10, 20, 50, 100],
     'tree_method': ['hist'],  # Use GPU
     'device': ['cuda']
 }
@@ -43,7 +43,7 @@ param_grid = {
 results = []
 
 # Perform 5-fold cross-validation with varying dataset sizes and grid search
-train_sizes = [0.2, 0.4, 0.6, 0.8]
+train_sizes = [0.2, 0.4]
 for size in train_sizes:
     X_partial, _, y_partial, _ = train_test_split(X_train_scaled, y_train, train_size=size, random_state=42)
     
