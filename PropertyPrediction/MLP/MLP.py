@@ -37,17 +37,17 @@ y = Dataset['visco@40C[cP]'].values
 # Define the hyperparameter grid
 param_grid = {
     'optimizer': ['adam', 'rmsprop'],
-    'dense_units': [16, 32, 64, 128],
+    'dense_units': [32, 64, 128],
     'num_layers': [1, 2, 3, 4, 5]
 }
 
 training_params = {
-    'epochs': [1],
+    'epochs': [100],
     'batch_size': [8, 16, 32, 64]
 }
 
 # Different data sizes to be tested
-data_sizes = [0.2, 0.4, 0.6, 0.8]  # 60%, 80%, and 100% of the data
+data_sizes = [0.2]#, 0.4, 0.6, 0.8]  # 60%, 80%, and 100% of the data
 
 # Function to create the model
 def create_model(optimizer='adam', dense_units=32, num_layers=1):

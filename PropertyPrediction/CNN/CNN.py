@@ -43,7 +43,7 @@ param_grid = {
 }
 
 training_params = {
-    'epochs': [500],
+    'epochs': [100],
     'batch_size': [8, 16, 32]
 }
 

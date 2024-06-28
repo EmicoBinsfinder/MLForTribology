@@ -1,0 +1,11 @@
+Train Size,Model Params,Train Params,Validation MSE
+0.2,"{'optimizer': 'adam', 'filters': 32, 'kernel_size': 3, 'dense_units': 16, 'num_layers': 1}","{'epochs': 100, 'batch_size': 8}",17.708613826034927
+0.2,"{'optimizer': 'adam', 'filters': 32, 'kernel_size': 3, 'dense_units': 16, 'num_layers': 1}","{'epochs': 100, 'batch_size': 16}",18.50793523546944
+0.2,"{'optimizer': 'adam', 'filters': 32, 'kernel_size': 3, 'dense_units': 16, 'num_layers': 1}","{'epochs': 100, 'batch_size': 32}",18.550141504977187
+0.2,"{'optimizer': 'adam', 'filters': 32, 'kernel_size': 3, 'dense_units': 16, 'num_layers': 2}","{'epochs': 100, 'batch_size': 8}",8.591096102497293
+0.2,"{'optimizer': 'adam', 'filters': 32, 'kernel_size': 3, 'dense_units': 16, 'num_layers': 2}","{'epochs': 100, 'batch_size': 16}",9.905476201639583
+0.2,"{'optimizer': 'adam', 'filters': 32, 'kernel_size': 3, 'dense_units': 16, 'num_layers': 2}","{'epochs': 100, 'batch_size': 32}",9.562407786080113
+0.2,"{'optimizer': 'adam', 'filters': 32, 'kernel_size': 3, 'dense_units': 16, 'num_layers': 3}","{'epochs': 100, 'batch_size': 8}",5.02841691450088
+0.2,"{'optimizer': 'adam', 'filters': 32, 'kernel_size': 3, 'dense_units': 16, 'num_layers': 3}","{'epochs': 100, 'batch_size': 16}",5.054002033721309
+0.2,"{'optimizer': 'adam', 'filters': 32, 'kernel_size': 3, 'dense_units': 16, 'num_layers': 3}","{'epochs': 100, 'batch_size': 32}",5.487072378126987
+0.2,"{'optimizer': 'adam', 'filters': 32, 'kernel_size': 3, 'dense_units': 32, 'num_layers': 1}","{'epochs': 100, 'batch_size': 8}",17.75073955667242

@@ -14,7 +14,7 @@ import os
 from os.path import join 
 import sys
 
-RDS = True
+RDS = False
 CWD = os.getcwd()
 
 # Load dataset
