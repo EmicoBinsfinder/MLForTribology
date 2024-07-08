@@ -1,2 +1,0 @@
-hidden_dim,num_layers,learning_rate,batch_size,dropout,avg_test_loss
-64,2,0.01,32,0.2,87.51581151848598

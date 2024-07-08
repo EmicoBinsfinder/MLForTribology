@@ -3,9 +3,8 @@ import numpy as np
 from rdkit import Chem
 from rdkit.Chem import AllChem
 from torch_geometric.data import Data, DataLoader
-from torch_geometric.nn import GCNConv, global_mean_pool
+from torch_geometric.nn import SAGEConv, global_mean_pool
 import torch
-import torch_geometric
 import torch.nn.functional as F
 from torch.nn import Linear
 from sklearn.model_selection import KFold
@@ -15,8 +14,14 @@ from tqdm import tqdm
 from torch.optim.lr_scheduler import ReduceLROnPlateau
 
 # Load the dataset
-file_path = 'Datasets/FinalDataset.csv'
-df = pd.read_csv(file_path)
+RDS = True
+CWD = os.getcwd()
+
+# Load dataset
+if RDS:
+    df = pd.read_csv('/rds/general/user/eeo21/home/HIGH_THROUGHPUT_STUDIES/MLForTribology/Datasets/FinalDataset.csv')
+else:
+    df = pd.read_csv('Datasets/FinalDataset.csv')
 
 # Function to convert SMILES to molecular graph
 def smiles_to_graph(smiles):
@@ -47,47 +52,50 @@ for i, row in df.iterrows():
     graph.y = torch.tensor([[row['visco@40C[cP]']]], dtype=torch.float)  # Ensure target has shape (N, 1)
     data_list.append(graph)
 
-# Define the GCN model with residual connections and dropout
-class GCN(torch.nn.Module):
-    def __init__(self, hidden_dim, num_layers, dropout):
-        super(GCN, self).__init__()
+# Define the GraphSAGE model with residual connections and dropout
+class GraphSAGE(torch.nn.Module):
+    def __init__(self, hidden_dim, num_layers, dropout, activation):
+        super(GraphSAGE, self).__init__()
         self.convs = torch.nn.ModuleList()
-        self.convs.append(GCNConv(1, hidden_dim))
+        self.convs.append(SAGEConv(1, hidden_dim))
         for _ in range(num_layers - 2):
-            self.convs.append(GCNConv(hidden_dim, hidden_dim))
-        self.convs.append(GCNConv(hidden_dim, hidden_dim))
+            self.convs.append(SAGEConv(hidden_dim, hidden_dim))
+        self.convs.append(SAGEConv(hidden_dim, hidden_dim))
         self.fc1 = Linear(hidden_dim, hidden_dim // 2)
         self.fc2 = Linear(hidden_dim // 2, 1)
         self.dropout = dropout
+        self.activation = activation
     
     def forward(self, data):
         x, edge_index = data.x, data.edge_index
         for conv in self.convs:
             x_res = x
-            x = F.relu(conv(x, edge_index))
+            x = self.activation(conv(x, edge_index))
             x = F.dropout(x, p=self.dropout, training=self.training) + x_res  # Residual connection
         x = global_mean_pool(x, data.batch)
-        x = F.relu(self.fc1(x))
+        x = self.activation(self.fc1(x))
         x = self.fc2(x)
         return x
 
 # Hyperparameter grid
-hidden_dims = [64, 128]
-num_layers = [2, 3]
-learning_rates = [0.01, 0.001]
-batch_sizes = [32, 64]
-dropout_rates = [0.0, 0.1, 0.2, 0.3]
+hidden_dims = [16, 32, 64, 128, 256]
+num_layers = [1, 2, 3, 4]
+learning_rates = [0.1, 0.01, 0.001, 0.0001]
+batch_sizes = [8, 16, 32, 64, 128]
+dropout_rates = [0.0, 0.1, 0.2, 0.3, 0.4, 0.5]
+activations = [F.relu, F.leaky_relu, torch.tanh, torch.sigmoid, F.elu]
+optimizers = ['adam', 'sgd', 'rmsprop', 'adagrad']
 
 # Initialize results file
-results_file = 'grid_search_results.csv'
+results_file = 'graphsage_grid_search_results.csv'
 if not os.path.exists(results_file):
-    results_df = pd.DataFrame(columns=['hidden_dim', 'num_layers', 'learning_rate', 'batch_size', 'dropout', 'avg_test_loss'])
+    results_df = pd.DataFrame(columns=['hidden_dim', 'num_layers', 'learning_rate', 'batch_size', 'dropout', 'activation', 'optimizer', 'avg_test_loss'])
     results_df.to_csv(results_file, index=False)
 
 # Perform grid search with K-Fold cross-validation
 kf = KFold(n_splits=5, shuffle=True, random_state=42)
 
-for hidden_dim, num_layer, lr, batch_size, dropout in itertools.product(hidden_dims, num_layers, learning_rates, batch_sizes, dropout_rates):
+for hidden_dim, num_layer, lr, batch_size, dropout, activation, opt in itertools.product(hidden_dims, num_layers, learning_rates, batch_sizes, dropout_rates, activations, optimizers):
     fold_results = []
     for train_index, test_index in kf.split(data_list):
         train_data = [data_list[i] for i in train_index[:int(0.2 * len(train_index))]]
@@ -97,8 +105,11 @@ for hidden_dim, num_layer, lr, batch_size, dropout in itertools.product(hidden_d
         test_loader = DataLoader(test_data, batch_size=batch_size, shuffle=False)
         
         device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
-        model = GCN(hidden_dim, num_layer, dropout).to(device)
-        optimizer = torch.optim.Adam(model.parameters(), lr=lr)
+        model = GraphSAGE(hidden_dim, num_layer, dropout, activation).to(device)
+        optimizer = torch.optim.Adam(model.parameters(), lr=lr) if opt == 'adam' else \
+                    torch.optim.SGD(model.parameters(), lr=lr) if opt == 'sgd' else \
+                    torch.optim.RMSprop(model.parameters(), lr=lr) if opt == 'rmsprop' else \
+                    torch.optim.Adagrad(model.parameters(), lr=lr)
         scheduler = ReduceLROnPlateau(optimizer, mode='min', factor=0.1, patience=10, min_lr=1e-6)
         criterion = torch.nn.MSELoss()
         
@@ -127,7 +138,7 @@ for hidden_dim, num_layer, lr, batch_size, dropout in itertools.product(hidden_d
         best_loss = float('inf')
         patience_counter = 0
         
-        for epoch in tqdm(range(100), desc=f'Training Epochs for HD: {hidden_dim}, NL: {num_layer}, LR: {lr}, BS: {batch_size}, DR: {dropout}'):
+        for epoch in tqdm(range(100), desc=f'Training Epochs for HD: {hidden_dim}, NL: {num_layer}, LR: {lr}, BS: {batch_size}, DR: {dropout}, ACT: {activation.__name__}, OPT: {opt}'):
             train()
             test_loss = test(test_loader)
             if test_loss < best_loss:
@@ -149,8 +160,10 @@ for hidden_dim, num_layer, lr, batch_size, dropout in itertools.product(hidden_d
         'learning_rate': lr,
         'batch_size': batch_size,
         'dropout': dropout,
+        'activation': activation.__name__,
+        'optimizer': opt,
         'avg_test_loss': avg_test_loss
     }
     results_df = pd.DataFrame([result])
     results_df.to_csv(results_file, mode='a', header=False, index=False)
-    print(f'Hidden Dim: {hidden_dim}, Num Layers: {num_layer}, LR: {lr}, Batch Size: {batch_size}, Dropout: {dropout}, Avg Test Loss: {avg_test_loss}')
+    print(f'Hidden Dim: {hidden_dim}, Num Layers: {num_layer}, LR: {lr}, Batch Size: {batch_size}, Dropout: {dropout}, Activation: {activation.__name__}, Optimizer: {opt}, Avg Test Loss: {avg_test_loss}')
