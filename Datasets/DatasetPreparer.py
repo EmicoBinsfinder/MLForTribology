@@ -20,7 +20,7 @@ from rdkit.Chem import Descriptors
 from rdkit.ML.Descriptors.MoleculeDescriptors import MolecularDescriptorCalculator
 
 ### Load in original dataset
-OriginalDataset = pd.read_csv('Dataset/OriginalDataset.csv', index_col=False)
+OriginalDataset = pd.read_csv('Datasets/OriginalDataset.csv', index_col=False)
 
 ### Remove molucules with Viscosities that are too low or too high
 
@@ -63,7 +63,22 @@ condition = RingsFilteredDataset['visco@100C[cP]'] <= RingsFilteredDataset['visc
 RingsFilteredDataset['WhackVisc'] = RingsFilteredDataset['visco@100C[cP]'].where(condition)
 FilteredDataset = RingsFilteredDataset.dropna(subset=['WhackVisc'])
 
-FilteredDataset.to_csv('Dataset/FinalDataset.csv', index=False)
+FilteredDataset.to_csv('Datasets/FinalDataset.csv', index=False)
+
+ShuffledDataset = FilteredDataset.sample(frac=1, random_state=1).reset_index(drop=True)
+
+total_rows = len(ShuffledDataset)
+ten_percent_rows = int(total_rows * 0.1)
+ninety_percent_rows = int(total_rows * 0.9)
+
+ten_percent_df = ShuffledDataset.head(ten_percent_rows)
+last_ninety_percent_df = ShuffledDataset.tail(ninety_percent_rows)
+
+TwentyPercentDataset = last_ninety_percent_df.sample(frac=0.2, random_state=1).reset_index(drop=True)
+
+ten_percent_df.to_csv('Datasets/FinalTestDataset.csv')
+last_ninety_percent_df.to_csv('Datasets/LargeTrainingDataset.csv')
+TwentyPercentDataset.to_csv('Datasets/GridSearchDataset.csv')
 
 # Function to convert SMILES to descriptors
 def smiles_to_descriptors(smiles):
@@ -73,3 +88,18 @@ def smiles_to_descriptors(smiles):
     calculator = MolecularDescriptorCalculator([desc[0] for desc in Descriptors._descList])
     descriptors = calculator.CalcDescriptors(mol)
     return descriptors
+
+# ShuffledDataset = descriptors_df.sample(frac=1, random_state=1).reset_index(drop=True)
+
+# total_rows = len(ShuffledDataset)
+# ten_percent_rows = int(total_rows * 0.1)
+# ninety_percent_rows = int(total_rows * 0.9)
+
+# ten_percent_df = ShuffledDataset.head(ten_percent_rows)
+# last_ninety_percent_df = ShuffledDataset.tail(ninety_percent_rows)
+
+# TwentyPercentDataset = last_ninety_percent_df.sample(frac=0.2, random_state=1).reset_index(drop=True)
+
+# ten_percent_df.to_csv('Datasets/FinalTestDataset_Descriptors.csv')
+# last_ninety_percent_df.to_csv('Datasets/LargeTrainingDataset_Descriptors.csv')
+# TwentyPercentDataset.to_csv('Datasets/GridSearchDataset_Descriptors.csv')

@@ -1,8 +1,8 @@
 import numpy as np
 import pandas as pd
 import time
-from sklearn.model_selection import train_test_split, GridSearchCV
 from sklearn.metrics import mean_squared_error, r2_score
+from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import StandardScaler
 from joblib import dump
 import matplotlib.pyplot as plt
@@ -14,20 +14,25 @@ CWD = os.getcwd()
 
 # Load dataset
 if RDS:
-    descriptors_df = pd.read_csv('/rds/general/user/eeo21/home/HIGH_THROUGHPUT_STUDIES/MLForTribology/Datasets/DecisionTreeDataset_313K.csv')
+    descriptors_df = pd.read_csv('/rds/general/user/eeo21/home/HIGH_THROUGHPUT_STUDIES/MLForTribology/Datasets/GridSearchDataset_Descriptors.csv')
+    test_df = pd.read_csv('/rds/general/user/eeo21/home/HIGH_THROUGHPUT_STUDIES/MLForTribology/Datasets/FinalTestDataset_Descriptors.csv')
 else:
-    descriptors_df = pd.read_csv('Datasets/DecisionTreeDataset_313K.csv')
+    descriptors_df = pd.read_csv('Datasets/GridSearchDataset_Descriptors.csv')
+    test_df = pd.read_csv('Datasets/FinalTestDataset_Descriptors.csv')
 
 # Separate features and target variable
 X = descriptors_df.drop(columns=['Viscosity'])
 y = descriptors_df['Viscosity']
+X_test = test_df.drop(columns=['Viscosity'])
+y_test = test_df['Viscosity']
 
-# Split dataset into training and testing sets
-X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+# Split dataset into training and validation sets
+X_train, X_val, y_train, y_val = train_test_split(X, y, test_size=0.2, random_state=42)
 
 # Standardize features
 scaler = StandardScaler()
 X_train_scaled = scaler.fit_transform(X_train)
+X_val_scaled = scaler.transform(X_val)
 X_test_scaled = scaler.transform(X_test)
 
 # Define hyperparameters for grid search
@@ -36,71 +41,78 @@ param_grid = {
     'learning_rate': [0.01, 0.05, 0.1, 0.2, 0.5],
     'max_depth': [3, 4, 5, 6, 10, 20, 50, 100],
     'tree_method': ['hist'],  # Use GPU
-    'device': ['cuda']
 }
 
-# Initialize lists to store results
-results = []
+# Custom grid search function
+def custom_grid_search(X_train, y_train, X_test, y_test, param_grid):
+    results = []
+    for n_estimators in param_grid['n_estimators']:
+        for learning_rate in param_grid['learning_rate']:
+            for max_depth in param_grid['max_depth']:
+                params = {
+                    'n_estimators': n_estimators,
+                    'learning_rate': learning_rate,
+                    'max_depth': max_depth,
+                    'tree_method': 'hist',
+                    'use_label_encoder': False,
+                    'eval_metric': 'rmse'
+                }
+                model = xgb.XGBRegressor(**params)
+                
+                # Measure training time
+                start_time = time.time()
+                model.fit(X_train, y_train)
+                end_time = time.time()
+                train_time = end_time - start_time
 
-# Perform 5-fold cross-validation with varying dataset sizes and grid search
-train_sizes = [0.2, 0.4]
-for size in train_sizes:
-    X_partial, _, y_partial, _ = train_test_split(X_train_scaled, y_train, train_size=size, random_state=42)
-    
-    grid_search = GridSearchCV(
-        estimator=xgb.XGBRegressor(use_label_encoder=False, eval_metric='rmse'),
-        param_grid=param_grid,
-        cv=5,
-        scoring='neg_mean_squared_error',
-        verbose=2,
-        n_jobs=-1,
-        return_train_score=True
-    )
-    
-    # Measure training time
-    start_time = time.time()
-    grid_search.fit(X_partial, y_partial)
-    end_time = time.time()
-    avg_train_time = (end_time - start_time) / (len(param_grid['n_estimators']) * len(param_grid['learning_rate']) * len(param_grid['max_depth']))
+                # Evaluate on test set
+                y_test_pred = model.predict(X_test)
+                test_mse = mean_squared_error(y_test, y_test_pred)
+                test_r2 = r2_score(y_test, y_test_pred)
 
-    # Collect and save results for each parameter combination
-    for i in range(len(grid_search.cv_results_['params'])):
-        result = {
-            'Train Size': size,
-            'Params': grid_search.cv_results_['params'][i],
-            'Mean Train Score': -grid_search.cv_results_['mean_train_score'][i],
-            'Mean Test Score': -grid_search.cv_results_['mean_test_score'][i],
-            'Std Test Score': grid_search.cv_results_['std_test_score'][i],
-            'Train Time': avg_train_time
-        }
-        
-        # Save results to a CSV file in append mode
-        results_df = pd.DataFrame([result])
-        results_df.to_csv('xgboost_model_training_results.csv', mode='a', header=not os.path.isfile('xgboost_model_training_results.csv'), index=False)
+                result = {
+                    'Params': params,
+                    'Test MSE': test_mse,
+                    'Test R2': test_r2,
+                    'Train Time': train_time
+                }
+                results.append(result)
 
-    # Store best results
-    best_model = grid_search.best_estimator_
-    cv_score = -grid_search.best_score_
+                # Save results to a CSV file in append mode
+                results_df = pd.DataFrame([result])
+                results_df.to_csv('xgboost_model_training_results.csv', mode='a', header=not os.path.isfile('xgboost_model_training_results.csv'), index=False)
+                
+                print(f"Params: {params}, Test MSE: {test_mse}, Test R2: {test_r2}")
 
-    # Predict on the test set and evaluate
-    y_pred = best_model.predict(X_test_scaled)
-    test_mse = mean_squared_error(y_test, y_pred)
-    test_r2 = r2_score(y_test, y_pred)
+    return results
 
-    print(f"Training size: {size}, Best Params: {grid_search.best_params_}, CV MSE: {cv_score}, Test MSE: {test_mse}, Test R2: {test_r2}, Train Time: {avg_train_time}")
+# Perform custom grid search
+results = custom_grid_search(X_train_scaled, y_train, X_test_scaled, y_test, param_grid)
+
+# Find the best model based on test MSE
+best_result = min(results, key=lambda x: x['Test MSE'])
+best_params = best_result['Params']
+
+# Train the best model on the full training data
+best_model = xgb.XGBRegressor(**best_params)
+best_model.fit(X_train_scaled, y_train)
 
 # Save the best model
-best_model_idx = np.argmin([result['Mean Test Score'] for result in results])
-best_model = grid_search.best_estimator_
 dump(best_model, 'best_xgboost_model.joblib')
+
+# Evaluate the best model on the test set
+y_test_pred = best_model.predict(X_test_scaled)
+test_mse = mean_squared_error(y_test, y_test_pred)
+test_r2 = r2_score(y_test, y_test_pred)
+print(f"Best Params: {best_params}, Test MSE: {test_mse}, Test R2: {test_r2}")
 
 # Plot performance of each model tested
 plt.figure(figsize=(10, 6))
 for result in results:
-    plt.plot(result['Train Size'], result['Mean Test Score'], 'o-', label=f"Params: {result['Params']}")
-plt.xlabel('Training Set Size')
-plt.ylabel('Cross-Validation MSE')
-plt.title('Model Performance During Grid Search and Cross-Validation')
+    plt.plot(result['Params']['n_estimators'], result['Test MSE'], 'o-', label=f"Learning Rate: {result['Params']['learning_rate']}, Max Depth: {result['Params']['max_depth']}")
+plt.xlabel('Number of Estimators')
+plt.ylabel('Test MSE')
+plt.title('Model Performance During Custom Grid Search')
 plt.legend()
 plt.grid(True)
 plt.savefig('xgboost_model_performance.png')

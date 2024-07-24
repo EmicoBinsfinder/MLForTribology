@@ -125,7 +125,7 @@ def perform_grid_search(X, y, param_grid, dataset_sizes, results_path='gmm_grid_
     return best_model, best_params, best_score, results, total_models
 
 # Define dataset sizes (20% to 100%)
-dataset_sizes = [0.2]#, 0.4, 0.6, 0.8, 1.0]
+dataset_sizes = [0.99]#, 0.4, 0.6, 0.8, 1.0]
 
 # Perform grid search
 best_model, best_params, best_score, results, total_models = perform_grid_search(X_scaled, y, param_grid, dataset_sizes)
