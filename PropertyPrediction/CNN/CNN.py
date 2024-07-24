@@ -44,7 +44,7 @@ param_grid = {
 
 training_params = {
     'epochs': [100],
-    'batch_size': [8, 16, 32]
+    'batch_size': [64, 128]
 }
 
 # Function to create the model
@@ -114,7 +114,7 @@ def manual_grid_search(model_params_grid, training_params_grid, X, y, train_size
     return best_params
 
 # Define train sizes
-train_sizes = [0.2, 0.4, 0.6, 0.8]
+train_sizes = [0.2]
 
 # Perform grid search
 best_params = manual_grid_search(param_grid, training_params, X, y, train_sizes)

@@ -36,7 +36,7 @@ y = Dataset['visco@40C[cP]'].values
 
 # Define the hyperparameter grid
 param_grid = {
-    'head_size': [32, 64, 128],
+    'head_size': [8, 16, 32, 64, 128],
     'num_heads': [5, 10, 25, 50],
     'ff_dim': [32, 64, 128, 256],
     'dropout': [0.0, 0.1, 0.3, 0.5],
@@ -47,7 +47,7 @@ param_grid = {
 
 training_params = {
     'epochs': [500],
-    'batch_size': [16, 32, 64, 128]
+    'batch_size': [8, 16, 32, 64, 128]
 }
 
 # Function to create the model
