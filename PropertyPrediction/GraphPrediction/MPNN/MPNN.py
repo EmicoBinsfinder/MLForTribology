@@ -12,16 +12,16 @@ import itertools
 import os
 from tqdm import tqdm
 from torch.optim.lr_scheduler import ReduceLROnPlateau
+import time
 
 # Load the dataset
-RDS = True
-CWD = os.getcwd()
 
-# Load dataset
+RDS = True
+
 if RDS:
-    df = pd.read_csv('/rds/general/user/eeo21/home/HIGH_THROUGHPUT_STUDIES/MLForTribology/Datasets/FinalDataset.csv')
+    df = pd.read_csv('/lustre/scratch/mmm1058/MLForTribology/Datasets/GridSearchDataset.csv')
 else:
-    df = pd.read_csv('Datasets/FinalDataset.csv')
+    df = pd.read_csv('Datasets/GridSearchDataset.csv')
 
 # Function to convert SMILES to molecular graph
 def smiles_to_graph(smiles):
@@ -82,17 +82,17 @@ class MPNN(MessagePassing):
 
 # Hyperparameter grid
 hidden_dims = [16, 32, 64, 128, 256]
-num_layers = [1, 2, 3, 4]
+num_layers = [1, 2, 3, 4, 5]
 learning_rates = [0.1, 0.01, 0.001, 0.0001]
 batch_sizes = [8, 16, 32, 64, 128]
-dropout_rates = [0.0, 0.1, 0.2, 0.3, 0.4, 0.5]
+dropout_rates = [0.0]
 activations = [F.relu, F.leaky_relu, torch.tanh, torch.sigmoid, F.elu]
 optimizers = ['adam', 'sgd', 'rmsprop', 'adagrad']
 
 # Initialize results file
 results_file = 'mpnn_grid_search_results.csv'
 if not os.path.exists(results_file):
-    results_df = pd.DataFrame(columns=['hidden_dim', 'num_layers', 'learning_rate', 'batch_size', 'dropout', 'activation', 'optimizer', 'avg_test_loss'])
+    results_df = pd.DataFrame(columns=['hidden_dim', 'num_layers', 'learning_rate', 'batch_size', 'dropout', 'activation', 'optimizer', 'avg_test_loss', 'training_time'])
     results_df.to_csv(results_file, index=False)
 
 # Perform grid search with K-Fold cross-validation
@@ -100,10 +100,11 @@ kf = KFold(n_splits=5, shuffle=True, random_state=42)
 
 for hidden_dim, num_layer, lr, batch_size, dropout, activation, opt in itertools.product(hidden_dims, num_layers, learning_rates, batch_sizes, dropout_rates, activations, optimizers):
     fold_results = []
+    fold_times = []
     for train_index, test_index in kf.split(data_list):
-        train_data = [data_list[i] for i in train_index[:int(0.2 * len(train_index))]]
+        train_data = [data_list[i] for i in train_index]
         test_data = [data_list[i] for i in test_index]
-        
+
         train_loader = DataLoader(train_data, batch_size=batch_size, shuffle=True)
         test_loader = DataLoader(test_data, batch_size=batch_size, shuffle=False)
         
@@ -137,9 +138,10 @@ for hidden_dim, num_layer, lr, batch_size, dropout, activation, opt in itertools
                     error += criterion(out, data.y).item()
             return error / len(loader)
         
-        early_stopping_patience = 20
+        early_stopping_patience = 10
         best_loss = float('inf')
         patience_counter = 0
+        start_time = time.time()
         
         for epoch in tqdm(range(100), desc=f'Training Epochs for HD: {hidden_dim}, NL: {num_layer}, LR: {lr}, BS: {batch_size}, DR: {dropout}, ACT: {activation.__name__}, OPT: {opt}'):
             train()
@@ -153,10 +155,16 @@ for hidden_dim, num_layer, lr, batch_size, dropout, activation, opt in itertools
                 print("Early stopping due to no improvement in validation loss.")
                 break
         
+        end_time = time.time()
+        training_time = end_time - start_time
+        
         test_loss = test(test_loader)
         fold_results.append(test_loss)
+        fold_times.append(training_time)
     
     avg_test_loss = np.mean(fold_results)
+    avg_training_time = np.mean(fold_times)
+    
     result = {
         'hidden_dim': hidden_dim,
         'num_layers': num_layer,
@@ -165,8 +173,10 @@ for hidden_dim, num_layer, lr, batch_size, dropout, activation, opt in itertools
         'dropout': dropout,
         'activation': activation.__name__,
         'optimizer': opt,
-        'avg_test_loss': avg_test_loss
+        'avg_test_loss': avg_test_loss,
+        'training_time': avg_training_time
     }
+    
     results_df = pd.DataFrame([result])
     results_df.to_csv(results_file, mode='a', header=False, index=False)
-    print(f'Hidden Dim: {hidden_dim}, Num Layers: {num_layer}, LR: {lr}, Batch Size: {batch_size}, Dropout: {dropout}, Activation: {activation.__name__}, Optimizer: {opt}, Avg Test Loss: {avg_test_loss}')
+    print(f'Hidden Dim: {hidden_dim}, Num Layers: {num_layer}, LR: {lr}, Batch Size: {batch_size}, Dropout: {dropout}, Activation: {activation.__name__}, Optimizer: {opt}, Avg Test Loss: {avg_test_loss}, Training Time: {avg_training_time}')

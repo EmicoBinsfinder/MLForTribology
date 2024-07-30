@@ -13,16 +13,17 @@ from tensorflow.keras.callbacks import EarlyStopping, ModelCheckpoint
 import matplotlib.pyplot as plt
 import shap
 import os
+import time
 
-RDS = True
+RDS = False
 CWD = os.getcwd()
 
 # Load dataset
 
 if RDS:
-    Dataset = pd.read_csv('/rds/general/user/eeo21/home/HIGH_THROUGHPUT_STUDIES/MLForTribology/Datasets/FinalDataset.csv')
+    Dataset = pd.read_csv('/rds/general/user/eeo21/home/HIGH_THROUGHPUT_STUDIES/MLForTribology/Datasets/GridSearchDataset.csv')
 else:
-    Dataset = pd.read_csv('Datasets/FinalDataset.csv')
+    Dataset = pd.read_csv('Datasets/GridSearchDataset.csv')
 
 # Tokenize SMILES strings
 tokenizer = Tokenizer(char_level=True)  # Tokenize at character level
@@ -36,11 +37,11 @@ y = Dataset['visco@40C[cP]'].values
 
 # Define the hyperparameter grid
 param_grid = {
-    'head_size': [8, 16, 32, 64, 128],
+    'head_size': [8, 16, 32, 64],
     'num_heads': [5, 10, 25, 50],
     'ff_dim': [32, 64, 128, 256],
-    'dropout': [0.0, 0.1, 0.3, 0.5],
-    'num_transformer_blocks': [1, 2, 3],
+    'dropout': [0.0],
+    'num_transformer_blocks': [1, 2, 3, 4],
     'dense_units': [16, 32, 64],
     'optimizer': ['adam', 'rmsprop']
 }
@@ -94,6 +95,7 @@ def manual_grid_search(model_params_grid, training_params_grid, X, y, train_size
             train_params = dict(zip(train_keys, train_v))
             kf = KFold(n_splits=k, shuffle=True, random_state=42)
             val_scores = []
+            training_times = []
 
             print(f"Training model with parameters: {model_params}, training parameters: {train_params}, and train size: {size}")
 
@@ -102,23 +104,30 @@ def manual_grid_search(model_params_grid, training_params_grid, X, y, train_size
                 y_train, y_val = y_train_partial[train_index], y_train_partial[val_index]
 
                 model = create_model(**model_params)
+                start_time = time.time()
                 model.fit(X_train, y_train, epochs=train_params['epochs'], batch_size=train_params['batch_size'],
                           validation_data=(X_val, y_val),
-                          callbacks=[EarlyStopping(monitor='val_loss', patience=10)], verbose=1)
+                          callbacks=[EarlyStopping(monitor='val_loss', patience=10)], verbose=0)
+                end_time = time.time()
+                
+                training_time = end_time - start_time
+                training_times.append(training_time)
 
                 y_val_pred = model.predict(X_val)
                 val_score = mean_squared_error(y_val, y_val_pred)
                 val_scores.append(val_score)
 
             avg_val_score = np.mean(val_scores)
-            print(f"Model Params: {model_params}, Train Params: {train_params}, Avg. Validation MSE: {avg_val_score}")
+            avg_training_time = np.mean(training_times)
+            print(f"Model Params: {model_params}, Train Params: {train_params}, Avg. Validation MSE: {avg_val_score}, Avg. Training Time: {avg_training_time}")
 
             # Save each model's performance to a CSV file
             result = {
                 'Train Size': size,
                 'Model Params': model_params,
                 'Train Params': train_params,
-                'Validation MSE': avg_val_score
+                'Validation MSE': avg_val_score,
+                'Average Training Time': avg_training_time
             }
             results_df = pd.DataFrame([result])
             results_df.to_csv('transformer_model_training_results.csv', mode='a', header=not header_written, index=False)
@@ -131,7 +140,7 @@ def manual_grid_search(model_params_grid, training_params_grid, X, y, train_size
     return best_params
 
 # Define train sizes
-train_sizes = [0.2, 0.4, 0.6, 0.8]
+train_sizes = [0.99]
 
 # Perform grid search
 best_params = manual_grid_search(param_grid, training_params, X, y, train_sizes)
