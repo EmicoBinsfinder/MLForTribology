@@ -1,152 +1,169 @@
-import pandas as pd
 import numpy as np
+import pandas as pd
+from itertools import product
 from sklearn.model_selection import train_test_split, KFold
+from sklearn.preprocessing import StandardScaler
 from sklearn.metrics import mean_squared_error
+import tensorflow as tf
+from tensorflow.keras.models import Sequential, load_model
+from tensorflow.keras.layers import Conv1D, MaxPooling1D, GlobalMaxPooling1D, Dense, Embedding, Masking
 from tensorflow.keras.preprocessing.text import Tokenizer
 from tensorflow.keras.preprocessing.sequence import pad_sequences
-import tensorflow as tf
-from tensorflow.keras.callbacks import LearningRateScheduler, ModelCheckpoint, EarlyStopping
-import time
+from tensorflow.keras.callbacks import EarlyStopping, ModelCheckpoint
 import matplotlib.pyplot as plt
-import ast
+import shap
+import os
 
-# Load the datasets
-final_test_dataset = pd.read_csv('Datasets/FinalTestDataset.csv')
-large_training_dataset = pd.read_csv('Datasets/LargeTrainingDataset.csv')
-cnn_model_performance = pd.read_csv('PropertyPrediction/CNN/cnn_model_training_results.csv')
+RDS = False
+CWD = os.getcwd()
 
-# Find the best performing model according to MSE
-best_model_row = cnn_model_performance.loc[cnn_model_performance['Validation MSE'].idxmin()]
+# Load dataset
+if RDS:
+    Dataset = pd.read_csv('/rds/general/user/eeo21/home/HIGH_THROUGHPUT_STUDIES/MLForTribology/Datasets/FinalDataset.csv')
+else:
+    Dataset = pd.read_csv('Datasets/FinalDataset.csv')
 
-# Convert the row to a dictionary
-best_params = best_model_row.to_dict()
-model_params = ast.literal_eval(best_params['Model Params'])
-train_params = ast.literal_eval(best_params['Train Params'])
-
-# Merge model_params and train_params into a single dictionary
-best_params = {**model_params, **train_params}
-print(best_params)
-
-# Extract best model parameters from the dictionary
-optimizer = best_params['optimizer']
-filters = int(best_params['filters'])
-kernel_size = int(best_params['kernel_size'])
-dense_units = int(best_params['dense_units'])
-num_layers = int(best_params['num_layers'])
-epochs = int(best_params['epochs'])
-batch_size = int(best_params['batch_size'])
-
-# Prepare the dataset
-X = large_training_dataset['smiles']
-y = large_training_dataset['visco@40C[cP]']
-
-# Tokenize the smiles strings
-tokenizer = Tokenizer(char_level=True)
-tokenizer.fit_on_texts(X)
-sequences = tokenizer.texts_to_sequences(X)
+# Tokenize SMILES strings
+tokenizer = Tokenizer(char_level=True)  # Tokenize at character level
+tokenizer.fit_on_texts(Dataset['smiles'])
+sequences = tokenizer.texts_to_sequences(Dataset['smiles'])
 max_sequence_length = max(len(seq) for seq in sequences)
-X = pad_sequences(sequences, maxlen=max_sequence_length)
 
-# Reshape X to add an additional dimension for features
-X = np.expand_dims(X, axis=-1)
+# Pad sequences to ensure uniform input length
+X = pad_sequences(sequences, maxlen=max_sequence_length, padding='post')
+y = Dataset['visco@40C[cP]'].values
 
-# Prepare the test dataset
-X_test = final_test_dataset['smiles']
-y_test = final_test_dataset['visco@40C[cP]']
-test_sequences = tokenizer.texts_to_sequences(X_test)
-X_test = pad_sequences(test_sequences, maxlen=max_sequence_length)
+# Define the hyperparameter grid
+param_grid = {
+    'optimizer': ['adam', 'rmsprop'],
+    'filters': [32, 64, 128],
+    'kernel_size': [3, 5, 7],
+    'dense_units': [16, 32, 64],
+    'num_layers': [1, 2, 3]
+}
 
-# Reshape X_test to add an additional dimension for features
-X_test = np.expand_dims(X_test, axis=-1)
+training_params = {
+    'epochs': [100],
+    'batch_size': [64, 128]
+}
 
-# Function to create the CNN model
-def create_cnn_model(optimizer, filters, kernel_size, num_layers, dropout_rate):
-    model = tf.keras.Sequential()
-    model.add(tf.keras.layers.InputLayer(input_shape=(X.shape[1], 1)))
-    for _ in range(num_layers):
-        model.add(tf.keras.layers.Conv1D(filters=filters, kernel_size=kernel_size, activation='relu'))
-        model.add(tf.keras.layers.MaxPooling1D(pool_size=2))
-        model.add(tf.keras.layers.Dropout(dropout_rate))
-    model.add(tf.keras.layers.Flatten())
-    model.add(tf.keras.layers.Dense(dense_units, activation='relu'))
-    model.add(tf.keras.layers.Dense(1))
-    model.compile(optimizer=optimizer, loss='mse', metrics=['mse'])
+# Function to create the model
+def create_model(optimizer='adam', filters=128, kernel_size=3, dense_units=32, num_layers=1):
+    model = Sequential()
+    model.add(Embedding(input_dim=len(tokenizer.word_index) + 1, output_dim=64, input_length=max_sequence_length))
+    for i in range(num_layers):
+        model.add(Conv1D(filters=filters, kernel_size=kernel_size, activation='relu'))
+        if i < num_layers - 1:  # Add MaxPooling1D except for the last conv layer
+            model.add(MaxPooling1D(pool_size=2))
+    model.add(GlobalMaxPooling1D())
+    model.add(Dense(dense_units, activation='relu'))
+    model.add(Dense(1))  # Output layer
+    model.compile(optimizer=optimizer, loss='mean_squared_error')
     return model
 
-# Learning rate scheduler
-def scheduler(epoch, lr):
-    if epoch < 10:
-        return float(lr)
-    else:
-        return float(lr * tf.math.exp(-0.1))
+# Perform manual grid search with cross-validation
+def manual_grid_search(model_params_grid, training_params_grid, X, y, train_sizes, k=5):
+    model_keys, model_values = zip(*model_params_grid.items())
+    train_keys, train_values = zip(*training_params_grid.items())
+    best_score = float('inf')
+    best_params = None
+    header_written = False
 
-# Callbacks for learning rate scheduling, model checkpointing, and early stopping
-callbacks = [
-    LearningRateScheduler(scheduler),
-    ModelCheckpoint('cnn_checkpoint.model.keras', save_best_only=True, monitor='val_loss'),
-    EarlyStopping(monitor='val_loss', patience=15, restore_best_weights=True)
-]
-
-# Determine the best dropout rate
-dropout_rates = [0.0, 0.2, 0.4, 0.6, 0.8]
-dropout_results = {}
-
-for rate in dropout_rates:
-    model = create_cnn_model(optimizer, filters, kernel_size, num_layers, rate)
-    model.fit(X, y, epochs=epochs, batch_size=batch_size, validation_split=0.2, callbacks=callbacks, verbose=0)
-    y_pred = model.predict(X_test)
-    test_mse = mean_squared_error(y_test, y_pred)
-    dropout_results[rate] = test_mse
-
-best_dropout_rate = min(dropout_results, key=dropout_results.get)
-print(f"Best dropout rate: {best_dropout_rate}")
-
-# 5-fold cross-validation on different dataset sizes with the best dropout rate
-dataset_sizes = [0.2, 0.4, 0.6, 0.8, 0.999]
-cv_results = {size: [] for size in dataset_sizes}
-cv_time = {size: [] for size in dataset_sizes}
-
-for size in dataset_sizes:
-    X_train, _, y_train, _ = train_test_split(X, y, train_size=size, random_state=42)
-    kf = KFold(n_splits=5, shuffle=True, random_state=42)
-    
-    for train_index, val_index in kf.split(X_train):
-        X_fold_train, X_fold_val = X_train[train_index], X_train[val_index]
-        y_fold_train, y_fold_val = y_train.iloc[train_index], y_train.iloc[val_index]
+    for size in train_sizes:
+        X_train_partial, _, y_train_partial, _ = train_test_split(X, y, train_size=size, random_state=42)
         
-        model = create_cnn_model(optimizer, filters, kernel_size, num_layers, best_dropout_rate)
-        
-        start_time = time.time()
-        model.fit(X_fold_train, y_fold_train, epochs=epochs, batch_size=batch_size, validation_data=(X_fold_val, y_fold_val), callbacks=callbacks, verbose=1)
-        end_time = time.time()
-        
-        test_pred = model.predict(X_test)
-        test_mse = mean_squared_error(y_test, test_pred)
-        cv_results[size].append(test_mse)
-        cv_time[size].append(end_time - start_time)
+        for model_v, train_v in product(product(*model_values), product(*train_values)):
+            model_params = dict(zip(model_keys, model_v))
+            train_params = dict(zip(train_keys, train_v))
+            kf = KFold(n_splits=k, shuffle=True, random_state=42)
+            val_scores = []
 
-# Plot the performance of 5-fold cross-validation at each dataset size
-avg_cv_results = {size: np.mean(cv_results[size]) for size in cv_results}
-std_cv_results = {size: np.std(cv_results[size]) for size in cv_results}
+            print(f"Training model with parameters: {model_params}, training parameters: {train_params}, and train size: {size}")
 
-plt.figure(figsize=(10, 6))
-plt.errorbar(dataset_sizes, [avg_cv_results[size] for size in dataset_sizes], 
-             yerr=[std_cv_results[size] for size in dataset_sizes], fmt='-o', capsize=5)
-plt.xlabel('Training Data Size')
-plt.ylabel('Average Test MSE')
-plt.title('5-Fold Cross-Validation Performance with Best CNN Model Using Test Set')
-plt.grid(True)
-plt.savefig('cnn_cv_performance_with_best_dropout.png')
+            for train_index, val_index in kf.split(X_train_partial):
+                X_train, X_val = X_train_partial[train_index], X_train_partial[val_index]
+                y_train, y_val = y_train_partial[train_index], y_train_partial[val_index]
+
+                model = create_model(**model_params)
+                model.fit(X_train, y_train, epochs=train_params['epochs'], batch_size=train_params['batch_size'],
+                          validation_data=(X_val, y_val),
+                          callbacks=[EarlyStopping(monitor='val_loss', patience=10)], verbose=1)
+
+                y_val_pred = model.predict(X_val)
+                val_score = mean_squared_error(y_val, y_val_pred)
+                val_scores.append(val_score)
+
+            avg_val_score = np.mean(val_scores)
+            print(f"Model Params: {model_params}, Train Params: {train_params}, Avg. Validation MSE: {avg_val_score}")
+
+            # Save each model's performance to a CSV file
+            result = {
+                'Train Size': size,
+                'Model Params': model_params,
+                'Train Params': train_params,
+                'Validation MSE': avg_val_score
+            }
+            results_df = pd.DataFrame([result])
+            results_df.to_csv('cnn_model_training_results.csv', mode='a', header=not header_written, index=False)
+            header_written = True
+
+            if avg_val_score < best_score:
+                best_score = avg_val_score
+                best_params = {**model_params, **train_params}
+
+    return best_params
+
+# Define train sizes
+train_sizes = [0.2]
+
+# Perform grid search
+best_params = manual_grid_search(param_grid, training_params, X, y, train_sizes)
+print(f"Best hyperparameters: {best_params}")
+
+# Train final model with best hyperparameters
+best_model = create_model(**{k: v for k, v in best_params.items() if k in param_grid})
+history = best_model.fit(X, y, epochs=best_params['epochs'], batch_size=best_params['batch_size'])
+
+# Save the best model
+best_model.save('best_cnn_model.h5')
+
+# Load the best model
+best_model = load_model('best_cnn_model.h5')
+
+# Make predictions with the best model
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+y_pred = best_model.predict(X_test)
+
+# Evaluate the best model
+mse = mean_squared_error(y_test, y_pred)
+print(f'Best model MSE: {mse}')
+
+# Plot training & validation loss values
+plt.plot(history.history['loss'])
+plt.plot(history.history['val_loss'])
+plt.title('Model loss')
+plt.ylabel('Loss')
+plt.xlabel('Epoch')
+plt.legend(['Train', 'Validation'], loc='upper right')
+plt.savefig('cnn_model_loss.png')
 plt.show()
 
-# Save results to CSV
-results_df = pd.DataFrame({
-    'Training Data Size': dataset_sizes,
-    'Average Test MSE': [avg_cv_results[size] for size in dataset_sizes],
-    'Std Test MSE': [std_cv_results[size] for size in dataset_sizes],
-    'Average Training Time (s)': [np.mean(cv_time[size]) for size in dataset_sizes]
-})
-results_df.to_csv('cnn_cv_results_with_best_dropout.csv', index=False)
+# Perform individual predictions based on input SMILES strings
+def predict_smiles(smiles_string):
+    sequence = tokenizer.texts_to_sequences([smiles_string])
+    padded_sequence = pad_sequences(sequence, maxlen=max_sequence_length, padding='post')
+    prediction = best_model.predict(padded_sequence)
+    return prediction[0]
 
-# Print the results
-print("Test MSE of the best CNN model with best dropout rate:", avg_cv_results)
+# Example prediction
+example_smiles = "CCO"
+print(f'Predicted viscosity for {example_smiles}: {predict_smiles(example_smiles)}')
+
+# SHAP values for feature importance
+explainer = shap.KernelExplainer(best_model.predict, X_train[:100])  # Using a small subset for explanation
+shap_values = explainer.shap_values(X_test[:10])  # Again, a small subset for the example
+
+# Plot SHAP values
+shap.summary_plot(shap_values, X_test[:10], feature_names=tokenizer.index_word)
+# Save the SHAP plot
+plt.savefig('shap_summary_plot.png')
