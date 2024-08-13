@@ -94,7 +94,7 @@ best_dropout_rate = min(dropout_results, key=dropout_results.get)
 print(f"Best dropout rate: {best_dropout_rate}")
 
 # 5-fold cross-validation on different dataset sizes with the best dropout rate
-dataset_sizes = [0.2, 0.4, 0.6, 0.8, 0.999]
+dataset_sizes = [0.01, 0.05, 0.1, 0.2, 0.4, 0.6, 0.8, 0.999]
 cv_results = {size: [] for size in dataset_sizes}
 cv_time = {size: [] for size in dataset_sizes}
 

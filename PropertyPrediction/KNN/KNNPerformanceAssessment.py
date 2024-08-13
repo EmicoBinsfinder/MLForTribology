@@ -56,7 +56,7 @@ best_knn = KNeighborsRegressor(n_neighbors=best_params['n_neighbors'],
                                algorithm=best_params['algorithm'])
 
 # Cross-validation with different sizes of the training dataset
-dataset_sizes = [0.2, 0.4, 0.6, 0.8, 0.9999]
+dataset_sizes = [0.01, 0.05, 0.1, 0.2, 0.4, 0.6, 0.8, 0.999]
 performance_results = []
 
 for size in dataset_sizes:

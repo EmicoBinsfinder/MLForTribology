@@ -41,7 +41,7 @@ def cross_val_mse(model, X_train, y_train, X_test, y_test):
     return np.mean(mse_scores), np.std(mse_scores)
 
 # Step 3: Perform 5-fold cross-validation on different sizes of the training dataset
-dataset_sizes = [0.2, 0.4, 0.6, 0.8, 0.999]
+dataset_sizes = [0.01, 0.05, 0.1, 0.2, 0.4, 0.6, 0.8, 0.999]
 results = []
 
 for size in dataset_sizes:
