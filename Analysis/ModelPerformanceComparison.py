@@ -10,7 +10,8 @@ files = {
     "GMM": "C:/Users/eeo21/Desktop/MLAlgoTrainingImages/cross_validation_results_gmm.csv",
     "XGBoost": "C:/Users/eeo21/Desktop/MLAlgoTrainingImages/cross_validation_results_xgboost.csv",
     "KNN": "C:/Users/eeo21/Desktop/MLAlgoTrainingImages/knn_performance_results.csv",
-    "MLP": "C:/Users/eeo21/Desktop/MLAlgoTrainingImages/cv_results_with_dropout.csv"
+    "MLP": "C:/Users/eeo21/Desktop/MLAlgoTrainingImages/cv_results_with_dropout.csv",
+    "GNN": "C:/Users/eeo21/Desktop/MLAlgoTrainingImages/GNN_cross_validation_results.csv"
 }
 
 dataframes = {name: pd.read_csv(path) for name, path in files.items()}
@@ -25,6 +26,17 @@ for name, df in dataframes.items():
         df['RMSE'] = np.sqrt(df['Average Test MSE'])
         if 'Std Test MSE' in df.columns:
             df['Std RMSE'] = df['Std Test MSE'] / (2 * np.sqrt(df['Average Test MSE']))
+
+
+24.57315045
+12.05406791
+7.774069004
+6.132724247
+4.863224269
+4.087082789
+3.622715215
+3.411214607
+
 
 # Normalize training set size to percentage
 for name, df in dataframes.items():
@@ -46,6 +58,8 @@ for name, df in dataframes.items():
             'rmse': df['RMSE'],
             'std': df[std_col] if std_col else np.zeros(len(df))
         }
+
+print(plot_data)
 
 # Plot the data
 plt.figure(figsize=(12, 8))

@@ -1,0 +1,871 @@
+Molecule Name,Type,C-Number,Dynamic Or Kinematic,Class,SMILES,Experimental_40C_Viscosity,Experimental_100C_Viscosity
+2-butyl-dodecan-1-ol,Alcohol,16,Dynamic,Base Oil,,15.5,2.2
+2-ethyl-tetradecan-1-ol,Alcohol,16,Dynamic,Base Oil,,14.9,2.29
+2-heptyl-nonan-1-ol,Alcohol,16,Dynamic,Base Oil,,15.72,2.17
+2-hexyl-decan-1-ol,Alcohol,16,Dynamic,Base Oil,,15.85,2.18
+2-pentyl-undecan-1-ol,Alcohol,16,Dynamic,Base Oil,,15.22,2.17
+2-propyl-tridecan-1-ol,Alcohol,16,Dynamic,Base Oil,,14.07,2.16
+undec-1-ene,Alkene,11,Dynamic,Base Oil,,0.78,0.41
+5-butyl-non-4-ene,Alkene,13,Dynamic,Base Oil,,1.04,0.46
+tridec-1-ene,Alkene,13,Dynamic,Base Oil,,1.17,0.55
+"2,11-dimethyl-dodeca-1,11-diene",Alkene,14,Dynamic,Base Oil,,1.2,0.55
+"2,2,3,5,5,6,6-heptamethyl-hept-3-ene",Alkene,14,Dynamic,Base Oil,,2.06,0.81
+tetradec-1-ene,Alkene,14,Dynamic,Base Oil,,1.41,0.64
+pentadec-1-ene,Alkene,15,Dynamic,Base Oil,,1.7,0.74
+hexadec-1-ene,Alkene,16,Dynamic,Base Oil,,2.02,0.84
+"3,12-diethyl-tetradeca-2,12-diene",Alkene,18,Dynamic,Base Oil,,2.52,1.09
+2-methyl-heptadec-2-ene,Alkene,18,Dynamic,Base Oil,,2.34,0.87
+octadec-1-ene,Alkene,18,Dynamic,Base Oil,,2.79,1.07
+"1,1-diphenyl-hept-1-ene",Alkene,19,Dynamic,Base Oil,,8.42,1.81
+nonadec-1-ene,Alkene,19,Dynamic,Base Oil,,3.26,1.21
+eicos-1-ene,Alkene,20,Dynamic,Base Oil,,3.77,1.35
+3-ethyl-octadec-2-ene,Alkene,20,Dynamic,Base Oil,,3.11,1.06
+"2,19-dimethyl-eicosa-1,19-diene",Alkene,22,Dynamic,Base Oil,,2.37,0.85
+4-propyl-nonadec-3-ene,Alkene,22,Dynamic,Base Oil,,4.72,1.52
+5-butyl-eicos-4-ene,Alkene,24,Dynamic,Base Oil,,6.03,1.86
+"1,7-dicyclopentyl-4-(3-cyclopentyl-propyl)-hept-3-ene",Alkene,25,Dynamic,Base Oil,,17,3.8
+9-octyl-heptadec-8-ene,Alkene,25,Dynamic,Base Oil,,5.87,1.68
+"2,2,4,10,12,12-hexamethyl-7-(3,5,5-trimethylhexyl)-tridec-6-ene",Alkene,28,Dynamic,Base Oil,,13.9,2.59
+dipentylamine,Amine,10,Dynamic,Additive,,1.1,0.487
+diphenylamine,Amine,12,Dynamic,Additive,,8.52,1.59
+tributylamine,Amine,12,Dynamic,Additive,,0.99,0.47
+methyl-diphenyl-amine,Amine,13,Dynamic,Additive,,3.84,1.369
+diheptylamine,Amine,14,Dynamic,Base Oil,,2.215,0.88
+triisopentylamine,Amine,15,Dynamic,Additive,,1.7,0.68
+tripentylamine,Amine,15,Dynamic,Additive,,1.67,0.71
+trihexylamine,Amine,18,Dynamic,Additive,,2.78,0.99
+triheptylamine,Amine,21,Dynamic,Additive,,4.07,1.35
+trioctylamine,Amine,24,Dynamic,Base Oil,,8.18,1.73
+cyclopentyl-benzene,Aromatic,11,Dynamic,Base Oil,,1.306,0.65
+pentylbenzene,Aromatic,11,Dynamic,Base Oil,,0.976,0.492
+1-Methyl Napthalene,Aromatic,11,Dynamic,Base Oil,,2.08,0.864
+1-ethyl-naphthalene,Aromatic,12,Kinematic,Base Oil,,2.57,0.99
+cyclohexylbenzene,Aromatic,12,Dynamic,Base Oil,,1.97,0.77
+"1-ethyl-1,2,3,4-tetrahydro-naphthalene",Aromatic,12,Dynamic,Base Oil,,2.2,0.92
+"1,2-dimethyl-4-(tert-butyl)-benzene",Aromatic,12,Dynamic,Base Oil,,1.69,0.66
+hexylbenzene,Aromatic,12,Dynamic,Base Oil,,1.2,0.57
+3-phenyl-hexane,Aromatic,12,Dynamic,Base Oil,,1.31,0.64
+diphenylmethane,Aromatic,13,Dynamic,Base Oil,,2.1,0.93
+"2-methyl-1,1'-biphenyl",Aromatic,13,Dynamic,Base Oil,,3.16,1.05
+1-(1-methylethyl)-naphthalene,Aromatic,13,Kinematic,Base Oil,,3.18,1.09
+2-propyl-naphthalene,Aromatic,13,Dynamic,Base Oil,,3.18,1.09
+5-tert-butyl-indan,Aromatic,13,Kinematic,Base Oil,,3.05,1.2
+cyclohexyl-toluene,Aromatic,13,Dynamic,Base Oil,,2.77,0.84
+"isopropyl-1,2,3,4-tetrahydro-naphthalene",Aromatic,13,Dynamic,Base Oil,,2.63,0.9
+"(1,1-dimethyl-pentyl)-benzene",Aromatic,13,Kinematic,Base Oil,,1.71,0.77
+heptyl-benzene,Aromatic,13,Dynamic,Base Oil,,1.45,0.66
+(1-isopropyl-2-methyl-propyl)-benzene,Aromatic,13,Kinematic,Base Oil,,1.97,0.85
+"1,1-diphenyl-ethene",Aromatic,14,Dynamic,Base Oil,,4.9,1.17
+"1,1-diphenyl-ethane",Aromatic,14,Dynamic,Base Oil,,3.78,1.16
+"2-ethyl-1,1'-biphenyl",Aromatic,14,Kinematic,Base Oil,,3.42,1.15
+"3-ethyl-1,1'-biphenyl",Aromatic,14,Kinematic,Base Oil,,3.38,1.17
+1-methyl-2-(phenylmethyl)-benzene,Aromatic,14,Kinematic,Base Oil,,3.24,1.16
+1-methyl-3-(phenylmethyl)-benzene,Aromatic,14,Kinematic,Base Oil,,2.56,1.05
+1-methyl-4-(phenylmethyl)-benzene,Aromatic,14,Kinematic,Base Oil,,2.28,0.99
+1-butyl-naphthalene,Aromatic,14,Dynamic,Base Oil,,3.93,1.27
+1-isobutyl-naphthalene,Aromatic,14,Kinematic,Base Oil,,4.4,1.3
+5-cyclopentyl-indan,Aromatic,14,Kinematic,Base Oil,,5.85,1.4
+"1-butyl-1,2,3,4-tetrahydro-naphthalene",Aromatic,14,Kinematic,Base Oil,,3.91,1.3
+"sec-butyl-1,2,3,4-tetrahydro-naphthalene",Aromatic,14,Dynamic,Base Oil,,3.67,1.04
+1-cyclohexyl-1-phenyl-ethane,Aromatic,14,Dynamic,Base Oil,,3.91,1.23
+1-cyclohexyl-2-phenyl-ethane,Aromatic,14,Dynamic,Base Oil,,2.92,1.09
+cyclopentyl-isopropyl-benzene,Aromatic,14,Kinematic,Base Oil,,2.66,1.11
+1-cyclopentyl-3-phenyl-propane,Aromatic,14,Dynamic,Base Oil,,2.29,0.98
+"1-cyclopentyl-2,4,6-trimethyl-benzene",Aromatic,14,Kinematic,Base Oil,,4.59,1.39
+"5-isobutyl-1,2,3,4-tetrahydro-naphthalene",Aromatic,14,Kinematic,Base Oil,,4.41,1.32
+(1-methyl-heptyl)-benzene,Aromatic,14,Dynamic,Base Oil,,1.77,0.72
+octylbenzene,Aromatic,14,Dynamic,Base Oil,,1.73,0.74
+"(1,1,4-trimethyl-pentyl)-benzene",Aromatic,14,Kinematic,Base Oil,,2.26,0.96
+"1,2-dimethyl-4-(phenylmethyl)-benzene",Aromatic,15,Kinematic,Base Oil,,4.81,1.54
+"1,1-diphenyl-propane",Aromatic,15,Kinematic,Base Oil,,3.7,1.22
+"1,2-diphenyl-propane",Aromatic,15,Dynamic,Base Oil,,4.14,1.28
+"1,3-diphenyl-propane",Aromatic,15,Kinematic,Base Oil,,3.62,1.3
+"2,2-diphenyl-propane",Aromatic,15,Kinematic,Base Oil,,4.56,1.41
+1-ethyl-2-(phenylmethyl)-benzene,Aromatic,15,Kinematic,Base Oil,,3.41,1.22
+1-ethyl-4-(phenylmethyl)-benzene,Aromatic,15,Kinematic,Base Oil,,2.48,1.07
+1-ethyl-3-(phenylmethyl)-benzene,Aromatic,15,Kinematic,Base Oil,,2.69,1.12
+"2-(1-methylethyl)-1,1'-biphenyl",Aromatic,15,Dynamic,Base Oil,,5.75,1.45
+1-phenyl-1-(4-methyl-phenyl)-ethane,Aromatic,15,Kinematic,Base Oil,,4.5,1.11
+"2-propyl-1,1'-biphenyl",Aromatic,15,Dynamic,Base Oil,,4.42,1.32
+1-pentyl-naphthalene,Aromatic,15,Dynamic,Base Oil,,4.94,1.48
+5-cyclohexyl-indan,Aromatic,15,Dynamic,Base Oil,,7.77,1.65
+"2-cyclohexylmethyl-1,4-dimethyl-benzene",Aromatic,15,Kinematic,Base Oil,,7.59,1.72
+cyclopentyl-1-methyl-4-isopropyl-benzene,Aromatic,15,Kinematic,Base Oil,,4.05,1.29
+"1-pentyl-1,2,3,4-tetrahydro-naphthalene",Aromatic,15,Kinematic,Base Oil,,4.28,1.38
+"1,2-dimethyl-4-heptyl-benzene",Aromatic,15,Dynamic,Base Oil,,4.58,0.99
+1-phenyl-nonane,Aromatic,15,Dynamic,Base Oil,,2.09,0.95
+2-phenyl-nonane,Aromatic,15,Kinematic,Base Oil,,2.59,1.05
+1-benzyl-4-isopropyl-benzene,Aromatic,16,Kinematic,Base Oil,,3.09,1.23
+1-benzyl-4-propyl-benzene,Aromatic,16,Kinematic,Base Oil,,3.25,1.27
+2-butyl-biphenyl,Aromatic,16,Dynamic,Base Oil,,4.85,1.41
+2-sec-butyl-biphenyl,Aromatic,16,Kinematic,Base Oil,,7.07,1.57
+"1-(2,5-dimethyl-phenyl)-1-phenyl-ethane",Aromatic,16,Dynamic,Base Oil,,23.9,1.77
+"1,1-diphenyl-butane",Aromatic,16,Kinematic,Base Oil,,4.35,1.36
+"1,2-diphenyl-butane",Aromatic,16,Kinematic,Base Oil,,5.02,1.41
+"2,2-diphenyl-butane",Aromatic,16,Kinematic,Base Oil,,7.5,1.77
+1-(4-ethyl-phenyl)-1-phenyl-ethane,Aromatic,16,Dynamic,Base Oil,,4.58,1.23
+2-isobutyl-biphenyl,Aromatic,16,Kinematic,Base Oil,,6,1.46
+"2-methyl-1,3-diphenyl-propane",Aromatic,16,Kinematic,Base Oil,,5.42,1.49
+2-hexyl-naphthalene,Aromatic,16,Dynamic,Base Oil,,4.28,1.33
+cyclohexyl-tetrahydro-naphthalene,Aromatic,16,Kinematic,Base Oil,,18.9,0.96
+dicyclopentyl-benzene,Aromatic,16,Kinematic,Base Oil,,5.77,1.85
+05-heptyl-indan,Aromatic,16,Kinematic,Base Oil,,6.16,1.7
+decyl-benzene,Aromatic,16,Dynamic,Base Oil,,2.46,0.98
+2-phenyl-decane,Aromatic,16,Kinematic,Base Oil,,2.92,1.11
+1-benzyl-naphthalene,Aromatic,17,Kinematic,Base Oil,,10.9,2.4
+3-isopropyl-phenanthrene,Aromatic,17,Kinematic,Base Oil,,23.9,2.9
+1-benzyl-2-butyl-benzene,Aromatic,17,Kinematic,Base Oil,,4.75,1.48
+1-benzyl-2-sec-butyl-benzene,Aromatic,17,Kinematic,Base Oil,,5.5,1.54
+1-benzyl-4-butyl-benzene,Aromatic,17,Kinematic,Base Oil,,3.65,1.41
+1-benzyl-4-sec-butyl-benzene,Aromatic,17,Kinematic,Base Oil,,3.92,1.42
+"1,1-diphenyl-pentane",Aromatic,17,Kinematic,Base Oil,,6.33,1.59
+"1,5-diphenyl-pentane",Aromatic,17,Kinematic,Base Oil,,5,1.62
+1-phenyl-1-(4-isopropyl-phenyl)-ethane,Aromatic,17,Dynamic,Base Oil,,6.62,1.44
+dicyclopentyl-toluene,Aromatic,17,Kinematic,Base Oil,,9.03,2.14
+2-(4-tert-butyl-benzyl)-butanedioic acid dimethyl ester,Aromatic,17,Kinematic,Base Oil,,52,5.05
+5-isooctyl-indan,Aromatic,17,Kinematic,Base Oil,,11.1,2.2
+monoheptyl-tetrahydro-naphthalene,Aromatic,17,Kinematic,Base Oil,,9.2,2.1
+1-phenyl-undecane,Aromatic,17,Dynamic,Base Oil,,2.89,1.1
+"9,10-diethyl-9,10-dihydro-anthracene",Aromatic,18,Dynamic,Base Oil,,31.5,2.95
+2-benzyl-1-phenyl-pentane,Aromatic,18,Kinematic,Base Oil,,7.13,1.65
+"1,1-diphenyl-hexane",Aromatic,18,Kinematic,Base Oil,,6.95,1.75
+"1,6-diphenyl-hexane",Aromatic,18,Dynamic,Base Oil,,5.74,1.75
+1-(4-methyl-phenyl)-1-(4-propyl-phenyl)-ethane,Aromatic,18,Dynamic,Base Oil,,6.75,2.14
+1-(2-ethyl-hexyl)-naphthalene,Aromatic,18,Kinematic,Base Oil,,13.11,1.93
+1-(1-ethyl-1-methyl-pentyl)-naphthalene,Aromatic,18,Kinematic,Base Oil,,17.27,2.25
+"3-hexyl-6-phenyl-cyclohexa-1,4-diene",Aromatic,18,Kinematic,Base Oil,,6.99,1.12
+1-(1-methyl-heptyl)-naphthalene,Aromatic,18,Kinematic,Base Oil,,8.38,1.8
+1-octyl-naphthalene,Aromatic,18,Kinematic,Base Oil,,7.94,1.85
+2-octyl-naphthalene,Aromatic,18,Kinematic,Base Oil,,6.02,1.86
+"1-(1,1,3,3-tetramethyl-butyl)-naphthalene",Aromatic,18,Kinematic,Base Oil,,26.69,3.05
+"1,4-bis-(sec-butyl)-1,2,3,4-tetrahydro-naphthalene",Aromatic,18,Dynamic,Base Oil,,21.1,2.13
+"(2,2,4-trimethyl-pent-2-yl)-1,2,3,4-tetrahydro-naphthalene",Aromatic,18,Dynamic,Base Oil,,30.37,6.61
+"1,4-dihexyl-benzene",Aromatic,18,Dynamic,Base Oil,,4.48,1.25
+dihexyl-benzene,Aromatic,18,Kinematic,Base Oil,,5.67,1.66
+"1,4-dimethyl-2-decyl-benzene",Aromatic,18,Dynamic,Base Oil,,9.4,1.35
+dodecylbenzene,Aromatic,18,Dynamic,Base Oil,,3.37,1.23
+"1,1-diphenyl-heptane",Aromatic,19,Dynamic,Base Oil,,7.85,1.76
+7-phenyl-tridec-6-ene,Aromatic,19,Dynamic,Base Oil,,4.05,1.23
+1-phenyl-tridecane,Aromatic,19,Dynamic,Base Oil,,3.91,1.36
+2-butyl-3-hexyl-naphthalene,Aromatic,20,Kinematic,Base Oil,,11.19,2.16
+7-butyl-1-hexyl-naphthalene,Aromatic,20,Kinematic,Base Oil,,10.04,2.12
+1-decyl-naphthalene,Aromatic,20,Kinematic,Base Oil,,10.1,2.41
+2-decyl-naphthalene,Aromatic,20,Dynamic,Base Oil,,7.17,1.96
+"1,4-dimethyl-5-octyl-naphthalene",Aromatic,20,Kinematic,Base Oil,,13.01,2.43
+"2,6-dimethyl-3-octyl-naphthalene",Aromatic,20,Kinematic,Base Oil,,5.92,2.39
+2-(1-propyl-heptyl)-naphthalene,Aromatic,20,Kinematic,Base Oil,,14.6,2.53
+"1,2,3,4-tetrahydro-7-butyl-1-hexyl-naphthalene",Aromatic,20,Kinematic,Base Oil,,9.83,2.02
+"1,2,3,4-tetrahydro-2,6-dimethyl-7-octyl-naphthalene",Aromatic,20,Kinematic,Base Oil,,11.24,2.13
+3-phenyl-tetradec-3-ene,Aromatic,20,Kinematic,Base Oil,,6.27,1.76
+diheptyl-benzene,Aromatic,20,Kinematic,Base Oil,,7.4,1.94
+1-(4-ethyl-phenyl)-dodecane,Aromatic,20,Kinematic,Base Oil,,5.18,1.86
+1-phenyl-tetradecane,Aromatic,20,Dynamic,Base Oil,,4.51,1.51
+1-cyclohexyl-2-(4-benzyl-phenyl)-ethane,Aromatic,21,Kinematic,Base Oil,,24.48,3.58
+1-phenyl-pentadecane,Aromatic,21,Dynamic,Base Oil,,5.18,1.66
+"1,10-diphenyl-decane",Aromatic,22,Dynamic,Base Oil,,9.08,2.46
+"2,3-dihexyl-naphthalene",Aromatic,22,Kinematic,Base Oil,,15.2,2.98
+"2,6-dihexyl-naphthalene",Aromatic,22,Kinematic,Base Oil,,12.31,2.95
+1-dodecyl-naphthalene,Aromatic,22,Kinematic,Base Oil,,12.86,3.01
+2-dodecyl-naphthalene,Aromatic,22,Kinematic,Base Oil,,9.83,2.35
+2-(1-pentyl-heptyl)-naphthalene,Aromatic,22,Kinematic,Base Oil,,20.05,3.26
+2-(1-propyl-nonyl)-naphthalene,Aromatic,22,Kinematic,Base Oil,,17.49,3.09
+"6,7-dihexyl-1,2,3,4-tetrahydro-naphthalene",Aromatic,22,Kinematic,Base Oil,,9.76,2.24
+5-phenyl-hexadec-5-ene,Aromatic,22,Kinematic,Base Oil,,6.41,1.9
+dioctyl-benzene,Aromatic,22,Kinematic,Base Oil,,10.52,2.47
+1-(5-isopropyl-2-methyl-phenyl)-dodecane,Aromatic,22,Kinematic,Base Oil,,9.86,2.39
+1-phenyl-hexadecane,Aromatic,22,Dynamic,Base Oil,,5.92,1.82
+5-phenyl-hexadecane,Aromatic,22,Kinematic,Base Oil,,7.57,2.03
+"1,1-diphenyl-dodecane",Aromatic,24,Dynamic,Base Oil,,29.48,2.66
+"1,5-diphenyl-3-heptyl-pentane",Aromatic,24,Dynamic,Base Oil,,18.74,2.32
+1-cyclohexyl-4-phenethyl-decane,Aromatic,24,Dynamic,Base Oil,,33.96,2.67
+7-(4-cyclopentyl-phenyl)-tridecane,Aromatic,24,Dynamic,Base Oil,,41.32,3.27
+"1,2-dimethyl-4-hexadecyl-benzene",Aromatic,24,Kinematic,Base Oil,,28.12,2.6
+dinonyl-benzene,Aromatic,24,Kinematic,Base Oil,,12.15,2.74
+1-phenyl-octadecane,Aromatic,24,Kinematic,Base Oil,,9.12,2.76
+7-phenyl-octadecane,Aromatic,24,Dynamic,Base Oil,,12.86,2.1
+"1,2,4-trihexyl-benzene",Aromatic,24,Kinematic,Base Oil,,13.88,2.16
+trihexyl-benzene,Aromatic,24,Kinematic,Base Oil,,22.48,3.58
+"6-(2,4,5-trimethyl-phenyl)-pentadecane",Aromatic,24,Dynamic,Base Oil,,48.4,2.83
+"3-phenethyl-1,5-diphenyl-pent-2-ene",Aromatic,25,Dynamic,Base Oil,,8.06,3.19
+"3-phenethyl-1,5-diphenyl-pentane",Aromatic,25,Dynamic,Base Oil,,24.1,3.43
+"1,4,7-triphenyl-heptane",Aromatic,25,Kinematic,Base Oil,,46.28,5.49
+6-cyclopentyl-3-phenethyl-1-phenyl-hexane,Aromatic,25,Dynamic,Base Oil,,18.07,3.11
+"4-hexyl-1,7-diphenyl-heptane",Aromatic,25,Kinematic,Base Oil,,17.22,3.21
+1-phenyl-3-phenethyl-undecane,Aromatic,25,Dynamic,Base Oil,,10.97,2.35
+1-pentadecyl-naphthalene,Aromatic,25,Dynamic,Base Oil,,16.96,2.75
+"1,7-dicyclopentyl-4-phenethyl-heptane",Aromatic,25,Dynamic,Base Oil,,17.41,3.21
+[4-(3-cyclohexyl-propyl)-decyl]-benzene,Aromatic,25,Kinematic,Base Oil,,29.8,2.58
+"1-hexadecyl-2,3-dihydro-1H-indene",Aromatic,25,Dynamic,Base Oil,,12.81,2.92
+"5-pentadecyl-1,2,3,4-tetrahydro-naphthalene",Aromatic,25,Dynamic,Base Oil,,16.36,3.22
+9-phenethyl-heptadecane,Aromatic,25,Dynamic,Base Oil,,7.65,1.92
+1-(4-methyl-phenyl)-octadecane,Aromatic,25,Kinematic,Base Oil,,10.1,3.02
+9-(4-methyl-phenyl)-octadecane,Aromatic,25,Dynamic,Base Oil,,12.1,2.42
+"4-benzyl-1,7-diphenyl-heptane",Aromatic,26,Kinematic,Base Oil,,35.01,3.6
+"1,1-diphenyl-tetradec-1-ene",Aromatic,26,Dynamic,Base Oil,,16.65,3.03
+"1,1-diphenyl-tetradecane",Aromatic,26,Dynamic,Base Oil,,15.35,3.13
+"1,1-bis-(4-methyl-phenyl)-dodecane",Aromatic,26,Dynamic,Base Oil,,21.23,3.32
+"1,3-didecyl-benzene",Aromatic,26,Kinematic,Base Oil,,10.95,2.39
+"1,4-didecyl-benzene",Aromatic,26,Dynamic,Base Oil,,10.21,2.57
+didecyl-benzene,Aromatic,26,Kinematic,Base Oil,,15.73,3.25
+"1,4-dimethyl-2-octadecyl-benzene",Aromatic,26,Kinematic,Base Oil,,13.99,2.72
+"1,3-dimethyl-4-octadecyl-benzene",Aromatic,26,Kinematic,Base Oil,,13.74,3.38
+1-ethyl-4-octadecyl-benzene,Aromatic,26,Kinematic,Base Oil,,11.36,3.26
+1-phenyl-eicosane,Aromatic,26,Kinematic,Base Oil,,10.29,3.02
+2-phenyl-eicosane,Aromatic,26,Dynamic,Base Oil,,10.43,2.72
+3-phenyl-eicosane,Aromatic,26,Dynamic,Base Oil,,10.68,2.51
+4-phenyl-eicosane,Aromatic,26,Dynamic,Base Oil,,11.42,2.55
+5-phenyl-eicosane,Aromatic,26,Dynamic,Base Oil,,11.92,2.6
+8-(4-methyl-phenyl)-nonadecane,Aromatic,26,Dynamic,Base Oil,,13.4,2.61
+"1,7-diphenyl-4-phenethyl-heptane",Aromatic,27,Kinematic,Base Oil,,26.73,4.58
+7-cyclohexyl-4-phenethyl-1-phenyl-heptane,Aromatic,27,Kinematic,Base Oil,,35.35,4.65
+3-(2-cyclohexyl-ethyl)-1-phenyl-tridecane,Aromatic,27,Kinematic,Base Oil,,14.16,2.42
+11-phenyl-heneicos-10-ene,Aromatic,27,Kinematic,Base Oil,,10.23,2.37
+1-octadecyl-4-isopropyl-benzene,Aromatic,27,Kinematic,Base Oil,,14.01,3.7
+11-phenyl-heneicosane,Aromatic,27,Dynamic,Base Oil,,12.2,2.65
+1-(4-methyl-phenyl)-eicosane,Aromatic,27,Kinematic,Base Oil,,12.18,4.6
+triheptyl-benzene,Aromatic,27,Kinematic,Base Oil,,26.38,4.17
+"1,3,5-trimethyl-2-octadecyl-benzene",Aromatic,27,Kinematic,Base Oil,,21.4,3.48
+"1,7-diphenyl-4-(3-phenyl-propyl)-hept-3-ene",Aromatic,28,Dynamic,Base Oil,,23.96,3.81
+"1,7-diphenyl-4-(3-phenyl-propyl)-heptane",Aromatic,28,Dynamic,Base Oil,,30.57,4.22
+"1,1-diphenyl-hexadec-1-ene",Aromatic,28,Dynamic,Base Oil,,19.11,3.72
+"1,1-diphenyl-hexadecane",Aromatic,28,Dynamic,Base Oil,,18.95,3.71
+"1,7-diphenyl-4-nonyl-heptane",Aromatic,28,Dynamic,Base Oil,,44.33,3.09
+"6-octadecyl-1,2,3,4-tetrahydro-naphthalene",Aromatic,28,Kinematic,Base Oil,,23.6,4.91
+5-phenyl-docos-5-ene,Aromatic,28,Kinematic,Base Oil,,14.07,3.41
+11-benzyl-heneicosane,Aromatic,28,Kinematic,Base Oil,,10.54,2.84
+diundecyl-benzene,Aromatic,28,Kinematic,Base Oil,,20.21,3.9
+5-phenyl-docosane,Aromatic,28,Kinematic,Base Oil,,15.97,3.72
+"11-(2,5-dimethyl-phenyl)-heneicos-10-ene",Aromatic,29,Dynamic,Base Oil,,15.73,3.01
+"11-(2,5-dimethyl-phenyl)-heneicosane",Aromatic,29,Dynamic,Base Oil,,20.48,3.46
+"5,14-diphenyl-octadeca-5,13-diene",Aromatic,30,Kinematic,Base Oil,,26.93,4.49
+"1,1-diphenyl-octadec-1-ene",Aromatic,30,Kinematic,Base Oil,,22.2,4.78
+1-phenyl-2-benzyl-heptadec-2-ene,Aromatic,30,Dynamic,Base Oil,,25.73,4.26
+"1,1-diphenyl-octadecane",Aromatic,30,Kinematic,Base Oil,,25.35,4.58
+"5,14-diphenyl-octadecane",Aromatic,30,Kinematic,Base Oil,,32.35,4.84
+1-phenyl-2-benzyl-heptadecane,Aromatic,30,Dynamic,Base Oil,,28.1,4.35
+tetrahexyl-benzene,Aromatic,30,Kinematic,Base Oil,,42.19,5.07
+11-naphthalen-1-yl-heneicos-10-ene,Aromatic,31,Dynamic,Base Oil,,29.92,4.47
+"11-(5,6,7,8-tetrahydro-naphthalen-1-yl)-heneicosane",Aromatic,31,Dynamic,Base Oil,,38.32,5.01
+13-phenyl-pentacosane,Aromatic,31,Dynamic,Base Oil,,17.72,3.51
+5-naphthalen-2-yl-docos-5-ene,Aromatic,32,Kinematic,Base Oil,,30.28,5.09
+5-naphthalen-2-yl-docosane,Aromatic,32,Kinematic,Base Oil,,34.41,5.64
+11-naphthalen-1-yl-docosane,Aromatic,32,Kinematic,Base Oil,,37.4,5.58
+"6-(1-butyl-octadec-1-enyl)-1,2,3,4-tetrahydro-naphthalene",Aromatic,32,Kinematic,Base Oil,,46,6.84
+"6-docosyl-1,2,3,4-tetrahydro-naphthalene",Aromatic,32,Kinematic,Base Oil,,21.3,5.85
+5-phenyl-hexacos-5-ene,Aromatic,32,Kinematic,Base Oil,,21.1,5.75
+"11-(5,6,7,8-tetrahydro-naphthalen-1-yl)-docosane",Aromatic,32,Kinematic,Base Oil,,38.65,5.64
+5-phenyl-hexacosane,Aromatic,32,Kinematic,Base Oil,,22.95,4.85
+trinonyl-benzene,Aromatic,33,Kinematic,Base Oil,,17.76,5.31
+5-naphthalen-2-yl-hexacos-5-ene,Aromatic,36,Kinematic,Base Oil,,35.97,6.32
+pentaerythritol triheptanoate 4-cyclohexyl-butanoate,Aromatic,36,Kinematic,Base Oil,,43.14,6.79
+"1,3-diphenyl-butane",Aromatic ,16,Kinematic,Base Oil,,4.59,1.43
+2-phenyl-undecane,Aromatic ,17,Kinematic,Base Oil,,4.68,1.31
+2-(1-ethyl-hexyl)-naphthalene,Aromatic ,18,Kinematic,Base Oil,,9.01,1.99
+"1-octyl-1,2,3,4-tetrahydro-naphthalene",Aromatic ,18,Dynamic,Base Oil,,9.99,1.99
+7-phenyl-tridecane,Aromatic ,19,Dynamic,Base Oil,,4.78,1.28
+"1,3,5-trimethyl-2-decyl-benzene",Aromatic ,19,Dynamic,Base Oil,,11.41,1.64
+"1,2,3,4-tetrahydro-6-butyl-7-hexyl-naphthalene",Aromatic ,20,Kinematic,Base Oil,,12.93,2.2
+"1,2,3,4-tetrahydro-5,8-dimethyl-1-octyl-naphthalene",Aromatic ,20,Kinematic,Base Oil,,14.08,2.61
+1-phenyl-butan-1-one,Aromatic Ester,10,Dynamic,Additive,,1.56,0.629
+2-methoxy-4-(prop-2-en-1-yl)-phenol,Aromatic Ester,10,Dynamic,Additive,,4.21,1.15
+butylbenzene,Aromatic Ester,10,Dynamic,Base Oil,,0.79,0.42
+trans-3-phenyl-prop-2-enoic acid ethyl ester,Aromatic Ester,11,Dynamic,Base Oil,,5.52,1.27
+pentyloxy-benzene,Aromatic Ester,11,Dynamic,Base Oil,,1.79,0.6504
+diphenyl ether,Aromatic Ester,12,Dynamic,Base Oil,,2.56,0.981
+benzophenone,Aromatic Ester,12,Dynamic,Additive,,7.58,1.58
+benzoic acid 2-ethyl-hexyl ester,Aromatic Ester,15,Dynamic,Base Oil,,3.62,1.16
+2-(3-methyl-benzyl)-butanedioic acid diethyl ester,Aromatic Ester,16,Kinematic,Base Oil,,11.7,2.74
+phthalic acid dibutyl ester,Aromatic Ester,16,Kinematic,Base Oil,,9.78,2.31
+2-(3-methyl-benzyl)-butanedioic acid diisopropyl ester,Aromatic Ester,18,Kinematic,Base Oil,,18.2,3.31
+2-(3-methyl-benzyl)-butanedioic acid dipropyl ester,Aromatic Ester,18,Kinematic,Base Oil,,11.53,2.48
+2-(4-methyl-benzyl)-butanedioic acid diisopropyl ester,Aromatic Ester,18,Kinematic,Base Oil,,20.2,3.59
+2-(4-methyl-benzyl)-butanedioic acid dipropyl ester,Aromatic Ester,18,Kinematic,Base Oil,,14.3,3.09
+dodecanoic acid phenyl ester,Aromatic Ester,18,Kinematic,Base Oil,,7.43,2.09
+4-phenyl-butyric acid octyl ester,Aromatic Ester,18,Kinematic,Base Oil,,5.22,1.55
+"3-phenyl-propionic acid 3,5,5-trimethyl-hexyl ester",Aromatic Ester,18,Kinematic,Base Oil,,5.3,1.78
+phthalic acid 1-butoxycarbonyl-ethyl ester butyl ester,Aromatic Ester,19,Kinematic,Base Oil,,21.8,3.65
+2-benzyl-butanedioic acid dibutyl ester,Aromatic Ester,19,Kinematic,Base Oil,,11.69,2.59
+2-(4-tert-butyl-benzyl)-butanedioic acid diethyl ester,Aromatic Ester,19,Kinematic,Base Oil,,24.1,4.32
+2-(1-methyl-1-phenyl-ethyl)-butanedioic acid dipropyl ester,Aromatic Ester,19,Kinematic,Base Oil,,37.4,4.91
+benzoic acid dodecyl ester,Aromatic Ester,19,Kinematic,Base Oil,,7.33,2.15
+decanoic acid 4-ethyl-benzyl ester,Aromatic Ester,19,Kinematic,Base Oil,,5.24,1.81
+dodecanoic acid benzyl ester,Aromatic Ester,19,Kinematic,Base Oil,,5.46,1.89
+dodecanoic acid (3-methyl-phenyl) ester,Aromatic Ester,19,Kinematic,Base Oil,,7.18,2.18
+dodecanoic acid (4-methyl-phenyl) ester,Aromatic Ester,19,Kinematic,Base Oil,,6.63,2.12
+4-(4-methyl-phenyl)-butyric acid 2-ethyl-hexyl ester,Aromatic Ester,19,Kinematic,Base Oil,,6.14,1.81
+4-(4-methyl-phenyl)-butyric acid octyl ester,Aromatic Ester,19,Kinematic,Base Oil,,6.44,1.82
+2-(3-methyl-benzyl)-butanedioic acid dibutyl ester,Aromatic Ester,20,Kinematic,Base Oil,,14.15,3.29
+2-(4-methyl-benzyl)-butanedioic acid dibutyl ester,Aromatic Ester,20,Kinematic,Base Oil,,14.25,2.87
+phthalic acid dihexyl ester,Aromatic Ester,20,Kinematic,Base Oil,,17.06,3
+dodecanoic acid 4-methyl-benzyl ester,Aromatic Ester,20,Kinematic,Base Oil,,6.65,1.99
+3-methyl-benzoic acid dodecyl ester,Aromatic Ester,20,Kinematic,Base Oil,,9.43,2.18
+4-methyl-benzoic acid dodecyl ester,Aromatic Ester,20,Kinematic,Base Oil,,9.05,2.37
+phenyl-acetic acid dodecyl ester,Aromatic Ester,20,Kinematic,Base Oil,,6.39,2.04
+trans-cinnamic acid dodecyl ester,Aromatic Ester,21,Kinematic,Base Oil,,15.2,3.3
+2-(4-tert-butyl-benzyl)-butanedioic acid dipropyl ester,Aromatic Ester,21,Kinematic,Base Oil,,32.1,4.7
+2-(1-methyl-1-phenyl-ethyl)-butanedioic acid dibutyl ester,Aromatic Ester,21,Kinematic,Base Oil,,28.5,4.17
+3-phenyl-propionic acid dodecyl ester,Aromatic Ester,21,Kinematic,Base Oil,,7.88,2.23
+(4-methyl-phenyl)-acetic acid dodecyl ester,Aromatic Ester,21,Kinematic,Base Oil,,7.81,2.13
+2-(3-methyl-benzyl)-butanedioic acid bis-(3-methyl-butyl) ester,Aromatic Ester,22,Kinematic,Base Oil,,19.4,3.95
+2-(4-methyl-benzyl)-butanedioic acid bis-(3-methyl-butyl) ester,Aromatic Ester,22,Kinematic,Base Oil,,18.1,3.45
+(4-ethyl-phenyl)-acetic acid dodecyl ester,Aromatic Ester,22,Kinematic,Base Oil,,7.74,2.47
+4-phenyl-butyric acid dodecyl ester,Aromatic Ester,22,Kinematic,Base Oil,,9.12,2.44
+"1,5-dicyclopentyl-3-(2-cyclopentyl-ethyl)-pent-2-ene",Aromatic Ester,22,Dynamic,Base Oil,,13.61,2.84
+"1,9-bis-(benzyloxy)-nonane",Aromatic Ester,23,Kinematic,Base Oil,,10.64,2.87
+"3-methyl-1,6-bis-(phenethyloxy)-hexane",Aromatic Ester,23,Kinematic,Base Oil,,11.78,2.82
+"1,4-bis-(3-phenyl-propoxy)-2-methyl-butane",Aromatic Ester,23,Kinematic,Base Oil,,12.1,2.83
+2-(4-tert-butyl-benzyl)-butanedioic acid dibutyl ester,Aromatic Ester,23,Kinematic,Base Oil,,38.5,5.6
+4-(4-methyl-phenyl)-butyric acid dodecyl ester,Aromatic Ester,23,Kinematic,Base Oil,,13.03,2.64
+isophthalic acid bis-(2-ethyl-hexyl) ester,Aromatic Ester,24,Kinematic,Base Oil,,30.3,4.52
+isophthalic acid dioctyl ester,Aromatic Ester,24,Kinematic,Base Oil,,23.1,4.24
+phthalic acid bis-(2-ethyl-hexyl) ester,Aromatic Ester,24,Kinematic,Base Oil,,33.36,4.2
+phthalic acid dioctyl ester,Aromatic Ester,24,Kinematic,Base Oil,,17.88,3.62
+(4-butyl-phenyl)-acetic acid dodecyl ester,Aromatic Ester,24,Kinematic,Base Oil,,9.7,2.86
+(4-octyl-phenyl)-acetic acid octyl ester,Aromatic Ester,24,Kinematic,Base Oil,,9.93,2.84
+12-acetoxy-octadecanoic acid phenyl ester,Aromatic Ester,26,Kinematic,Base Oil,,24.8,4.39
+"1-phenyl-ethane-1,2-diol dinonanoate",Aromatic Ester,26,Kinematic,Base Oil,,18.4,3.42
+m-phenylenediacetic acid bis-(2-ethyl-hexyl) ester,Aromatic Ester,26,Kinematic,Base Oil,,14.4,3.3
+m-phenylenediacetic acid dioctyl ester,Aromatic Ester,26,Kinematic,Base Oil,,13.18,3.5
+monohexadecyl-tetrahydro-naphthalene,Aromatic Ester,26,Kinematic,Base Oil,,32.18,5.14
+"1,5-bis-(4-tert-butyl-benzoyloxy)-pentane",Aromatic Ester,27,Kinematic,Base Oil,,41.92,15.41
+2-benzyl-butanedioic acid bis-(2-ethyl-hexyl) ester,Aromatic Ester,27,Kinematic,Base Oil,,25.55,4.12
+2-benzyl-butanedioic acid dioctyl ester,Aromatic Ester,27,Kinematic,Base Oil,,19.76,4.03
+2-(3-methyl-benzyl)-butanedioic acid bis-(2-ethyl-hexyl) ester,Aromatic Ester,28,Kinematic,Base Oil,,31.1,5.13
+2-(4-methyl-benzyl)-butanedioic acid bis-(2-ethyl-hexyl) ester,Aromatic Ester,28,Kinematic,Base Oil,,29.8,4.99
+2-(4-methyl-benzyl)-butanedioic acid dioctyl ester,Aromatic Ester,28,Kinematic,Base Oil,,22.4,4.76
+12-acetoxy-octadecanoic acid 2-phenoxyethyl ester,Aromatic Ester,28,Kinematic,Base Oil,,36.5,5.59
+9(10)-benzoyloxy-octadecanoic acid butyl ester,Aromatic Ester,29,Kinematic,Base Oil,,27.4,5.01
+2-(1-methyl-1-phenyl-ethyl)-butanedioic acid dioctyl ester,Aromatic Ester,29,Kinematic,Base Oil,,39.6,5.97
+decanedioic acid isotridecyl ester benzyl ester,Aromatic Ester,30,Kinematic,Base Oil,,22.6,4.94
+"2-ethyl-2-(hydroxymethyl)-propane-1,3-diol benzoate dinonanoate",Aromatic Ester,31,Kinematic,Base Oil,,41.1,5.69
+"2-ethyl-2-(hydroxymethyl)-propane-1,3-diol 2-ethylhexanoate nonanoate 2-phenylacetate",Aromatic Ester,31,Kinematic,Base Oil,,24.8,4.54
+phhthalic acid didodecyl ester,Aromatic Ester,32,Kinematic,Base Oil,,31.51,5.7
+"cyclohexane-1,2-dicarboxylic acid didodecyl ester",Aromatic Ester,32,Kinematic,Base Oil,,25.08,5.03
+dibenzyl ether,Aromatic Ether,14,Dynamic,Additive,,3.2,1.2
+"2,6-bis-(1,1-dimethylethyl)-phenol",Aromatic Ether,14,Kinematic,Base Oil,,6.1,1.5
+"1,1'-bicyclopentyl",Cyclic Paraffin,10,Dynamic,Base Oil,,1.12,0.56
+cis-decahydro-naphthalene,Cyclic Paraffin,10,Dynamic,Base Oil,,2.23,0.92
+butyl-cyclohexane,Cyclic Paraffin,10,Dynamic,Base Oil,,0.96,0.51
+pentyl-cyclopentane,Cyclic Paraffin,10,Dynamic,Base Oil,,0.856,0.45
+cyclopentyl-cyclohexane,Cyclic Paraffin,11,Dynamic,Base Oil,,1.68,0.78
+cyclohexanecarboxylic acid butyl ester,Cyclic Paraffin,11,Kinematic,Base Oil,,2.29,1
+1-cyclopentyl-hexane,Cyclic Paraffin,11,Dynamic,Base Oil,,1.08,0.54
+pentyl-cyclohexane,Cyclic Paraffin,11,Dynamic,Base Oil,,1.19,0.76
+spiro[5.5]undecane,Cyclic Paraffin,11,Dynamic,Base Oil,,2.19,0.9
+bicyclohexyl,Cyclic Paraffin,12,Dynamic,Base Oil,,3.04,1.21
+"1,1-dicyclopentyl-ethane",Cyclic Paraffin,12,Dynamic,Base Oil,,1.68,0.76
+spiro[5.6]dodecane,Cyclic Paraffin,12,Dynamic,Base Oil,,2.99,1.11
+3-cyclohexyl-hexane,Cyclic Paraffin,12,Dynamic,Base Oil,,1.68,0.79
+1-cyclopentyl-heptane,Cyclic Paraffin,12,Dynamic,Base Oil,,1.342,0.63
+"1,2-dimethyl-4-(tert-butyl)-cyclohexane",Cyclic Paraffin,12,Dynamic,Base Oil,,1.68,0.66
+(2-ethyl-butyl)-cyclohexane,Cyclic Paraffin,12,Dynamic,Base Oil,,1.75,0.82
+hexyl-cyclohexane,Cyclic Paraffin,12,Dynamic,Base Oil,,1.492,0.66
+"3-cyclohexyl-2,4-dimethyl-pentane",Cyclic Paraffin,13,Kinematic,Base Oil,,1.77,0.83
+heptyl-cyclohexane,Cyclic Paraffin,13,Dynamic,Base Oil,,1.83,0.77
+octyl-cyclopentane,Cyclic Paraffin,13,Dynamic,Base Oil,,1.64,0.73
+tetradecahydro-phenanthrene,Cyclic Paraffin,14,Kinematic,Base Oil,,5.11,1.69
+1-cyclohexyl-3-cyclopentyl-propane,Cyclic Paraffin,14,Dynamic,Base Oil,,3.2,1.18
+cis-1-cyclohexylmethyl-2-methyl-cyclohexane,Cyclic Paraffin,14,Kinematic,Base Oil,,5.34,1.65
+cis-1-cyclohexylmethyl-3-methyl-cyclohexane,Cyclic Paraffin,14,Kinematic,Base Oil,,4.61,1.5
+cis-1-cyclohexylmethyl-4-methyl-cyclohexane,Cyclic Paraffin,14,Kinematic,Base Oil,,4.94,1.6
+"1,1-dicyclohexyl-ethane",Cyclic Paraffin,14,Dynamic,Base Oil,,6.93,1.45
+cis-2-ethyl-bicyclohexyl,Cyclic Paraffin,14,Kinematic,Base Oil,,4.73,1.53
+"2-cyclohexyl-2,5-dimethyl-hexane",Cyclic Paraffin,14,Kinematic,Base Oil,,3.38,1.23
+2-cyclohexyl-octane,Cyclic Paraffin,14,Dynamic,Base Oil,,2.38,0.88
+1-cyclopentyl-nonane,Cyclic Paraffin,14,Dynamic,Base Oil,,1.98,0.84
+"1,3-dicyclopentyl-cyclopentane",Cyclic Paraffin,15,Dynamic,Base Oil,,2.95,1.22
+1-cyclohexyl-1-(4-methylcyclohexyl)-ethane,Cyclic Paraffin,15,Kinematic,Base Oil,,8.01,1.52
+"1,1-dicyclohexyl-propane",Cyclic Paraffin,15,Kinematic,Base Oil,,6.4,1.81
+"1,2-dicyclohexyl-propane",Cyclic Paraffin,15,Kinematic,Base Oil,,6.42,1.86
+"1,3-dicyclohexyl-propane",Cyclic Paraffin,15,Kinematic,Base Oil,,6.38,1.94
+"2,2-dicyclohexyl-propane",Cyclic Paraffin,15,Kinematic,Base Oil,,9.75,2.38
+cis-1-ethyl-2-cyclohexylmethyl-cyclohexane,Cyclic Paraffin,15,Kinematic,Base Oil,,5.64,1.68
+1-ethyl-3-cyclohexylmethyl-cyclohexane,Cyclic Paraffin,15,Kinematic,Base Oil,,5.17,1.59
+cis-1-ethyl-4-cyclohexylmethyl-cyclohexane,Cyclic Paraffin,15,Kinematic,Base Oil,,5.64,1.76
+cis-2-isopropyl-bicyclohexyl,Cyclic Paraffin,15,Kinematic,Base Oil,,6.52,1.89
+cis-2-propyl-bicyclohexyl,Cyclic Paraffin,15,Kinematic,Base Oil,,6.18,1.69
+1-cyclohexyl-nonane,Cyclic Paraffin,15,Dynamic,Base Oil,,2.68,1
+1-cyclopentyl-decane,Cyclic Paraffin,15,Dynamic,Base Oil,,2.37,0.96
+"1,2-dimethyl-4-heptyl-cyclohexane",Cyclic Paraffin,15,Dynamic,Base Oil,,3.79,0.96
+cyclohexyl-decahydro-naphthalene,Cyclic Paraffin,16,Kinematic,Base Oil,,14.29,3.51
+dicyclopentyl-cyclohexane,Cyclic Paraffin,16,Kinematic,Base Oil,,6.1,2.08
+tricyclopentyl-methane,Cyclic Paraffin,16,Dynamic,Base Oil,,5.6,1.61
+cis-2-butyl-bicyclohexyl,Cyclic Paraffin,16,Kinematic,Base Oil,,7.63,1.89
+cis-2-sec-butyl-bicyclohexyl,Cyclic Paraffin,16,Kinematic,Base Oil,,9.25,2.21
+4-butyl-bicyclohexyl,Cyclic Paraffin,16,Kinematic,Base Oil,,6.48,1.68
+"1-cyclohexyl-1-(2,5-dimethyl-cyclohexyl)-ethane",Cyclic Paraffin,16,Dynamic,Base Oil,,17.4,1.74
+1-cyclohexyl-1-(4-ethyl-cyclohexyl)-ethane,Cyclic Paraffin,16,Dynamic,Base Oil,,11.42,1.77
+1-cyclohexylmethyl-4-isopropyl-cyclohexane,Cyclic Paraffin,16,Dynamic,Base Oil,,8.01,2.16
+"1,1-dicyclohexyl-butane",Cyclic Paraffin,16,Dynamic,Base Oil,,9.61,2.08
+"1,2-dicyclohexyl-butane",Cyclic Paraffin,16,Kinematic,Base Oil,,7.81,1.98
+"1,3-dicyclohexyl-butane",Cyclic Paraffin,16,Kinematic,Base Oil,,8.78,2.26
+"1,4-dicyclohexyl-butane",Cyclic Paraffin,16,Kinematic,Base Oil,,7.56,2.18
+"2,2-dicyclohexyl-butane",Cyclic Paraffin,16,Kinematic,Base Oil,,13.65,2.72
+"1,3-dicyclohexyl-2-methyl-propane",Cyclic Paraffin,16,Kinematic,Base Oil,,7.08,1.97
+cis-2-isobutyl-bicyclohexyl,Cyclic Paraffin,16,Kinematic,Base Oil,,7.49,1.87
+1-cyclohexyl-decane,Cyclic Paraffin,16,Dynamic,Base Oil,,3.19,1.12
+1-cyclopentyl-undecane,Cyclic Paraffin,16,Dynamic,Base Oil,,2.81,1.08
+1-cyclohexyl-2-cyclohexylmethyl-butane,Cyclic Paraffin,17,Kinematic,Base Oil,,9.38,2.18
+1-cyclohexyl-1-(4-isopropyl-cyclohexyl)-ethane,Cyclic Paraffin,17,Dynamic,Base Oil,,20.35,2.18
+"1-cyclohexyl-1-(2,4,5-trimethyl-cyclohexyl)-ethane",Cyclic Paraffin,17,Dynamic,Base Oil,,29.6,2.02
+"1,1-dicyclohexyl-3-methyl-butane",Cyclic Paraffin,17,Kinematic,Base Oil,,16.7,2.16
+"1,1-dicyclohexyl-pentane",Cyclic Paraffin,17,Kinematic,Base Oil,,13.6,2.45
+"1,5-dicyclohexyl-pentane",Cyclic Paraffin,17,Kinematic,Base Oil,,8.47,2.46
+1-cyclohexyl-undecane,Cyclic Paraffin,17,Dynamic,Base Oil,,3.76,1.26
+1-cyclopentyl-dodecane,Cyclic Paraffin,17,Dynamic,Base Oil,,3.29,1.59
+1-cyclohexyl-2-cyclohexylmethyl-pentane,Cyclic Paraffin,18,Kinematic,Base Oil,,12.5,2.38
+"1,6-dicyclohexyl-hexane",Cyclic Paraffin,18,Kinematic,Base Oil,,10.24,2.69
+"1,2-bis-(1-ethyl-cyclohexyl)-ethane",Cyclic Paraffin,18,Kinematic,Base Oil,,31.01,3.51
+1-(2-ethyl-hexyl)-decahydro-naphthalene,Cyclic Paraffin,18,Kinematic,Base Oil,,8.11,1.79
+1-(1-ethyl-1-methyl-pentyl)-decahydro-naphthalene,Cyclic Paraffin,18,Kinematic,Base Oil,,10.81,1.95
+4-hexyl-bicyclohexyl,Cyclic Paraffin,18,Kinematic,Base Oil,,9.8,2.27
+1-(1-methyl-heptyl)-decahydro-naphthalene,Cyclic Paraffin,18,Kinematic,Base Oil,,7.26,1.79
+1-octyl-decahydro-naphthalene,Cyclic Paraffin,18,Kinematic,Base Oil,,6.81,1.86
+2-octyl-decahydro-naphthalene,Cyclic Paraffin,18,Kinematic,Base Oil,,7.9,2.08
+1-cyclohexyl-dodecane,Cyclic Paraffin,18,Dynamic,Base Oil,,4.38,1.4
+1-cyclopentyl-tridecane,Cyclic Paraffin,18,Dynamic,Base Oil,,3.83,1.36
+"1,4-dihexyl-cyclohexane",Cyclic Paraffin,18,Dynamic,Base Oil,,6.53,1.52
+"1,4-dimethyl-2-decyl-cyclohexane",Cyclic Paraffin,18,Dynamic,Base Oil,,8.41,1.39
+"1,2,3,4,5,6-hexaethyl-cyclohexane",Cyclic Paraffin,18,Dynamic,Base Oil,,11.51,3.34
+"1,2,4,5-tetraisopropyl-cyclohexane",Cyclic Paraffin,18,Dynamic,Base Oil,,8.35,1.75
+"1,1-dicyclohexyl-heptane",Cyclic Paraffin,19,Dynamic,Base Oil,,16.22,2.26
+4-heptyl-bicyclohexyl,Cyclic Paraffin,19,Kinematic,Base Oil,,17.9,2.86
+1-cyclohexyl-tridecane,Cyclic Paraffin,19,Dynamic,Base Oil,,5.08,1.55
+7-cyclohexyl-tridecane,Cyclic Paraffin,19,Dynamic,Base Oil,,5.9,1.43
+7-cyclopentylmethyl-tridecane,Cyclic Paraffin,19,Dynamic,Base Oil,,4.22,1.21
+1-cyclopentyl-tetradecane,Cyclic Paraffin,19,Dynamic,Base Oil,,4.43,1.51
+"1,3,5-trimethyl-2-decyl-cyclohexane",Cyclic Paraffin,19,Dynamic,Base Oil,,10.4,1.56
+"(1,1',3',1'',3'',1''')-quatercyclopentane",Cyclic Paraffin,20,Kinematic,Base Oil,,18.78,3.78
+2-butyl-3-hexyl-decahydro-naphthalene,Cyclic Paraffin,20,Kinematic,Base Oil,,12.17,2.18
+7-butyl-1-hexyl-decahydro-naphthalene,Cyclic Paraffin,20,Kinematic,Base Oil,,10.34,2.18
+"4,4'-dibutyl-bicyclohexyl",Cyclic Paraffin,20,Kinematic,Base Oil,,15.3,2.84
+"1,4-dimethyl-5-octyl-decahydro-naphthalene",Cyclic Paraffin,20,Kinematic,Base Oil,,9.11,2.08
+"2,6-dimethyl-3-octyl-decahydro-naphthalene",Cyclic Paraffin,20,Kinematic,Base Oil,,9.55,2.06
+4-octyl-bicyclohexyl,Cyclic Paraffin,20,Kinematic,Base Oil,,9.16,2.69
+1-cyclohexyl-tetradecane,Cyclic Paraffin,20,Dynamic,Base Oil,,5.85,1.7
+1-cyclopentyl-pentadecane,Cyclic Paraffin,20,Dynamic,Base Oil,,5.08,1.67
+4-nonyl-bicyclohexyl,Cyclic Paraffin,21,Kinematic,Base Oil,,24.1,3.49
+1-undecyl-decahydro-naphthalene,Cyclic Paraffin,21,Dynamic,Base Oil,,10.26,2.39
+1-cyclohexyl-pentadecane,Cyclic Paraffin,21,Dynamic,Base Oil,,6.69,1.87
+1-cyclopentyl-hexadecane,Cyclic Paraffin,21,Dynamic,Base Oil,,5.8,1.84
+"1,5-dicyclopentyl-3-(2-cyclopentyl-ethyl)-pentane",Cyclic Paraffin,22,Kinematic,Base Oil,,19.2,3.24
+"1,1-dicyclohexyl-decane",Cyclic Paraffin,22,Kinematic,Base Oil,,22.2,2.6
+"1,10-dicyclohexyl-decane",Cyclic Paraffin,22,Kinematic,Base Oil,,16.13,4.48
+1-dodecyl-decahydro-naphthalene,Cyclic Paraffin,22,Kinematic,Base Oil,,13.52,3.24
+4-(1-propyl-heptyl)-bicyclohexyl,Cyclic Paraffin,22,Kinematic,Base Oil,,34.27,3.97
+2-(1-propyl-nonyl)-decahydro-naphthalene,Cyclic Paraffin,22,Kinematic,Base Oil,,17.02,3.25
+1-cyclohexyl-hexadecane,Cyclic Paraffin,22,Dynamic,Base Oil,,7.61,2.04
+7-(3-cyclohexyl-propyl)-tridecane,Cyclic Paraffin,22,Dynamic,Base Oil,,4.65,1.58
+2-dodecyl-4-isopropyl-1-methyl-cyclohexane,Cyclic Paraffin,22,Kinematic,Base Oil,,11.17,2.57
+4-isopropyl-1-methyl2-[5-methyl-2-(3-methyl-butyl)-hexyl]-cyclohexane,Cyclic Paraffin,22,Kinematic,Base Oil,,20.77,2.72
+9-cyclohexyl-heptadecane,Cyclic Paraffin,23,Kinematic,Base Oil,,9.13,2.06
+1-cyclohexyl-7-cyclopentyl-4-hexyl-heptane,Cyclic Paraffin,24,Dynamic,Base Oil,,36.2,3.02
+"1,7-dicyclopentyl-4-heptyl-pentane",Cyclic Paraffin,24,Dynamic,Base Oil,,22.04,2.68
+"1,10-bis-(2,4-dimethyl-cyclopentyl)-decane",Cyclic Paraffin,24,Dynamic,Base Oil,,13.33,2.28
+1-cyclohexyl-octadecane,Cyclic Paraffin,24,Dynamic,Base Oil,,9.66,3.01
+7-cyclohexyl-octadecane,Cyclic Paraffin,24,Dynamic,Base Oil,,20.8,2.5
+10-cyclopentyl-nonadecane,Cyclic Paraffin,24,Dynamic,Base Oil,,11.75,1.89
+"1,2-dimethyl-4-hexadecyl-cyclohexane",Cyclic Paraffin,24,Kinematic,Base Oil,,23.4,2.67
+"1,2,4-trihexyl-cyclohexane",Cyclic Paraffin,24,Kinematic,Base Oil,,21.62,2.37
+"6-(2,4,5-trimethyl-cyclohexyl)-pentadecane",Cyclic Paraffin,24,Dynamic,Base Oil,,36.96,2.66
+"4-(2-cyclohexyl-ethyl)-1,7-dicyclopentyl-heptane",Cyclic Paraffin,25,Dynamic,Base Oil,,33,4.58
+"1,7-dicyclopentyl-4-(3-cyclopentyl-propyl)-heptane",Cyclic Paraffin,25,Dynamic,Base Oil,,22.06,3.77
+1-cyclohexyl-3-(2-cyclohexyl-ethyl)-undecane,Cyclic Paraffin,25,Dynamic,Base Oil,,26.9,3.96
+1-cyclohexyl-4-(3-cyclohexyl-propyl)-decane,Cyclic Paraffin,25,Kinematic,Base Oil,,23.22,5.22
+1-cyclopentyl-4-(3-cyclopentyl-propyl)-dodecane,Cyclic Paraffin,25,Dynamic,Base Oil,,13.09,2.78
+1-hexadecyl-octahydro-1H-indene,Cyclic Paraffin,25,Dynamic,Base Oil,,14.52,3.22
+1-pentadecyl-decahydro-naphthalene,Cyclic Paraffin,25,Dynamic,Base Oil,,16.75,3.33
+"1,3-bis-(decanoyloxy)-2,2-dimethyl-propane",Cyclic Paraffin,25,Kinematic,Base Oil,,10.9,2.91
+9-(2-cyclohexyl-ethyl)-heptadecane,Cyclic Paraffin,25,Dynamic,Base Oil,,11.7,2.47
+9-(3-cyclopentyl-propyl)-heptadecane,Cyclic Paraffin,25,Dynamic,Base Oil,,9.03,2.16
+"1,1-dicyclohexyl-tetradecane",Cyclic Paraffin,26,Dynamic,Base Oil,,29.8,4.17
+"1,1-dicyclopentyl-hexadecane",Cyclic Paraffin,26,Dynamic,Base Oil,,14.46,3.02
+"4,4'-diheptyl-bicyclohexyl",Cyclic Paraffin,26,Kinematic,Base Oil,,34.95,4.95
+"2-hexadecyl-1,1'-bicyclopentyl",Cyclic Paraffin,26,Dynamic,Base Oil,,12.21,2.98
+7-hexadecyl-spiro[4.5]decane,Cyclic Paraffin,26,Dynamic,Base Oil,,14.65,3.35
+"1,1-bis-(4-methyl-cyclohexyl)-dodecane",Cyclic Paraffin,26,Dynamic,Base Oil,,40.19,4.39
+1-cyclohexyl-eicosane,Cyclic Paraffin,26,Kinematic,Base Oil,,15.4,4.03
+2-cyclohexyl-eicosane,Cyclic Paraffin,26,Dynamic,Base Oil,,13.53,3.16
+3-cyclohexyl-eicosane,Cyclic Paraffin,26,Dynamic,Base Oil,,12.46,2.94
+4-cyclohexyl-eicosane,Cyclic Paraffin,26,Dynamic,Base Oil,,13.61,2.88
+5-cyclohexyl-eicosane,Cyclic Paraffin,26,Dynamic,Base Oil,,14.01,2.85
+7-cyclohexyl-eicosane,Cyclic Paraffin,26,Dynamic,Base Oil,,13.2,2.76
+9-cyclohexyl-eicosane,Cyclic Paraffin,26,Dynamic,Base Oil,,12.93,2.66
+11-cyclopentyl-heneicosane,Cyclic Paraffin,26,Dynamic,Base Oil,,9.96,2.32
+"1,3-didecyl-cyclohexane",Cyclic Paraffin,26,Kinematic,Base Oil,,14.65,2.76
+"1,4-didecyl-cyclohexane",Cyclic Paraffin,26,Dynamic,Base Oil,,13.25,3.09
+"1,4-dimethyl-2-octadecyl-cyclohexane",Cyclic Paraffin,26,Kinematic,Base Oil,,15.04,2.86
+8-(4-methyl-cyclohexyl)-nonadecane,Cyclic Paraffin,26,Dynamic,Base Oil,,14.04,2.51
+"1,3-dicyclopentyl-2-dodecyl-cyclopentane",Cyclic Paraffin,27,Dynamic,Base Oil,,24.55,3.98
+1-cyclohexyl-3-(2-cyclohexyl-ethyl)-tridecane,Cyclic Paraffin,27,Kinematic,Base Oil,,28.03,14.5
+11-cyclohexyl-heneicosane,Cyclic Paraffin,27,Dynamic,Base Oil,,13.94,2.84
+11-cyclopentylmethyl-heneicosane,Cyclic Paraffin,27,Dynamic,Base Oil,,10.86,2.59
+"1,3,5-trimethyl-2-octadecyl-cyclohexane",Cyclic Paraffin,27,Dynamic,Base Oil,,16.7,3.13
+1-cyclohexyl-2-cyclohexylmethyl-pentadecane,Cyclic Paraffin,28,Dynamic,Base Oil,,32.21,4.25
+"1,1-dicyclohexyl-hexadecane",Cyclic Paraffin,28,Dynamic,Base Oil,,25.86,4.31
+"4,4'-dioctyl-bicyclohexyl",Cyclic Paraffin,28,Kinematic,Base Oil,,25.71,5.11
+2-octadecyl-decahydro-naphthalene,Cyclic Paraffin,28,Kinematic,Base Oil,,29.7,5.46
+1-cyclohexyl-docosane,Cyclic Paraffin,28,Kinematic,Base Oil,,18.9,4.55
+5-cyclohexyl-docosane,Cyclic Paraffin,28,Kinematic,Base Oil,,18.7,4.03
+11-cyclohexylmethyl-heneicosane,Cyclic Paraffin,28,Dynamic,Base Oil,,14.47,2.92
+"11-(2,5-dimethyl-cyclohexyl)-heneicosane",Cyclic Paraffin,29,Dynamic,Base Oil,,19.87,3.35
+"11-(2,4-dimethyl-cyclopentylmethyl)-heneicosane",Cyclic Paraffin,29,Dynamic,Base Oil,,11.45,2.54
+1-cyclohexyl-2-cyclohexylmethyl-heptadecane,Cyclic Paraffin,30,Dynamic,Base Oil,,24.3,4.25
+11-(decahydro-naphthalen-1-yl)-heneicosane,Cyclic Paraffin,31,Dynamic,Base Oil,,37.59,5.05
+13-cyclohexyl-pentacosane,Cyclic Paraffin,31,Dynamic,Base Oil,,18.65,3.63
+11-(decahydro-naphthalen-1-yl)-docosane,Cyclic Paraffin,32,Kinematic,Base Oil,,40.37,6.33
+1-(decahydro-naphthalen-2-yl)-docosane,Cyclic Paraffin,32,Kinematic,Base Oil,,42.66,7.6
+15-cyclohexyl-nonacosane,Cyclic Paraffin,35,Dynamic,Base Oil,,26.76,4.68
+17-cyclohexyl-tritriacontane,Cyclic Paraffin,39,Kinematic,Base Oil,,35.07,5.88
+decan-1-ol,Ester,10,Dynamic,Base Oil,,6.8347,1.635
+3-methyl-1-(3-methyl-butoxy)-butane,Ester,10,Dynamic,Base Oil,,0.7513,0.3836
+1-pentyloxy-pentane,Ester,10,Dynamic,Base Oil,,0.7987,0.4062
+"1,11-dimethoxy-3,6,9-trioxa-undecane",Ester,10,Dynamic,Base Oil,,2.5,0.9623
+undecan-2-one,Ester,11,Dynamic,Base Oil,,1.42,0.63
+undecan-1-ol,Ester,11,Dynamic,Base Oil,,8.06,1.63
+dodecan-1-ol,Ester,12,Dynamic,Base Oil,,9.68,2.01
+"2,5,8,11,14,17-hexaoxaoctadecane",Ester,12,Kinematic,Base Oil,,3.57,1.4
+"3,6,9,12,15-pentaoxa-heptadecane-1,17-diol",Ester,12,Kinematic,Base Oil,,28.36,5.13
+cyclohexanecarboxylic acid (1-methyl-cyclohexyl)-methyl ester,Ester,15,Kinematic,Base Oil,,11.1,2.67
+"1,2,3-tris-(butyryloxy)-propane",Ester,15,Dynamic,Base Oil,,5.49,1.62
+cyclohexanecarboxylic acid 2-ethyl-hexyl ester,Ester,15,Kinematic,Base Oil,,4.04,1.47
+"2,2-dimethyl-propionic acid 3-(2,2-dimethylpropionyloxy)-2,2-dimethyl-propyl ester",Ester,15,Kinematic,Base Oil,,7.15,1.54
+2-ethyl-pentanedioic acid dibutyl ester,Ester,15,Kinematic,Base Oil,,3.67,1.33
+3-methyl-hexanedioic acid dibutyl ester,Ester,15,Kinematic,Base Oil,,4.11,1.74
+tetradecanoic acid methyl ester,Ester,15,Kinematic,Base Oil,,3.44,1.34
+4-methyl-benzoic acid octyl ester,Ester,16,Kinematic,Base Oil,,5.47,1.51
+"cyclohexane-1,2-dicarboxylic acid dibutyl ester",Ester,16,Kinematic,Base Oil,,7.9,2.05
+cis-4-methyl-cyclohexanecarboxylic acid octyl ester,Ester,16,Kinematic,Base Oil,,4.77,1.63
+decanedioic acid diisopropyl ester,Ester,16,Kinematic,Base Oil,,4.95,1.75
+hexanedioic acid bis-(1-ethyl-propyl) ester,Ester,16,Kinematic,Base Oil,,4.5,1.49
+hexanedioic acid bis-(2-methyl-butyl) ester,Ester,16,Kinematic,Base Oil,,4.7,1.63
+hexanoic acid decyl ester,Ester,16,Kinematic,Base Oil,,3.42,1.35
+tetradecanoic acid ethyl ester,Ester,16,Kinematic,Base Oil,,3.63,1.43
+"2,2-dimethyl-butyric acid 3-(2,2-dimethylbutyryloxy)-2,2-dimethyl-propyl ester",Ester,17,Kinematic,Base Oil,,7.33,1.9
+"1,5-bis-(2-ethyl-butyryloxy)-pentane",Ester,17,Kinematic,Base Oil,,4.9,1.71
+glutaric acid bis-(2-methyl-pentyl) ester,Ester,17,Kinematic,Base Oil,,4.91,1.69
+"1,5-bis-(2-methyl-pentanoyloxy)-pentane",Ester,17,Kinematic,Base Oil,,4.3,1.51
+dodecanoic acid pentyl ester,Ester,17,Kinematic,Base Oil,,3.99,1.52
+hexadecanoic acid methyl ester,Ester,17,Kinematic,Base Oil,,4.65,1.68
+tetradecanoic acid isopropyl ester,Ester,17,Kinematic,Base Oil,,4.2,1.58
+tetradecanoic acid propyl ester,Ester,17,Kinematic,Base Oil,,4.48,1.65
+hexanedioic acid dicyclohexyl ester,Ester,18,Kinematic,Base Oil,,21.9,4.31
+"cis-propene-1,2,3-tricarboxylic acid tributyl ester",Ester,18,Kinematic,Base Oil,,9.89,2.44
+cyclopentanecarboxylic acid dodecyl ester,Ester,18,Kinematic,Base Oil,,5.71,1.9
+dodecanoic acid cyclohexyl ester,Ester,18,Kinematic,Base Oil,,7.08,2.22
+decanedioic acid dibutyl ester,Ester,18,Kinematic,Base Oil,,6.98,2.01
+2-dodecyl-butanedioic acid dimethyl ester,Ester,18,Kinematic,Base Oil,,8.88,2.25
+"hexanedioic acid bis-(1,3-dimethyl-butyl) ester",Ester,18,Kinematic,Base Oil,,5.54,1.75
+hexanedioic acid bis-(2-ethyl-butyl) ester,Ester,18,Kinematic,Base Oil,,5.58,1.85
+hexanedioic acid bis-(2-methyl-pentyl) ester,Ester,18,Kinematic,Base Oil,,5.75,1.87
+"1,5-bis-(hexanoyloxy)-3-methyl-pentane",Ester,18,Kinematic,Base Oil,,5.16,1.81
+"3-methyl-1,5-bis-(2-methyl-valeryloxy)-pentane",Ester,18,Kinematic,Base Oil,,4.7,1.63
+acetic acid 2-butyl-dodecyl ester,Ester,18,Dynamic,Base Oil,,4.09,1.28
+acetic acid 2-ethyl-tetradecyl ester,Ester,18,Dynamic,Base Oil,,4.21,1.38
+acetic acid 2-heptyl-nonyl ester,Ester,18,Dynamic,Base Oil,,3.99,1.26
+acetic acid hexadecyl ester,Ester,18,Dynamic,Base Oil,,4.48,1.47
+acetic acid 2-hexyl-decyl ester,Ester,18,Dynamic,Base Oil,,3.93,1.24
+acetic acid 2-methyl-pentadecyl ester,Ester,18,Dynamic,Base Oil,,4.22,1.42
+acetic acid 2-pentyl-undecyl ester,Ester,18,Dynamic,Base Oil,,4,1.27
+acetic acid 2-propyl-tridecyl ester,Ester,18,Dynamic,Base Oil,,3.96,1.3
+hexadecanoic acid ethyl ester,Ester,18,Dynamic,Base Oil,,4.04,1.55
+"2,2-dimethyl-3-pentyloxycarbonylmethylcyclobutanecarboxylic acid pentyl ester",Ester,19,Kinematic,Base Oil,,8.65,2.35
+cyclohexanecarboxylic acid dodecyl ester,Ester,19,Kinematic,Base Oil,,7.67,2.36
+dodecanoic acid 3-methyl-cyclohexyl ester,Ester,19,Kinematic,Base Oil,,6.81,2.08
+dodecanoic acid 4-methyl-cyclohexyl ester,Ester,19,Kinematic,Base Oil,,7.53,2.25
+4-(4-methyl-cyclohexyl)-butyric acid 2-ethyl-hexyl ester,Ester,19,Kinematic,Base Oil,,6.72,1.97
+4-(4-methyl-cyclohexyl)-butyric acid octyl ester,Ester,19,Kinematic,Base Oil,,7.04,2.15
+cis-octadec-9-enoic acid methyl ester,Ester,19,Dynamic,Base Oil,,4.13,1.48
+"2,2-dimethyl-pentanoic acid 3-(2,2-dimethylpentanoyloxy)-2,2-dimethyl-propyl ester",Ester,19,Kinematic,Base Oil,,8.52,2.06
+"1,3-bis-(2-ethyl-hexanoyloxy)-propane",Ester,19,Kinematic,Base Oil,,5.87,1.65
+heptanedioic acid bis-(2-methyl-pentyl) ester,Ester,19,Kinematic,Base Oil,,6.35,2.01
+nonanedioic acid bis-(1-ethyl-propyl) ester,Ester,19,Kinematic,Base Oil,,6.57,1.98
+nonanedioic acid bis-(3-methyl-butyl) ester,Ester,19,Kinematic,Base Oil,,6.84,2.19
+hexadecanoic acid isopropyl ester,Ester,19,Kinematic,Base Oil,,3.22,1.78
+octadecanoic acid methyl ester,Ester,19,Kinematic,Base Oil,,5.61,1.95
+3-octyloxy-propionic acid octyl ester,Ester,19,Kinematic,Base Oil,,5.27,1.77
+hexanedioic acid bis-(3-methyl-cyclohexyl) ester,Ester,20,Kinematic,Base Oil,,17.97,3.73
+hexanedioic acid bis-(4-methyl-cyclohexyl) ester,Ester,20,Kinematic,Base Oil,,24.68,4.34
+cyclohexyl-acetic acid dodecyl ester,Ester,20,Kinematic,Base Oil,,8.17,2.47
+cis-3-methyl-cyclohexanecarboxylic acid dodecyl ester,Ester,20,Kinematic,Base Oil,,7.78,2.3
+cis-4-methyl-cyclohexanecarboxylic acid dodecyl ester,Ester,20,Kinematic,Base Oil,,8.48,2.41
+cis-octadec-9-enoic acid ethyl ester,Ester,20,Dynamic,Base Oil,,4.37,1.6
+decanedioic acid bis-(1-ethyl-propyl) ester,Ester,20,Kinematic,Base Oil,,7.07,2.08
+decanedioic acid bis-(3-methyl-butyl) ester,Ester,20,Kinematic,Base Oil,,7.65,2.41
+dodecyl-butanedioic acid diethyl ester,Ester,20,Kinematic,Base Oil,,8.7,2.2
+"1,6-bis-(hexanoyloxy)-2,5-dimethyl-hexane",Ester,20,Kinematic,Base Oil,,6.88,2.01
+"1,4,7-tris-(butyryloxy)-octane",Ester,20,Kinematic,Base Oil,,12.8,2.72
+acetic acid octadecyl ester,Ester,20,Kinematic,Base Oil,,7.36,2.28
+octadecanoic acid ethyl ester,Ester,20,Dynamic,Base Oil,,5.34,1.75
+"cis-propene-1,2,3-tricarboxylic acid tris-(3-methyl-butyl) ester",Ester,21,Kinematic,Base Oil,,15.1,3.06
+"cis-propene-1,2,3-tricarboxylic acid tripentyl ester",Ester,21,Kinematic,Base Oil,,12.1,2.81
+pentaerythritol tetraisobutanoate,Ester,21,Kinematic,Base Oil,,7.05,3.22
+"1,2,3-tris-(hexanoyloxy)-propane",Ester,21,Kinematic,Base Oil,,9.28,2.72
+"propane-1,2,3-tricarboxylic acid tris-(3-methyl-butyl) ester",Ester,21,Kinematic,Base Oil,,12.2,2.69
+"propane-1,2,3-tricarboxylic acid tripentyl ester",Ester,21,Kinematic,Base Oil,,10.1,2.55
+3-cyclohexyl-propionic acid dodecyl ester,Ester,21,Kinematic,Base Oil,,9.29,2.72
+(4-methyl-cyclohexyl)-acetic acid dodecyl ester,Ester,21,Kinematic,Base Oil,,9.34,2.69
+cis-octadec-9-enoic acid propyl ester,Ester,21,Dynamic,Base Oil,,4.93,1.75
+9-acetoxy-octadecanoic acid methyl ester,Ester,21,Kinematic,Base Oil,,10.8,2.71
+10-acetoxy-octadecanoic acid methyl ester,Ester,21,Kinematic,Base Oil,,10.8,2.75
+"2,2-dimethyl-hexanoic acid 3-(2,2-dimethylhexanoyloxy)-2,2-dimethyl-propyl ester",Ester,21,Kinematic,Base Oil,,10.33,2.18
+nonanedioic acid bis-(2-butoxy-ethyl) ester,Ester,21,Kinematic,Base Oil,,9.32,2.7
+nonanedioic acid bis-(2-ethyl-butyl) ester,Ester,21,Kinematic,Base Oil,,8.02,2.41
+pentanedioic acid bis-(2-ethyl-hexyl) ester,Ester,21,Kinematic,Base Oil,,7.28,2.07
+"pentane-1,5-diol bis-(2-ethyl-hexanoate)",Ester,21,Kinematic,Base Oil,,7.6,2.08
+octadecanoic acid isopropyl ester,Ester,21,Kinematic,Base Oil,,6.64,2.24
+octadecanoic acid propyl ester,Ester,21,Kinematic,Base Oil,,6.84,2.29
+4-cyclohexyl-butyric acid dodecyl ester,Ester,22,Kinematic,Base Oil,,10.96,3.15
+cis-octadec-9-enoic acid butyl ester,Ester,22,Kinematic,Base Oil,,5.44,1.91
+"decanedioic acid bis-(1,3-dimethyl-butyl) ester",Ester,22,Kinematic,Base Oil,,8.89,2.5
+decanedioic acid bis-(2-ethyl-butyl) ester,Ester,22,Kinematic,Base Oil,,9.03,2.63
+decanedioic acid dihexyl ester,Ester,22,Kinematic,Base Oil,,9.08,2.7
+2-dodecyl-butanedioic acid diisopropyl ester,Ester,22,Kinematic,Base Oil,,14.55,2.98
+2-dodecyl-butanedioic acid dipropyl ester,Ester,22,Kinematic,Base Oil,,9.45,2.5
+"1,6-bis-(2-ethyl-hexanoyloxy)-hexane",Ester,22,Kinematic,Base Oil,,8.34,2.25
+hexanedioic acid bis-(2-ethyl-hexyl) ester,Ester,22,Kinematic,Base Oil,,8.02,2.31
+hexanedioic acid dioctyl ester,Ester,22,Kinematic,Base Oil,,8.5,2.3
+"1,6-bis-(octanoyloxy)-hexane",Ester,22,Kinematic,Base Oil,,8.22,2.52
+12-propionyloxy-octadecanoic acid methyl ester,Ester,22,Kinematic,Base Oil,,10.25,2.65
+"1,2-bis-[2-(2-ethyl-hexanoyloxy)-ethoxy]-ethane",Ester,22,Kinematic,Base Oil,,8.61,2.31
+hexanedioic acid bis-(2-(2-ethyl-butoxy)-ethyl) ester,Ester,22,Kinematic,Base Oil,,8.93,2.56
+hexanedioic acid bis-(2-(2-butoxy-ethoxy)-ethyl) ester,Ester,22,Kinematic,Base Oil,,11.8,3.19
+dodecanoic acid decyl ester,Ester,22,Kinematic,Base Oil,,7.19,2.28
+4-(4-methyl-cyclohexyl)-butyric acid dodecyl ester,Ester,23,Kinematic,Base Oil,,11.81,3.39
+cis-octadec-9-enoic acid pentyl ester,Ester,23,Dynamic,Base Oil,,7.72,2.1
+"2,2-dimethyl-heptanoic acid 3-(2,2-dimethylheptanoyloxy)-2,2-dimethyl-propyl ester",Ester,23,Kinematic,Base Oil,,14.3,2.6
+"2,2-dimethyl-1,3-bis-(nonanoyloxy)-propane",Ester,23,Kinematic,Base Oil,,8.92,2.54
+heptanedioic acid bis-(2-ethyl-hexyl) ester,Ester,23,Kinematic,Base Oil,,9.02,2.55
+"pentanedioic acid bis-(3,5,5-trimethyl-hexyl) ester",Ester,23,Kinematic,Base Oil,,11.6,3.09
+12-acetoxy-octadecanoic acid 2-methoxy-ethyl ester,Ester,23,Kinematic,Base Oil,,15.05,3.49
+octadecanoic acid pentyl ester,Ester,23,Kinematic,Base Oil,,8.23,2.54
+3-decyloxy-propionic acid decyl ester,Ester,23,Kinematic,Base Oil,,8.14,2.48
+decanedioic acid bis-(4-methyl-cyclohexyl) ester,Ester,24,Kinematic,Base Oil,,32.5,5.75
+"cis-propene-1,2,3-tricarboxylic acid trihexyl ester",Ester,24,Kinematic,Base Oil,,14.55,3.29
+"cyclohexane-1,2-dicarboxylic acid bis-(2-ethyl-hexyl) ester",Ester,24,Kinematic,Base Oil,,19.3,3.45
+"cyclohexane-1,2-dicarboxylic acid dioctyl ester",Ester,24,Kinematic,Base Oil,,13.78,3.17
+"cyclohexane-1,3-dicarboxylic acid bis-(2-ethyl-hexyl) ester",Ester,24,Kinematic,Base Oil,,16.92,3.5
+"cyclohexane-1,3-dicarboxylic acid dioctyl ester",Ester,24,Kinematic,Base Oil,,14.38,3.67
+"nonanedioic acid 2,2-dimethylpentyl ester 1-methylcyclohexylmethyl ester",Ester,24,Kinematic,Base Oil,,20.4,4.23
+"hexanoic acid 2,2-bis-(hexanoyloxymethyl)-butyl ester",Ester,24,Kinematic,Base Oil,,11.8,2.96
+"1,2,6-tris-(hexanoyloxy)-hexane",Ester,24,Kinematic,Base Oil,,11.8,2.99
+"propane-1,2,3-tricarboxylic acid 2-ethyl ester 1,3-dioctyl ester",Ester,24,Kinematic,Base Oil,,13.2,3.06
+"propane-1,2,3-tricarboxylic acid trihexyl ester",Ester,24,Kinematic,Base Oil,,12.5,2.9
+2-acetoxy-octadecanoic acid butyl ester,Ester,24,Kinematic,Base Oil,,13.1,2.98
+9(10)-acetoxy-octadecanoic acid butyl ester,Ester,24,Kinematic,Base Oil,,13.2,3.28
+12-acetoxy-octadecanoic acid butyl ester,Ester,24,Kinematic,Base Oil,,13.4,3.41
+"decanedioic acid bis-(2,2-dimethyl-pentyl) ester",Ester,24,Kinematic,Base Oil,,10.31,2.79
+dodecyl-butanedioic acid dibutyl ester,Ester,24,Kinematic,Base Oil,,9.9,2.7
+"hexanedioic acid bis-(2,2-dimethyl-heptyl) ester",Ester,24,Kinematic,Base Oil,,8.44,2.4
+hexanedioic acid dinonyl ester,Ester,24,Kinematic,Base Oil,,16.08,3.2
+"hexanedioic acid bis-(3,5,5-trimethyl-hexyl) ester",Ester,24,Kinematic,Base Oil,,11.8,3.26
+"2-methyl-1,3-bis-(nonanoyloxy)-pentane",Ester,24,Kinematic,Base Oil,,9.7,2.68
+12-propionyloxy-octadecanoic acid isopropyl ester,Ester,24,Kinematic,Base Oil,,12.09,3.04
+"2,2,4-trimethyl-pentane-1,3-diol bis-(2-ethyl-4-methyl-pentanoate)",Ester,24,Kinematic,Base Oil,,3.58,1.25
+bis-(2-nonanoyloxy-propyl)-ether,Ester,24,Kinematic,Base Oil,,9.57,2.7
+2-(4-tert-butyl-benzyl)-butanedioic acid bis-(3-methyl-butyl) ester,Ester,25,Kinematic,Base Oil,,43.1,5.8
+4-methoxy-isophthalic acid dioctyl ester,Ester,25,Kinematic,Base Oil,,43.7,5.9
+nonanedioic acid bis-(1-methylcyclohexylmethyl) ester,Ester,25,Kinematic,Base Oil,,42.6,6.8
+pentaerythritol tetrapentanoate,Ester,25,Kinematic,Base Oil,,16.8,3.54
+"2-ethyl-2-(hydroxymethyl)-propane-1,3-diol ditrimethylacetate nonanoate",Ester,25,Kinematic,Base Oil,,28.3,4.43
+"1,4,7-tris-(hexanoyloxy)-heptane",Ester,25,Kinematic,Base Oil,,12.9,3.2
+"2,2-dimethyl-octanoic acid 3-(2,2-dimethyloctanoyloxy)-2,2-dimethyl-propyl ester",Ester,25,Kinematic,Base Oil,,14.61,2.64
+nonanedioic acid bis-(2-ethyl-hexyl) ester,Ester,25,Kinematic,Base Oil,,10.9,2.96
+12-acetoxy-octadecanoic acid 2-(2-methoxy-ethoxy)-ethyl ester,Ester,25,Kinematic,Base Oil,,19.3,4.23
+decanedioic acid bis-(1-methylcyclohexylmethyl) ester,Ester,26,Kinematic,Base Oil,,44.9,7.04
+"cis-cyclohexane-1,3-diyl-diacetic acid bis-(2-ethyl-hexyl) ester",Ester,26,Kinematic,Base Oil,,18.33,3.91
+"cis-cyclohexane-1,3-diyl-diacetic acid dioctyl ester",Ester,26,Kinematic,Base Oil,,14.97,3.81
+nonanedioic acid nonyl ester 1-methylcyclohexylmethyl ester,Ester,26,Kinematic,Base Oil,,19.4,4.4
+"9,10-diacetoxy-octadecanoic acid butyl ester",Ester,26,Kinematic,Base Oil,,30.1,4.98
+12-acetoxy-octadecanoic acid 2-ethyl-butyl ester,Ester,26,Kinematic,Base Oil,,16.5,3.73
+"decanedioic acid bis-(2,2-dimethyl-hexyl) ester",Ester,26,Kinematic,Base Oil,,11.27,3.27
+decanedioic acid bis-(2-ethyl-hexyl) ester,Ester,26,Kinematic,Base Oil,,11.9,2.93
+decanedioic acid bis-(1-methyl-heptyl) ester,Ester,26,Kinematic,Base Oil,,12.62,3.24
+decanedioic acid dioctyl ester,Ester,26,Kinematic,Base Oil,,12.3,3.46
+"dodecanedioic acid bis-(2,2-dimethyl-pentyl) ester",Ester,26,Kinematic,Base Oil,,13.38,3.37
+2-dodecyl-butanedioic acid bis-(3-methyl-butyl) ester,Ester,26,Kinematic,Base Oil,,13.9,3.1
+"1,10-bis-(2-ethyl-hexanoyloxy)-decane",Ester,26,Kinematic,Base Oil,,12.5,3.16
+hexanedioic acid bis-(2-isopropyl-5-methyl-hexyl) ester,Ester,26,Kinematic,Base Oil,,14.43,3.03
+"2,2,4-trimethyl-1,3-bis-(nonanoyloxy)-pentane",Ester,26,Kinematic,Base Oil,,11.5,2.99
+2-hydroxy-2-octyl-decanedioic acid diisobutyl ester,Ester,26,Kinematic,Base Oil,,31.8,3.12
+"heptanoic acid 2,2-bis-(heptanoyloxymethyl)-butyl ester",Ester,27,Kinematic,Base Oil,,14.7,3.41
+"1,2,3-tris-(octanoyloxy)-propane",Ester,27,Dynamic,Base Oil,,11.57,2.81
+"2,2-diethyl-pentane-1,3-diol dinonanoate",Ester,27,Kinematic,Base Oil,,11.05,3
+"nonanedioic acid bis-(3,5,5-trimethyl-hexyl) ester",Ester,27,Kinematic,Base Oil,,16.2,4.05
+"3,3-bis-(nonanoyloxymethyl)-heptane",Ester,27,Kinematic,Base Oil,,13.5,3.24
+pentanedioic acid bis-(4-ethyl-1-methyl-octyl) ester,Ester,27,Kinematic,Base Oil,,15.05,3.35
+12-propionyloxy-octadecanoic acid 2-methyl-pentyl ester,Ester,27,Kinematic,Base Oil,,20.59,4.01
+2-(3-methyl-benzyl)-butanedioic acid dioctyl ester,Ester,28,Kinematic,Base Oil,,24.2,4.89
+decanedioic acid decyl ester 1-methylcyclohexylmethyl ester,Ester,28,Kinematic,Base Oil,,22.9,5.1
+decanedioic acid isodecyl ester 1-methylcyclohexylmethyl ester,Ester,28,Kinematic,Base Oil,,28.1,5.3
+"2-ethyl-2-(hydroxymethyl)-propane-1,3-diol didecanoate acetate",Ester,28,Kinematic,Base Oil,,21.5,4.25
+"nonanoic acid 2-butyl-5-nonanoyloxymethyl1,3-dioxan-5-ylmethyl ester",Ester,28,Kinematic,Base Oil,,28.89,4.8
+12-acetoxy-octadecanoic acid 2-ethyl-hexyl ester,Ester,28,Kinematic,Base Oil,,18.66,4.14
+"decanedioic acid bis-(2,2-dimethyl-heptyl) ester",Ester,28,Kinematic,Base Oil,,9.24,3.36
+"decanedioic acid bis-(3,5,5-trimethyl-hexyl) ester",Ester,28,Kinematic,Base Oil,,18.3,4.46
+"1,3-bis-(decanoyloxy)-2,2,4-trimethyl-pentane",Ester,28,Kinematic,Base Oil,,13.85,3.42
+"dodecanedioic acid bis-(2,2-dimethyl-hexyl) ester",Ester,28,Kinematic,Base Oil,,16.86,3.86
+"hexanedioic acid bis-(2,2-dimethyl-nonyl) ester",Ester,28,Kinematic,Base Oil,,13.5,3.1
+hexanedioic acid bis-(4-ethyl-1-methyl-octyl) ester,Ester,28,Kinematic,Base Oil,,16.75,3.6
+octadecanoic acid decyl ester,Ester,28,Kinematic,Base Oil,,12.95,3.76
+"hexanoic acid 3-hexanoyloxy-2,2-bis- (hexanoyloxymethyl)-propyl ester",Ester,29,Kinematic,Base Oil,,19.2,4.27
+pentaerythritol dipentanoate diheptanoate,Ester,29,Kinematic,Base Oil,,18.96,3.97
+pentaerythritol tetrahexanoate,Ester,29,Kinematic,Base Oil,,20.1,4.13
+"2-ethyl-2-(hydroxymethyl)-propane-1,3-diol dinonanoate trimethylacetate",Ester,29,Kinematic,Base Oil,,22.5,4.16
+hexanedioic acid 11-butoxycarbonyl-1-hexyl-undecyl ester methyl ester,Ester,29,Kinematic,Base Oil,,20.9,4.64
+12-propionyloxy-octadecanoic acid 2-ethyl-hexyl ester,Ester,29,Kinematic,Base Oil,,17.26,3.99
+"hexane-1,2,3,4,5,6-hexol hexabutanoate",Ester,30,Kinematic,Base Oil,,30.84,4.51
+pentaerythritol trihexanoate cyclohexanecarboxylate,Ester,30,Kinematic,Base Oil,,34.7,5.79
+3-(2-ethyl-hexyloxycarbonyl)-pent-2-enedioic acid bis-(2-ethyl-hexyl) ester,Ester,30,Kinematic,Base Oil,,28.7,4.74
+"2-ethyl-2-(hydroxymethyl)-propane-1,3-diol cyclohexylcarboylate 2-ethyl-hexanoate nonanoate",Ester,30,Kinematic,Base Oil,,43.2,6.05
+decanedioic acid isotridecyl ester 4-methylcyclohexyl ester,Ester,30,Kinematic,Base Oil,,34.7,6.12
+"2-ethyl-2-(hydroxymethyl)-propane-1,3-diol tris-(2-ethylhexanoate)",Ester,30,Kinematic,Base Oil,,29.1,4.22
+"octanoic acid 2,2-bis-(octanoyloxymethyl)-butyl ester",Ester,30,Kinematic,Base Oil,,18.2,3.97
+12-butyryloxy-octadecanoic acid 2-ethyl-hexyl ester,Ester,30,Kinematic,Base Oil,,19.19,4.33
+"decanedioic acid bis-(2,2-dimethyl-octyl) ester",Ester,30,Kinematic,Base Oil,,15.43,3.8
+"dodecanedioic acid bis-(2,2-dimethyl-heptyl) ester",Ester,30,Kinematic,Base Oil,,18.87,4.02
+hexanedioic acid bis-(2-isopropyl-nonyl) ester,Ester,30,Kinematic,Base Oil,,20.14,4.24
+dodecanoic acid octadecyl ester,Ester,30,Kinematic,Base Oil,,16.9,4.25
+decanedioic acid isotridecyl ester 1-methylcyclohexylmethyl ester,Ester,31,Kinematic,Base Oil,,38.2,6.57
+"2-methyl-1,3-bis-(nonanoyloxy)-2- nonanoyloxymethyl-propane",Ester,32,Kinematic,Base Oil,,19.95,4.37
+"decanedioic acid bis-(2,2-dimethyl-nonyl) ester",Ester,32,Kinematic,Base Oil,,23.6,4.42
+decanedioic acid bis-(4-ethyl-1-methyl-octyl) ester,Ester,32,Kinematic,Base Oil,,23.6,4.81
+decanedioic acid isotridecyl ester 2-propylheptyl ester,Ester,32,Kinematic,Base Oil,,24.9,4.87
+"dodecanedioic acid bis-(2,2-dimethyl-octyl) ester",Ester,32,Kinematic,Base Oil,,21.63,4.45
+2-dodecyl-butanedioic acid dioctyl ester,Ester,32,Kinematic,Base Oil,,16.7,3.9
+2-dodecyl-butanedioic acid bis-(2-ethyl-hexyl) ester,Ester,32,Kinematic,Base Oil,,18.9,4.05
+12-(2-ethyl-butyryloxy)-octadecanoic acid 2-ethyl-hexyl ester,Ester,32,Kinematic,Base Oil,,23.23,4.79
+pentaerythritol dipentanoate dinonanoate,Ester,33,Kinematic,Base Oil,,18.7,4.11
+pentaerythritol tetraheptanoate,Ester,33,Kinematic,Base Oil,,21.4,4.37
+"2-ethyl-2-(hydroxymethyl)-propane-1,3-diol didecanoate heptanoate",Ester,33,Kinematic,Base Oil,,21.8,3.56
+"2-ethyl-2-(hydroxymethyl)-propane-1,3-diol 2-ethylhexanoate pentadecanoate tetradecanoate",Ester,33,Kinematic,Base Oil,,31.2,5.63
+"2-ethyl-2-(hydroxymethyl)-propane-1,3-diol trinonanoate",Ester,33,Kinematic,Base Oil,,21.75,4.53
+"nonanoic acid 2,2-bis-(nonanoyloxymethyl)-butyl ester",Ester,33,Kinematic,Base Oil,,21.05,4.52
+decanedioic acid isotridecyl ester isodecyl ester,Ester,33,Kinematic,Base Oil,,28.05,5.61
+pentanedioic acid bis-(4-ethyl-1-isobutyl-octyl) ester,Ester,33,Kinematic,Base Oil,,30.9,4.68
+"2-ethyl-2-(hydroxymethyl)-propane-1,3-diol dinonanoate 4-cyclohexylbutanoate",Ester,33,Kinematic,Base Oil,,35.9,6.05
+"decanedioic acid bis-(2,2-dimethyl-decyl) ester",Ester,34,Kinematic,Base Oil,,30.43,5.26
+"dodecanedioic acid bis-(2,2-dimethyl-nonyl) ester",Ester,34,Kinematic,Base Oil,,27,4.94
+hexanedioic acid bis-(4-ethyl-1-isobutyl-octyl) ester,Ester,34,Kinematic,Base Oil,,32.7,4.99
+2-octyl-decanedioic acid bis-(2-ethyl-hexyl) ester,Ester,34,Kinematic,Base Oil,,21.5,4.65
+"1,3-bis-(decanoyloxy)-2-decanoyloxymethyl2-methyl-propane",Ester,35,Kinematic,Base Oil,,23.25,5.01
+"2-ethyl-2-(hydroxymethyl)-propane-1,3-diol diisodecanoate nonanoate",Ester,35,Kinematic,Base Oil,,40.3,6.05
+"1,4,7-tris-(nonanoyloxy)-octane",Ester,35,Kinematic,Base Oil,,20.95,4.45
+decanedioic acid octadecyl ester 1-methylcyclohexylmethyl ester,Ester,36,Kinematic,Base Oil,,37.8,7.19
+"1-decanoyloxy-2,2-bis-(decanoyloxymethyl)-butane",Ester,36,Kinematic,Base Oil,,25.97,5.24
+decanedioic acid diisotridecyl ester,Ester,36,Kinematic,Base Oil,,37.9,6.69
+"dodecanedioic acid bis-(2,2-dimethyl-decyl) ester",Ester,36,Kinematic,Base Oil,,32.77,5.39
+octadecanoic acid octadecyl ester,Ester,36,Kinematic,Base Oil,,26,5.95
+pentaerythritol butanoate hexanoate octanoate tetradecanoate,Ester,37,Kinematic,Base Oil,,35.02,6.27
+pentaerythritol diheptanoate dinonanoate,Ester,37,Kinematic,Base Oil,,27.9,5.14
+pentaerythritol tetraoctanoate,Ester,37,Kinematic,Base Oil,,26.8,5.11
+pentaerythritol trihexanoate tetradecanoate,Ester,37,Kinematic,Base Oil,,35.2,6.08
+decanedioic acid isotridecyl ester tetradecyl ester,Ester,37,Kinematic,Base Oil,,25.6,4.77
+"2-ethyl-2-(hydroxymethyl)-propane-1,3-diol diundecanoate 4-cyclohexylbutanoate",Ester,38,Kinematic,Base Oil,,43.2,7.54
+"2-ethyl-2-(hydroxymethyl)-propane-1,3-diol decanoate heptadecanoate pentanoate",Ester,38,Kinematic,Base Oil,,35.2,6.59
+decanedioic acid bis-(4-ethyl-1-isobutyl-octyl) ester,Ester,38,Kinematic,Base Oil,,42,6
+"2-ethyl-2-(hydroxymethyl)-propane-1,3-diol isodecanoate octadec-9-enoate pentanoate",Ester,39,Kinematic,Base Oil,,35.9,6.54
+pentaerythritol dihexanoate diundecanoate,Ester,39,Kinematic,Base Oil,,34.5,6.02
+pentaerythritol dinonanoate diisooctanoate,Ester,39,Kinematic,Base Oil,,43,6.52
+nonyl phenyl ether,Ether,15,Dynamic,Base Oil,,3.55,1.12
+bis-[(1-methyl-cyclohexyl)-methyl] ether,Ether,16,Kinematic,Base Oil,,10.6,2.46
+bis-(2-hexanoyloxy-propyl) ether,Ether,18,Kinematic,Base Oil,,5.37,1.75
+"3,6,9-trioxa-undecanedioic acid diisopentyl ester",Ether,18,Kinematic,Base Oil,,11.13,2.76
+"1,6-bis-(heptyloxy)-hexane",Ether,20,Kinematic,Base Oil,,5.33,1.75
+"1,5-bis-(3-phenyl-propoxy)-pentane",Ether,23,Kinematic,Base Oil,,12.2,3.01
+dec-1-ene,Paraffin,10,Dynamic,Base Oil,,0.63,0.34
+decane,Paraffin,10,Dynamic,Base Oil,,0.7,0.37
+4-propyl-heptane,Paraffin,10,Dynamic,Base Oil,,0.54,0.29
+undecane,Paraffin,11,Dynamic,Base Oil,,0.87,0.44
+dodec-1-ene,Paraffin,12,Dynamic,Base Oil,,0.96,0.48
+"2,4-dimethyl-decane",Paraffin,12,Dynamic,Base Oil,,1,0.48
+dodecane,Paraffin,12,Dynamic,Base Oil,,1.06,0.51
+5-ethyl-2-methyl-nonane,Paraffin,12,Kinematic,Base Oil,,1.18,0.68
+5-methyl-undecane,Paraffin,12,Dynamic,Base Oil,,0.97,0.54
+"3,3,6,6-tetramethyl-octane",Paraffin,12,Dynamic,Base Oil,,1.59,0.78
+dicyclohexyl-methane,Paraffin,13,Kinematic,Base Oil,,4.08,1.42
+isopropyl-decahydro-naphthalene,Paraffin,13,Dynamic,Base Oil,,2.39,0.87
+cis-2-methyl-bicyclohexyl,Paraffin,13,Kinematic,Base Oil,,4.18,1.49
+trans-2-methyl-bicyclohexyl,Paraffin,13,Kinematic,Base Oil,,3.09,1.19
+5-butyl-nonane,Paraffin,13,Dynamic,Base Oil,,1.12,0.48
+5-ethyl-5-methyl-decane,Paraffin,13,Kinematic,Base Oil,,1.69,0.75
+tridecane,Paraffin,13,Dynamic,Base Oil,,1.31,0.6
+octyl-cyclohexane,Paraffin,14,Dynamic,Base Oil,,2.24,0.88
+"3,8-diethyl-decane",Paraffin,14,Kinematic,Base Oil,,1.75,0.79
+"2,11-dimethyl-dodecane",Paraffin,14,Dynamic,Base Oil,,1.02,0.43
+"2,2,3,3,5,6,6-heptamethyl-heptane",Paraffin,14,Dynamic,Base Oil,,2.97,1.06
+7-methyl-tridecane,Paraffin,14,Dynamic,Base Oil,,1.49,0.63
+tetradecane,Paraffin,14,Dynamic,Base Oil,,1.6,0.69
+"3,9-diethyl-undecane",Paraffin,15,Kinematic,Base Oil,,1.97,1.21
+3-ethyl-tridecane,Paraffin,15,Kinematic,Base Oil,,2.34,1.03
+Pentadecane,Paraffin,15,Dynamic,Base Oil,,1.95,0.785
+"5,8-diethyl-dodecane",Paraffin,16,Kinematic,Base Oil,,2.41,0.99
+hexadecane,Paraffin,16,Dynamic,Base Oil,,2.23,0.9
+7-propyl-tridecane,Paraffin,16,Dynamic,Base Oil,,2.03,0.74
+"3,3,6,6-tetraethyl-octane",Paraffin,16,Kinematic,Base Oil,,5.21,1.65
+heptadec-1-ene,Paraffin,17,Dynamic,Base Oil,,2.38,0.95
+"5,5-dibutyl-nonane",Paraffin,17,Dynamic,Base Oil,,4.14,1.02
+"2,2-dimethyl-pentadecane",Paraffin,17,Dynamic,Base Oil,,2.98,1.07
+"8,8-dimethyl-pentadecane",Paraffin,17,Dynamic,Base Oil,,2.67,0.95
+"5,5-dipropyl-undecane",Paraffin,17,Dynamic,Base Oil,,3.43,0.97
+heptadecane,Paraffin,17,Dynamic,Base Oil,,2.65,1.02
+5-isobutyl-5-methyl-dodecane,Paraffin,17,Dynamic,Base Oil,,2.51,0.88
+6-methyl-6-propyl-tridecane,Paraffin,17,Dynamic,Base Oil,,2.85,0.94
+4-propyl-tetradecane,Paraffin,17,Kinematic,Base Oil,,3.32,1.22
+"3,12-diethyl-tetradecane",Paraffin,18,Dynamic,Base Oil,,2.89,1.11
+"4,9-dipropyl-dodecane",Paraffin,18,Dynamic,Base Oil,,2.69,0.88
+2-methyl-heptadecane,Paraffin,18,Dynamic,Base Oil,,2.37,0.87
+octadecane,Paraffin,18,Dynamic,Base Oil,,3.1,1.14
+5-butyl-pentadecane,Paraffin,19,Kinematic,Base Oil,,4.17,1.46
+"4,10-dipropyl-tridecane",Paraffin,19,Kinematic,Base Oil,,3.78,1.73
+7-hexyl-tridecane,Paraffin,19,Kinematic,Base Oil,,3.33,1.02
+nonadecane,Paraffin,19,Dynamic,Base Oil,,3.59,1.27
+5-butyl-hexadecane,Paraffin,20,Dynamic,Base Oil,,4.5,1.43
+"7,8-dipropyl-tetradecane",Paraffin,20,Kinematic,Base Oil,,4.98,1.42
+eicosane,Paraffin,20,Dynamic,Base Oil,,4.14,1.41
+3-ethyl-octadecane,Paraffin,20,Dynamic,Base Oil,,3.2,1.07
+4-propyl-heptadecane,Paraffin,20,Dynamic,Base Oil,,3.66,1.2
+"7,8,9,10-tetramethyl-hexadecane",Paraffin,20,Kinematic,Base Oil,,5.09,1.45
+8-hexyl-pentadecane,Paraffin,21,Dynamic,Base Oil,,4.36,1.23
+"5,10-dibutyl-tetradecane",Paraffin,22,Kinematic,Base Oil,,6.82,1.82
+"6,7-dipentyl-dodecane",Paraffin,22,Dynamic,Base Oil,,5.38,1.36
+8-heptyl-pentadecane,Paraffin,22,Dynamic,Base Oil,,6.54,1.38
+"3,3,6,6,9,9,12,12-octamethyl-tetradecane",Paraffin,22,Kinematic,Base Oil,,20.91,3.56
+4-propyl-nonadecane,Paraffin,22,Dynamic,Base Oil,,4.85,1.58
+"5,11-dibutyl-pentadecane",Paraffin,23,Kinematic,Base Oil,,8.02,2.11
+9-hexyl-heptadecane,Paraffin,23,Dynamic,Base Oil,,5.53,1.54
+5-butyl-eicosane,Paraffin,24,Dynamic,Base Oil,,6.64,1.96
+"5,10-diethyl-7,8-diisopropyl-tetradecane",Paraffin,24,Dynamic,Base Oil,,5.8,1.7
+"2,2-dimethyl-docosane",Paraffin,24,Dynamic,Base Oil,,8.45,2.45
+7-hexyl-octdecane,Paraffin,24,Dynamic,Base Oil,,9.96,1.87
+9-octyl-heptadecane,Paraffin,25,Dynamic,Base Oil,,6.86,1.83
+5-butyl-docosane,Paraffin,26,Dynamic,Base Oil,,8.91,2.24
+7-butyl-docosane,Paraffin,26,Dynamic,Base Oil,,8.49,2.15
+9-butyl-docosane,Paraffin,26,Dynamic,Base Oil,,8.18,2.08
+11-butyl-docosane,Paraffin,26,Dynamic,Base Oil,,8.04,1.99
+"5,14-dibutyl-octadecane",Paraffin,26,Dynamic,Base Oil,,9.37,2.07
+"11-(2,2-dimethyl-propyl)-heneicosane",Paraffin,26,Dynamic,Base Oil,,9.04,2.11
+"6,11-dipentyl-hexadecane",Paraffin,26,Dynamic,Base Oil,,9.15,2.01
+3-ethyl-5-(2-ethyl-butyl)-octadecane,Paraffin,26,Dynamic,Base Oil,,9.25,2.13
+11-(1-ethyl-propyl)-heneicosane,Paraffin,26,Dynamic,Base Oil,,8.13,1.98
+3-ethyl-tetracosane,Paraffin,26,Dynamic,Base Oil,,8.99,2.38
+7-hexyl-eicosane,Paraffin,26,Dynamic,Base Oil,,8.22,2.09
+11-pentyl-heneicosane,Paraffin,26,Dynamic,Base Oil,,7.76,2.01
+"6,12-dipentyl-heptadecane",Paraffin,27,Kinematic,Base Oil,,13.7,2.88
+9-octyl-nonadecane,Paraffin,27,Kinematic,Base Oil,,6.49,1.85
+"2,2,4,10,12,12-hexamethyl-7-(3,5,5-trimethyl-hexyl)- tridecane",Paraffin,28,Dynamic,Base Oil,,18.88,2.87
+7-hexyl-docosane,Paraffin,28,Kinematic,Base Oil,,12.8,3.23
+10-nonyl-nonadecane,Paraffin,28,Dynamic,Base Oil,,8.75,2.28
+9-octyl-eicosane,Paraffin,28,Dynamic,Base Oil,,9.18,2.24
+"2,6,10,15,19,23-hexamethyl-tetracosane",Paraffin,30,Kinematic,Base Oil,,19.94,4.06
+9-octyl-docosane,Paraffin,30,Dynamic,Base Oil,,11.1,2.62
+11-decyl-heneicosane,Paraffin,31,Dynamic,Base Oil,,11.3,2.7
+11-decyl-docosane,Paraffin,32,Dynamic,Base Oil,,12.61,2.88
+"9,10-dihexyl-7,12-dimethyl-octadecane",Paraffin,32,Dynamic,Base Oil,,16.52,3.2
+9-octyl-tetracosane,Paraffin,32,Dynamic,Base Oil,,14.15,3.06
+11-decyl-tetracosane,Paraffin,34,Dynamic,Base Oil,,14.97,3.27
+9-octyl-hexacosane,Paraffin,34,Dynamic,Base Oil,,16.26,3.48
+16-butyl-hentriacontane,Paraffin,35,Dynamic,Base Oil,,19.05,4.11
+13-undecyl-pentacosane,Paraffin,36,Dynamic,Base Oil,,16.99,3.66
+"9,14-dioctyl-docosane",Paraffin,38,Kinematic,Base Oil,,27.56,5.36
+13-dodecyl-hexacosane,Paraffin,38,Dynamic,Base Oil,,19.7,4.18
