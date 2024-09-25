@@ -25,13 +25,13 @@ del best_model_row['avg_train_time']
 best_params = best_model_row
 
 # Extract the features and target variable from the training and test datasets
-train_dataset = pd.read_csv('Datasets/LargeTrainingDataset_Descriptors.csv')
-test_dataset = pd.read_csv('Datasets/FinalTestDataset_Descriptors.csv')
+train_dataset = pd.read_csv('Datasets/Kajita_Dataset_Descriptors_Bare.csv')
+test_dataset = pd.read_csv('Datasets/Experimental_Test_Dataset_Descriptors_Bare.csv')
 
-X_train = train_dataset.drop(columns=['Unnamed: 0.1', 'Unnamed: 0', 'Viscosity'])
-y_train = train_dataset['Viscosity']
-X_test = test_dataset.drop(columns=['Unnamed: 0.1', 'Unnamed: 0', 'Viscosity'])
-y_test = test_dataset['Viscosity']
+X_train = train_dataset.drop(columns=['visco@40C[cP]', 'visco@100C[cP]'])
+y_train = train_dataset['visco@100C[cP]']
+X_test = test_dataset.drop(columns=['Experimental_40C_Viscosity', 'Experimental_100C_Viscosity'])
+y_test = test_dataset['Experimental_100C_Viscosity']
 
 # Step 2: Function to perform 5-fold cross-validation and collect MSE scores using the test dataset
 def cross_val_mse(model, X_train, y_train, X_test, y_test):

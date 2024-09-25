@@ -10,8 +10,8 @@ import ast
 
 # Load the CSV files
 xgboost_grid_search_results = pd.read_csv('PropertyPrediction/GradientBoosting/xgboost_model_training_results.csv')
-train_dataset = pd.read_csv('Datasets/LargeTrainingDataset_Descriptors.csv')
-test_dataset = pd.read_csv('Datasets/FinalTestDataset_Descriptors.csv')
+train_dataset = pd.read_csv('Datasets/Kajita_Dataset_Descriptors_Bare.csv')
+test_dataset = pd.read_csv('Datasets/Experimental_Test_Dataset_Descriptors_Bare.csv')
 
 # Step 1: Identify the best performing model according to MSE
 best_model_row = xgboost_grid_search_results.loc[xgboost_grid_search_results['Test MSE'].idxmin()]
@@ -23,10 +23,10 @@ best_params = best_model_row['Params']
 best_params = ast.literal_eval(best_params)
 
 # Extract the features and target variable from the training and test datasets
-X_train = train_dataset.drop(columns=['Unnamed: 0.1', 'Unnamed: 0', 'Viscosity'])
-y_train = train_dataset['Viscosity']
-X_test = test_dataset.drop(columns=['Unnamed: 0.1', 'Unnamed: 0', 'Viscosity'])
-y_test = test_dataset['Viscosity']
+X_train = train_dataset.drop(columns=['visco@40C[cP]', 'visco@100C[cP]'])
+y_train = train_dataset['visco@100C[cP]']
+X_test = test_dataset.drop(columns=['Experimental_40C_Viscosity', 'Experimental_100C_Viscosity'])
+y_test = test_dataset['Experimental_100C_Viscosity']
 
 # Step 2: Function to perform 5-fold cross-validation and collect MSE scores using the test dataset
 def cross_val_mse(model, X_train, y_train, X_test, y_test):
@@ -61,12 +61,12 @@ plt.errorbar(sizes, mses, yerr=stds, fmt='-o')
 plt.xlabel('Training Set Size')
 plt.ylabel('MSE')
 plt.title('5-Fold Cross-Validation MSE vs Training Set Size (XGBoost)')
-plt.savefig('XGB_Training.png')
+plt.savefig('XGB_Training_100C.png')
 plt.show()
 
 # Save the results to a CSV file
 results_df = pd.DataFrame(results, columns=['Training Set Size', 'MSE', 'Standard Deviation'])
-results_df.to_csv('cross_validation_results_xgboost.csv', index=False)
+results_df.to_csv('cross_validation_results_xgboost_100C.csv', index=False)
 
 # Predict and time the predictions on the test set
 start_time = time.time()
@@ -86,6 +86,6 @@ final_results.update({f'MSE {int(size*100)}%': mse for size, mse, _ in results})
 final_results.update({f'Std {int(size*100)}%': std for size, _, std in results})
 
 final_results_df = pd.DataFrame([final_results])
-final_results_df.to_csv('final_results_xgboost.csv', index=False)
+final_results_df.to_csv('final_results_xgboost_100C.csv', index=False)
 
 print("Cross-validation results and final results have been saved to CSV files.")

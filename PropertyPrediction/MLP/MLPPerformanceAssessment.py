@@ -10,14 +10,16 @@ import time
 import matplotlib.pyplot as plt
 
 # Load the datasets
-final_test_dataset = pd.read_csv('Datasets/FinalTestDataset.csv')
+
+
+final_test_dataset = pd.read_csv('Datasets/EBDatasetSMILES.csv')
 large_training_dataset = pd.read_csv('Datasets/LargeTrainingDataset.csv')
 model_performance = pd.read_csv('PropertyPrediction/MLP/model_performance.csv')
 
 # Find the best performing model according to MSE
 best_model_row = model_performance.loc[model_performance['avg_val_score'].idxmin()]
 
-# Extract best model parameters
+# Extract best model parameterswf 
 optimizer = best_model_row['optimizer']
 dense_units = best_model_row['dense_units']
 num_layers = best_model_row['num_layers']
@@ -26,7 +28,7 @@ batch_size = best_model_row['batch_size']
 
 # Prepare the dataset
 X = large_training_dataset['smiles']
-y = large_training_dataset['visco@40C[cP]']
+y = large_training_dataset['visco@100C[cP]']
 
 # Tokenize the smiles strings
 tokenizer = Tokenizer(char_level=True)
@@ -36,8 +38,8 @@ max_sequence_length = max(len(seq) for seq in sequences)
 X = pad_sequences(sequences, maxlen=max_sequence_length)
 
 # Prepare the test dataset
-X_test = final_test_dataset['smiles']
-y_test = final_test_dataset['visco@40C[cP]']
+X_test = final_test_dataset['SMILES']
+y_test = final_test_dataset['Experimental_100C_Viscosity']
 test_sequences = tokenizer.texts_to_sequences(X_test)
 X_test = pad_sequences(test_sequences, maxlen=max_sequence_length)
 
@@ -66,7 +68,7 @@ callbacks = [
 ]
 
 # Define dropout rates to evaluate
-dropout_rates = [0.0, 0.2, 0.4, 0.6, 0.8]
+dropout_rates = [0.0, 0.2]
 
 # Store results for each dropout rate
 dropout_results = {}
@@ -86,7 +88,7 @@ for rate, mse in dropout_results.items():
 
 # 5-fold cross-validation on different dataset sizes for the best dropout rate
 best_dropout_rate = min(dropout_results, key=dropout_results.get)
-dataset_sizes = [0.01, 0.05, 0.1, 0.2, 0.4, 0.6, 0.8, 0.999]
+dataset_sizes = [0.999]
 cv_results = {size: [] for size in dataset_sizes}
 cv_time = {size: [] for size in dataset_sizes}
 
@@ -120,7 +122,7 @@ plt.xlabel('Training Data Size')
 plt.ylabel('Average Test MSE')
 plt.title('5-Fold Cross-Validation Performance with Best Dropout Rate Using Test Set')
 plt.grid(True)
-plt.savefig('cv_performance_with_dropout.png')
+plt.savefig('cv_performance_with_dropout_Experimental_100C_MLP.png')
 plt.show()
 
 # Save results to CSV
@@ -130,7 +132,7 @@ results_df = pd.DataFrame({
     'Std Test MSE': [std_cv_results[size] for size in dataset_sizes],
     'Average Training Time (s)': [np.mean(cv_time[size]) for size in dataset_sizes]
 })
-results_df.to_csv('cv_results_with_dropout.csv', index=False)
+results_df.to_csv('cv_results_with_dropout_Experimental_100C_MLP.csv', index=False)
 
 # Print the results
 print("Best dropout rate:", best_dropout_rate)

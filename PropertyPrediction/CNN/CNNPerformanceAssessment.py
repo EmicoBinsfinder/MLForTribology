@@ -11,7 +11,7 @@ import matplotlib.pyplot as plt
 import ast
 
 # Load the datasets
-final_test_dataset = pd.read_csv('Datasets/FinalTestDataset.csv')
+final_test_dataset = pd.read_csv('Datasets/EBDatasetSMILES.csv')
 large_training_dataset = pd.read_csv('Datasets/LargeTrainingDataset.csv')
 cnn_model_performance = pd.read_csv('PropertyPrediction/CNN/cnn_model_training_results.csv')
 
@@ -38,7 +38,7 @@ batch_size = int(best_params['batch_size'])
 
 # Prepare the dataset
 X = large_training_dataset['smiles']
-y = large_training_dataset['visco@40C[cP]']
+y = large_training_dataset['visco@100C[cP]']
 
 # Tokenize the smiles strings
 tokenizer = Tokenizer(char_level=True)
@@ -51,8 +51,8 @@ X = pad_sequences(sequences, maxlen=max_sequence_length)
 X = np.expand_dims(X, axis=-1)
 
 # Prepare the test dataset
-X_test = final_test_dataset['smiles']
-y_test = final_test_dataset['visco@40C[cP]']
+X_test = final_test_dataset['SMILES']
+y_test = final_test_dataset['Experimental_100C_Viscosity']
 test_sequences = tokenizer.texts_to_sequences(X_test)
 X_test = pad_sequences(test_sequences, maxlen=max_sequence_length)
 
@@ -128,7 +128,7 @@ plt.xlabel('Training Data Size')
 plt.ylabel('Average Test MSE')
 plt.title('5-Fold Cross-Validation Performance with Best CNN Model Using Test Set')
 plt.grid(True)
-plt.savefig('cnn_cv_performance_with_best_dropout.png')
+plt.savefig('cnn_cv_performance_with_best_dropout_100C.png')
 plt.show()
 
 # Save results to CSV
@@ -138,7 +138,7 @@ results_df = pd.DataFrame({
     'Std Test MSE': [std_cv_results[size] for size in dataset_sizes],
     'Average Training Time (s)': [np.mean(cv_time[size]) for size in dataset_sizes]
 })
-results_df.to_csv('cnn_cv_results_with_best_dropout.csv', index=False)
+results_df.to_csv('cnn_cv_results_with_best_dropout_experimental_100C.csv', index=False)
 
 # Print the results
 print("Test MSE of the best CNN model with best dropout rate:", avg_cv_results)

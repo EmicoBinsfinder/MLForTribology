@@ -28,16 +28,6 @@ for name, df in dataframes.items():
             df['Std RMSE'] = df['Std Test MSE'] / (2 * np.sqrt(df['Average Test MSE']))
 
 
-24.57315045
-12.05406791
-7.774069004
-6.132724247
-4.863224269
-4.087082789
-3.622715215
-3.411214607
-
-
 # Normalize training set size to percentage
 for name, df in dataframes.items():
     size_col = df.columns[0]
