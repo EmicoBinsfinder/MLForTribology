@@ -93,7 +93,7 @@ for property_name, column in properties.items():
     descriptors_df = pd.DataFrame(descriptor_values.tolist(), columns=descriptor_names)
 
     # Remove columns with only zero values
-    descriptors_df = descriptors_df.loc[:, (descriptors_df != 0).any(axis=0)]
+    # descriptors_df = descriptors_df.loc[:, (descriptors_df != 0).any(axis=0)]
 
     # Combine SMILES, descriptors, and target property
     combined_data = pd.concat([property_data.reset_index(drop=True), descriptors_df], axis=1)
