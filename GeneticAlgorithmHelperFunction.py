@@ -773,7 +773,6 @@ def RemoveAtom(StartingMolecule, BondTypes, fromAromatic=False, showdiff=True):
 
     return Mut_Mol, Mut_Mol_Sanitized, MutMolSMILES, StartingMoleculeUnedited
 
-#Change so that we can have at most 1 benzene molecule
 def InsertAromatic(StartingMolecule, AromaticMolecule, InsertStyle='Within', showdiff=False, Verbose=False):
     """
     Function to insert an aromatic atom into a starting molecule
@@ -901,7 +900,7 @@ def InsertAromatic(StartingMolecule, AromaticMolecule, InsertStyle='Within', sho
     return Mut_Mol, Mut_Mol_Sanitized, MutMolSMILES, StartingMoleculeUnedited
 
 def Mutate(StartingMolecule, Mutation, AromaticMolecule, AtomicNumbers, BondTypes,
-           Atoms, showdiff, Fragments, Napthalenes):
+           Atoms, showdiff, Fragments, Napthalenes, Mols):
     
     print(f'Mutation being performed: {Mutation}')
     if Mutation == 'AddAtom':
@@ -935,6 +934,10 @@ def Mutate(StartingMolecule, Mutation, AromaticMolecule, AtomicNumbers, BondType
     elif Mutation == 'RemoveFragment':
         result = RemoveFragment(StartingMolecule, BondTypes)
 
+    elif Mutation == 'ReplaceCandidate':
+        result = ReplaceCandidate(Mols, BondTypes, AtomicNumbers, Atoms, Fragments,
+                                  Napthalenes, AromaticMolecule, showdiff)
+
     else:
         InsertStyle = rnd(['Within', 'Egde'])
         result = InsertAromatic(StartingMolecule, AromaticMolecule, showdiff=showdiff, InsertStyle=InsertStyle)
@@ -960,7 +963,6 @@ def CheckSubstruct(MutMol):
     else:
         return False
 
-# Function to run a command from a python script
 def runcmd(cmd, verbose = False, *args, **kwargs):
     #bascially allows python to run a bash command, and the code makes sure 
     #the error of the subproceess is communicated if it fails
@@ -1347,13 +1349,25 @@ def limit_oxygen_atoms(molecule, max_oxygen_count):
     # Check if the count is within the limit
     return oxygen_count >= max_oxygen_count
 
-
 def GenMolChecks(result, GenerationMolecules, MaxNumHeavyAtoms, MinNumHeavyAtoms, MaxAromRings):
 
     try:
         NumRings = result[0].GetRingInfo().NumRings()
     except:
         NumRings = 0
+
+    try:
+        ring_info = result[0].GetRingInfo()
+        atom_rings = ring_info.AtomRings()
+        # Check if any ring exceeds the max_ring_size
+        for ring in atom_rings:
+            print(len(ring))
+            if len(ring) > 6:
+                print('Molecule has large rring')
+                MutMol = None
+                return MutMol     
+    except:
+        pass
 
     if result[0]!= None:
         #Get number of heavy atoms in mutated molecule
@@ -1394,6 +1408,7 @@ def GenMolChecks(result, GenerationMolecules, MaxNumHeavyAtoms, MinNumHeavyAtoms
         elif Chem.rdMolDescriptors.CalcNumBridgeheadAtoms(result[0]) > 0:
             print('Too many bridged aromatic rings')
             MutMol = None
+        
         
         else:
             MutMol = result[0]
@@ -1474,7 +1489,7 @@ def GetDVI(DVisc40, DVisc100):
     try:
         S = (-log10( (log10(DVisc40) + 1.2) / (log10(DVisc100) + 1.2) )) / (log10(175/235))
         DVI = 220 - (7*(10**S))
-        return DVI
+        return max(0, DVI)
     except:
         return 0
 
@@ -1527,7 +1542,6 @@ def plotmol(mol):
     img = Draw.MolsToGridImage([mol], subImgSize=(800, 800))
     img.show()
 
-# Add indexes to molecule for visualisation
 def mol_with_atom_index(mol):
 
     for atom in mol.GetAtoms():
@@ -1730,7 +1744,6 @@ def green_kubo(timestep, Pxy, Pxz, Pyz, volume, kBT):
 
     return avg_acf, viscosity
 
-# Viscosity from Einstein relation
 def einstein(timestep, Pxy, Pxz, Pyz, volume, kBT, Time):
     '''
     Calculate the viscosity from the Einstein relation 
@@ -2590,3 +2603,37 @@ def count_c_and_o(string):
     count_c = string.count('c')
     Atom_count = count_C + count_o + count_c
     return Atom_count
+
+def ReplaceCandidate(Mols, BondTypes, AtomicNumbers, Atoms, fragments,
+                        Napthalenes, AromaticMolecule, showdiff,
+                        Mutations = ['AddAtom', 'ReplaceAtom', 'ReplaceBond', 'RemoveAtom', 'AddFragment', 
+                                     'RemoveFragment', 'Napthalenate', 'Esterify', 'Glycolate']):
+    
+    AromaticMolecule = fragments[-1]
+    Mutation = rnd(Mutations)
+
+    print('Attempting to replace candidate')
+
+    StartingMolecule = rnd(Mols) #Select starting molecule
+
+    # Perform mutation 
+    result = Mutate(StartingMolecule, Mutation, AromaticMolecule, AtomicNumbers, 
+                        BondTypes, Atoms, showdiff, Fragments=fragments, Napthalenes=Napthalenes, Mols=Mols)
+    
+    return result
+
+
+"""
+
+Allow change in ratio depending on score
+Change fragments to key 10 key fragment types
+
+- Need to record the full generation being compared
+- Need to scale DVI better
+
+
+Run array job of different hyperparameters
+- Diff Num Elite, Mut Rate, Target properties
+
+
+"""

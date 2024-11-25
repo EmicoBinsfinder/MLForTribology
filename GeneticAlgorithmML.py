@@ -43,9 +43,10 @@ file_path = '/rds/general/user/eeo21/home/HIGH_THROUGHPUT_STUDIES/MLForTribology
 dataset = pd.read_csv(file_path)
 
 Mols = dataset['SMILES']
-fragments = ['CCCC', 'CCCCC', 'C(CC)CCC', 'CCC(CCC)CC', 'CCCC(C)CC', 'CCCCCCCCC', 'CCCCCCCC', 'CCCCCC', 'C(CCCCC)C']
+fragments = ['CCCC', 'CCCCC', 'C(CC)CCC', 'CCC(CCC)CC', 'CCCC(C)CC', 'CCCCCCCCC', 'CCCCCCCC', 'CCCCCC', 'C(CCCCC)C', 'CC=OOCC(CC=O)O(CO)CO']
 
-Mols = [Chem.MolFromSmiles(x) for x in Mols[:100]]
+Mols = [Chem.MolFromSmiles(x) for x in Mols[:200]]
+ReplaceMols = Mols
 fragments = [Chem.MolFromSmiles(x) for x in fragments]
 
 ### ATOM NUMBERS
@@ -80,7 +81,7 @@ showdiff = False # Whether or not to display illustration of each mutation
 GenerationSize = 50
 LOPLS = False # Whether or not to use OPLS or LOPLS, False uses OPLS
 MaxGenerations = 1000
-MaxMutationAttempts = 200
+MaxMutationAttempts = 2000
 Fails = 0
 NumRuns = 5
 NumAtoms = 10000
@@ -91,7 +92,7 @@ STARTINGDIR = deepcopy(os.getcwd())
 PYTHONPATH = 'python3'
 Generation = 1
 
-Napthalenes = ['C12=CC=CC=C2C=CC=C1', 'C1CCCC2=CC=CC=C12', 'C1CCCC2CCCCC12']
+Napthalenes = ['C12=CC=CC=C2C=CC=C1', 'C1CCCC2=CC=CC=C12', 'C1CCCC2CCCCC12', 'C1CCC2=CC=CC=C12']
 
 # Master Dataframe where molecules from all generations will be stored
 MoleculeDatabase = pd.DataFrame(columns=['SMILES', 'MolObject', 'MutationList', 'HeavyAtoms', 'ID', 'MolMass', 'Predecessor', 'Score', 'Density100C', 'DViscosity40C',
@@ -103,10 +104,8 @@ GenerationDatabase = pd.DataFrame(columns=['SMILES', 'MolObject', 'MutationList'
                                         'DViscosity100C', 'DVI', 'Toxicity', 'SCScore', 'Density40C', 'SimilarityScore',
                                         'ThermalConductivity_40C', 'ThermalConductivity_100C', 'HeatCapacity_40C', 'HeatCapacity_100C'])
 
-
 # Initialise population 
 while len(MoleculeDatabase) < GenerationSize:
-    
 
     print('\n###########################################################')
     print(f'Attempt number: {FirstGenerationAttempts}')
@@ -118,7 +117,7 @@ while len(MoleculeDatabase) < GenerationSize:
     AromaticMolecule = fragments[-1]
 
     # Perform mutation 
-    result = GAF.Mutate(StartingMolecule, Mutation, AromaticMolecule, AtomicNumbers, BondTypes, Atoms, showdiff, Fragments=fragments, Napthalenes=Napthalenes)
+    result = GAF.Mutate(StartingMolecule, Mutation, AromaticMolecule, AtomicNumbers, BondTypes, Atoms, showdiff, Fragments=fragments, Napthalenes=Napthalenes, Mols=ReplaceMols)
 
     # Implement checks based on predetermined criteria (MolLength, Illegal Substructs etc.)
     if GAF.GenMolChecks(result, MasterMoleculeList, MaxNumHeavyAtoms, MinNumHeavyAtoms, MaxAromRings=2) == None:
@@ -207,6 +206,20 @@ for Molecule, MOLSMILES in FirstGenSimList:
         MoleculeDatabase.at[IDNumber, 'SCScore'] = SCScoreNorm
         MoleculeDatabase.at[IDNumber, 'SimilarityScore'] = AvScore
 
+        #Update Generation Database
+        GenerationDatabase.at[IDNumber, 'Density100C'] = Dens100 #Density 40C
+        GenerationDatabase.at[IDNumber, 'Density40C'] = Dens40 #Density 100C
+        GenerationDatabase.at[IDNumber, 'DViscosity40C'] = DVisc40 #DVisc 40C
+        GenerationDatabase.at[IDNumber, 'DViscosity100C'] = DVisc100 #DVisc 100C
+        GenerationDatabase.at[IDNumber, 'HeatCapacity_40C'] = HC40
+        GenerationDatabase.at[IDNumber, 'HeatCapacity_100C'] = HC100
+        GenerationDatabase.at[IDNumber, 'ThermalConductivity_40C'] = TC40
+        GenerationDatabase.at[IDNumber, 'ThermalConductivity_100C'] = TC100
+        GenerationDatabase.at[IDNumber, 'DVI'] = DVI
+        GenerationDatabase.at[IDNumber, 'Toxicity'] = ToxNorm
+        GenerationDatabase.at[IDNumber, 'SCScore'] = SCScoreNorm
+        GenerationDatabase.at[IDNumber, 'SimilarityScore'] = AvScore
+
     except Exception as E:
         print(E)
         traceback.print_exc()
@@ -222,13 +235,9 @@ TCScores_40C = MoleculeDatabase['DViscosity40C'].tolist()
 TCScores_100C = MoleculeDatabase['DViscosity100C'].tolist()
 
 SCScores = MoleculeDatabase['SCScore'].tolist()
-
 DVIScores = MoleculeDatabase['DVI'].tolist()
-
 ToxicityScores = MoleculeDatabase['Toxicity'].tolist()
-
 SimilarityScores = MoleculeDatabase['SimilarityScore'].tolist()
-
 MoleculeNames = MoleculeDatabase['ID'].tolist()
 
 ViscosityScore_40C  = list(zip(MoleculeNames, ViscScores_40C)) 
@@ -249,32 +258,53 @@ ToxicityScore  = list(zip(MoleculeNames, ToxicityScores))
 # Apply the normalization function
 Viscosity_normalized_molecule_scores_40C = [(1-x[1]) for x in GAF.min_max_normalize(ViscosityScore_40C)]
 Viscosity_normalized_molecule_scores_100C = [(1-x[1]) for x in GAF.min_max_normalize(ViscosityScore_100C)]
-
 HC_normalized_molecule_scores_40C = [(x[1]) for x in GAF.min_max_normalize(HCScore_40C)]
 HC_normalized_molecule_scores_100C = [(x[1]) for x in GAF.min_max_normalize(HCScore_100C)]
-
 TC_normalized_molecule_scores_40C = [(x[1]) for x in GAF.min_max_normalize(TCScore_40C)]
 TC_normalized_molecule_scores_100C = [(x[1]) for x in GAF.min_max_normalize(TCScore_100C)]
-
 DVI_normalized_molecule_scores = [x[1] for x in GAF.min_max_normalize(DVIScore)]
 
 MoleculeDatabase['ViscNormalisedScore_40C'] = Viscosity_normalized_molecule_scores_40C
 MoleculeDatabase['ViscNormalisedScore_100C'] = Viscosity_normalized_molecule_scores_40C
-
 MoleculeDatabase['HCNormalisedScore_40C'] = HC_normalized_molecule_scores_40C
 MoleculeDatabase['HCNormalisedScore_100C'] = HC_normalized_molecule_scores_40C
-
 MoleculeDatabase['TCNormalisedScore_40C'] = TC_normalized_molecule_scores_40C
 MoleculeDatabase['TCNormalisedScore_100C'] = TC_normalized_molecule_scores_40C
-
 MoleculeDatabase['DVINormalisedScore'] = DVI_normalized_molecule_scores
 
+# Combine scores into categories
+MoleculeDatabase['ViscScore'] = (
+    MoleculeDatabase['ViscNormalisedScore_40C'] + MoleculeDatabase['ViscNormalisedScore_100C']
+)
+MoleculeDatabase['HCScore'] = (
+    MoleculeDatabase['HCNormalisedScore_40C'] + MoleculeDatabase['HCNormalisedScore_100C']
+)
+MoleculeDatabase['TCScore'] = (
+    MoleculeDatabase['TCNormalisedScore_40C'] + MoleculeDatabase['TCNormalisedScore_100C']
+)
 
-MoleculeDatabase['TotalScore'] = \
-    MoleculeDatabase['ViscNormalisedScore_40C'] + MoleculeDatabase['DVINormalisedScore'] + MoleculeDatabase['ViscNormalisedScore_100C']\
-          + MoleculeDatabase['HCNormalisedScore_40C'] + MoleculeDatabase['HCNormalisedScore_100C'] + MoleculeDatabase['TCNormalisedScore_40C']\
-            + MoleculeDatabase['TCNormalisedScore_100C'] + MoleculeDatabase['Toxicity'] + MoleculeDatabase['SCScore']\
-                  
+# Define initial weightings for each category and remaining scores (user-defined)
+user_weights = {
+    'ViscScore': 20,  # Example weights; user-defined
+    'HCScore': 20,
+    'TCScore': 20,
+    'Toxicity': 20,
+    'SCScore': 20
+}
+
+# Normalize weights so they sum to 100
+total_weight = sum(user_weights.values())
+normalized_weights = {key: (value / total_weight) * 100 for key, value in user_weights.items()}
+
+# Compute the total score using normalized weights
+MoleculeDatabase['TotalScore'] = (
+    MoleculeDatabase['ViscScore'] * normalized_weights['ViscScore'] / 100 +
+    MoleculeDatabase['HCScore'] * normalized_weights['HCScore'] / 100 +
+    MoleculeDatabase['TCScore'] * normalized_weights['TCScore'] / 100 +
+    MoleculeDatabase['Toxicity'] * normalized_weights['Toxicity'] / 100 +
+    MoleculeDatabase['SCScore'] * normalized_weights['SCScore'] / 100
+)
+                 
 MoleculeDatabase['NichedScore'] = MoleculeDatabase['TotalScore'] / MoleculeDatabase['SimilarityScore']
 
 #Make a pandas object with just the scores and the molecule ID
@@ -298,16 +328,16 @@ for entry in ScoreSortedMolecules:
 MoleculeDatabase.to_csv(f'{STARTINGDIR}/MoleculeDatabase.csv')
 GenerationDatabase.to_csv(f'{STARTINGDIR}/Generation_{Generation}_Database.csv')
 
-
 ################################## Subsequent generations #################################################
 for generation in range(2, MaxGenerations + 1):
     GenerationTotalAttempts = 0
     GenSimList = []
 
+    OrderedMoleculeDatabase = MoleculeDatabase.sort_values(by='NichedScore', ascending=False)
+
     # Generation Dataframe to store molecules from each generation
-    GenerationDatabase = pd.DataFrame(columns=['SMILES', 'MolObject', 'MutationList', 'HeavyAtoms', 'ID', 'Charge', 'MolMass', 'Predecessor', 'Score', 'Density100C', 'DViscosity40C',
-                                            'DViscosity100C', 'KViscosity40C', 'KViscosity100C', 'KVI', 'DVI', 'Toxicity', 'SCScore', 'Density40C', 'SimilarityScore'])
-    
+    GenerationDatabase = OrderedMoleculeDatabase.head(25)
+
     GenerationMoleculeList = ScoreSortedMolecules[:NumElite]
 
     for i, entry in enumerate(ScoreSortedMolecules): #Start by mutating best performing molecules from previous generation and work down
@@ -335,21 +365,25 @@ for generation in range(2, MaxGenerations + 1):
             # Attempt crossover
             try:
                 result = GAF.Mol_Crossover(Chem.MolFromSmiles(Parent1), Chem.MolFromSmiles(Parent2))
+
+                if result[2] == None:
+                    continue
+                    
             except Exception as E:
                 continue
 
             # List containing last two successful mutations performed on molecule
+            Predecessor = [Parent1, Parent2]
             PreviousMutations = entry[2]
             # Number of heavy atoms
             NumHeavyAtoms = int(entry[3])
             # Molecule ID
             Name = f'Generation_{generation}_Molecule_{IDcounter}'
 
-            if NumHeavyAtoms > 32:
-                MutationList = ['RemoveAtom', 'ReplaceAtom', 'ReplaceBond', 'RemoveFragment']
+            if GAF.count_c_and_o(result[2]) > 32:
+                MutationList = ['RemoveFragment','ReplaceCandidate']
             else:
-                MutationList = Mutations 
-            
+                MutationList = Mutations
 
             
             print(f'\n#################################################################\nNumber of attempts: {attempts}')
@@ -364,12 +398,12 @@ for generation in range(2, MaxGenerations + 1):
                 Mutate = False    
 
             if Mutate:
-
-                Mutation = rnd(Mutations)
+                Mutation = rnd(MutationList)
                 AromaticMolecule = fragments[-1]
+                print(Mutation)
 
                 # Perform mutation 
-                result = GAF.Mutate(StartingMolecule, Mutation, AromaticMolecule, AtomicNumbers, BondTypes, Atoms, showdiff, Fragments=fragments, Napthalenes=Napthalenes)
+                result = GAF.Mutate(StartingMolecule, Mutation, AromaticMolecule, AtomicNumbers, BondTypes, Atoms, showdiff, Fragments=fragments, Napthalenes=Napthalenes, Mols=ReplaceMols)
             
             else:
                 Mutation = None
@@ -378,13 +412,13 @@ for generation in range(2, MaxGenerations + 1):
             MutMol = GAF.GenMolChecks(result, MasterMoleculeList, MaxNumHeavyAtoms, MinNumHeavyAtoms, MaxAromRings=3)
             
             if MutMol == None:
-                print('Bad Mol')
                 continue
 
             HeavyAtoms = result[0].GetNumHeavyAtoms() # Get number of heavy atoms in molecule
 
             if GAF.count_c_and_o(result[2]) > MaxNumHeavyAtoms:
                 print('Mol too heavy')
+                MutMol == None
                 continue
 
             else:
@@ -399,6 +433,7 @@ for generation in range(2, MaxGenerations + 1):
                 
                 if GAF.count_c_and_o(result[2]) > MaxNumHeavyAtoms:
                     print('Mol too heavy')
+                    MutMol = None
                     continue
             
                 try:
@@ -406,10 +441,10 @@ for generation in range(2, MaxGenerations + 1):
 
                     # Update Molecule database
                     MoleculeDatabase = GAF.DataUpdate(MoleculeDatabase, IDCounter=IDcounter, MutMolSMILES=MutMolSMILES, MutMol=MutMol, HeavyAtoms=HeavyAtoms,
-                                                        MutationList=[None, None, Mutation], ID=Name, MolMass=MolMass, Predecessor=Predecessor)
+                                                        MutationList=PreviousMutations, ID=Name, MolMass=MolMass, Predecessor=Predecessor)
 
                     GenerationDatabase = GAF.DataUpdate(GenerationDatabase, IDCounter=IDcounter, MutMolSMILES=MutMolSMILES, MutMol=MutMol, HeavyAtoms=HeavyAtoms,
-                                                        MutationList=[None, None, Mutation], ID=Name, MolMass=MolMass, Predecessor=Predecessor)
+                                                        MutationList=PreviousMutations, ID=Name, MolMass=MolMass, Predecessor=Predecessor)
                     
                     # Generate list of molecules to simulate in this generation
                     GenSimList.append([Name, MutMolSMILES])
@@ -422,9 +457,6 @@ for generation in range(2, MaxGenerations + 1):
                     print(E)
                     traceback.print_exc()
                     continue
-
-    MoleculeDatabase.to_csv(f'{STARTINGDIR}/MoleculeDatabase.csv')
-    GenerationDatabase.to_csv(f'{STARTINGDIR}/Generation_{generation}_Database.csv')
 
     # Here is where we will get the various values generated from the MD simulations
     MOLSMILESList = [x[1] for x in GenSimList]
@@ -461,10 +493,6 @@ for generation in range(2, MaxGenerations + 1):
             ## Viscosity Index
             DVI = GAF.GetDVI(DVisc40, DVisc100)
 
-            print(f"{Molecule}: AvScore={AvScore}, DVisc40={DVisc40}, DVisc100={DVisc100}, "
-              f"Dens40={Dens40}, Dens100={Dens100}, HC40={HC40}, HC100={HC100}, "
-              f"TC40={TC40}, TC100={TC100}, DVI={DVI}")
-            
             #Update Molecule Database
             IDNumber = int(Molecule.split('_')[-1])
             MoleculeDatabase.at[IDNumber, 'Density100C'] = Dens100 #Density 40C
@@ -480,43 +508,62 @@ for generation in range(2, MaxGenerations + 1):
             MoleculeDatabase.at[IDNumber, 'SCScore'] = SCScoreNorm
             MoleculeDatabase.at[IDNumber, 'SimilarityScore'] = AvScore
 
+            GenerationDatabase.at[IDNumber, 'Density100C'] = Dens100 #Density 40C
+            GenerationDatabase.at[IDNumber, 'Density40C'] = Dens40 #Density 100C
+            GenerationDatabase.at[IDNumber, 'DViscosity40C'] = DVisc40 #DVisc 40C
+            GenerationDatabase.at[IDNumber, 'DViscosity100C'] = DVisc100 #DVisc 100C
+            GenerationDatabase.at[IDNumber, 'HeatCapacity_40C'] = HC40
+            GenerationDatabase.at[IDNumber, 'HeatCapacity_100C'] = HC100
+            GenerationDatabase.at[IDNumber, 'ThermalConductivity_40C'] = TC40
+            GenerationDatabase.at[IDNumber, 'ThermalConductivity_100C'] = TC100
+            GenerationDatabase.at[IDNumber, 'DVI'] = DVI
+            GenerationDatabase.at[IDNumber, 'Toxicity'] = ToxNorm
+            GenerationDatabase.at[IDNumber, 'SCScore'] = SCScoreNorm
+            GenerationDatabase.at[IDNumber, 'SimilarityScore'] = AvScore
+
         except Exception as E:
             print(E)
             traceback.print_exc()
 
+    print('Length of Mol Database', len(MoleculeDatabase))
+    print('Length of Gen Database', len(GenerationDatabase))
+
     #### Generate Scores
+    MoleculeNames = MoleculeDatabase['ID'].tolist()
     ViscScores_40C = MoleculeDatabase['DViscosity40C'].tolist()
     ViscScores_100C = MoleculeDatabase['DViscosity100C'].tolist()
-
     HCScores_40C = MoleculeDatabase['HeatCapacity_40C'].tolist()
     HCScores_100C = MoleculeDatabase['HeatCapacity_100C'].tolist()
-
     TCScores_40C = MoleculeDatabase['DViscosity40C'].tolist()
     TCScores_100C = MoleculeDatabase['DViscosity100C'].tolist()
-
     SCScores = MoleculeDatabase['SCScore'].tolist()
-
     DVIScores = MoleculeDatabase['DVI'].tolist()
-
     ToxicityScores = MoleculeDatabase['Toxicity'].tolist()
-
     SimilarityScores = MoleculeDatabase['SimilarityScore'].tolist()
 
-    MoleculeNames = MoleculeDatabase['ID'].tolist()
+    # Update generation database scores
+    GenMoleculeNames = GenerationDatabase['ID'].tolist()
+    GenViscScores_40C = GenerationDatabase['DViscosity40C'].tolist()
+    GenViscScores_100C = GenerationDatabase['DViscosity100C'].tolist()
+    GenHCScores_40C = GenerationDatabase['HeatCapacity_40C'].tolist()
+    GenHCScores_100C = GenerationDatabase['HeatCapacity_100C'].tolist()
+    GenTCScores_40C = GenerationDatabase['DViscosity40C'].tolist()
+    GenTCScores_100C = GenerationDatabase['DViscosity100C'].tolist()
+    GenSCScores = GenerationDatabase['SCScore'].tolist()
+    GenDVIScores = GenerationDatabase['DVI'].tolist()
+    GenToxicityScores = GenerationDatabase['Toxicity'].tolist()
+    GenSimilarityScores = GenerationDatabase['SimilarityScore'].tolist()
+    GenMoleculeNames = GenerationDatabase['ID'].tolist()
 
+    #### Mol Database Scores - Mol Database
     ViscosityScore_40C  = list(zip(MoleculeNames, ViscScores_40C)) 
     ViscosityScore_100C  = list(zip(MoleculeNames, ViscScores_100C)) 
-
     TCScore_40C  = list(zip(MoleculeNames, TCScores_40C)) 
     TCScore_100C  = list(zip(MoleculeNames, TCScores_100C)) 
-
     HCScore_40C  = list(zip(MoleculeNames, HCScores_40C)) 
     HCScore_100C  = list(zip(MoleculeNames, HCScores_100C)) 
-
     MolecularComplexityScore  = list(zip(MoleculeNames, SCScores)) 
-
     DVIScore  = list(zip(MoleculeNames, DVIScores)) 
-
     ToxicityScore  = list(zip(MoleculeNames, ToxicityScores)) 
 
     # Apply the normalization function
@@ -533,23 +580,116 @@ for generation in range(2, MaxGenerations + 1):
 
     MoleculeDatabase['ViscNormalisedScore_40C'] = Viscosity_normalized_molecule_scores_40C
     MoleculeDatabase['ViscNormalisedScore_100C'] = Viscosity_normalized_molecule_scores_40C
-
     MoleculeDatabase['HCNormalisedScore_40C'] = HC_normalized_molecule_scores_40C
     MoleculeDatabase['HCNormalisedScore_100C'] = HC_normalized_molecule_scores_40C
-
     MoleculeDatabase['TCNormalisedScore_40C'] = TC_normalized_molecule_scores_40C
     MoleculeDatabase['TCNormalisedScore_100C'] = TC_normalized_molecule_scores_40C
 
     MoleculeDatabase['DVINormalisedScore'] = DVI_normalized_molecule_scores
 
-    MoleculeDatabase['TotalScore'] = \
-        MoleculeDatabase['ViscNormalisedScore_40C'] + MoleculeDatabase['DVINormalisedScore'] + MoleculeDatabase['ViscNormalisedScore_100C']\
-            + MoleculeDatabase['HCNormalisedScore_40C'] + MoleculeDatabase['HCNormalisedScore_100C'] + MoleculeDatabase['TCNormalisedScore_40C']\
-                + MoleculeDatabase['TCNormalisedScore_100C'] + MoleculeDatabase['Toxicity'] + MoleculeDatabase['SCScore']\
-                    
-    MoleculeDatabase['NichedScore'] = MoleculeDatabase['TotalScore'] / MoleculeDatabase['SimilarityScore']
+    # Combine scores into categories
+    MoleculeDatabase['ViscScore'] = (
+        MoleculeDatabase['ViscNormalisedScore_40C'] + MoleculeDatabase['ViscNormalisedScore_100C']
+    )
+    MoleculeDatabase['HCScore'] = (
+        MoleculeDatabase['HCNormalisedScore_40C'] + MoleculeDatabase['HCNormalisedScore_100C']
+    )
+    MoleculeDatabase['TCScore'] = (
+        MoleculeDatabase['TCNormalisedScore_40C'] + MoleculeDatabase['TCNormalisedScore_100C']
+    )
 
-    #Make a pandas object with just the scores and the molecule ID
+    # Define initial weightings for each category and remaining scores (user-defined)
+    user_weights = {
+        'ViscScore': 20,  # Example weights; user-defined
+        'HCScore': 20,
+        'TCScore': 20,
+        'Toxicity': 20,
+        'SCScore': 20
+    }
+
+    # Normalize weights so they sum to 100
+    total_weight = sum(user_weights.values())
+    normalized_weights = {key: (value / total_weight) * 100 for key, value in user_weights.items()}
+
+    # Compute the total score using normalized weights
+    MoleculeDatabase['TotalScore'] = (
+        MoleculeDatabase['ViscScore'] * normalized_weights['ViscScore'] / 100 +
+        MoleculeDatabase['HCScore'] * normalized_weights['HCScore'] / 100 +
+        MoleculeDatabase['TCScore'] * normalized_weights['TCScore'] / 100 +
+        MoleculeDatabase['Toxicity'] * normalized_weights['Toxicity'] / 100 +
+        MoleculeDatabase['SCScore'] * normalized_weights['SCScore'] / 100
+    )
+
+    MoleculeDatabase['NichedScore'] = MoleculeDatabase['TotalScore'] / MoleculeDatabase['SimilarityScore']
+    
+    ##### Gen database score
+    GenViscosityScore_40C  = list(zip(MoleculeNames, GenViscScores_40C)) 
+    GenViscosityScore_100C  = list(zip(MoleculeNames, GenViscScores_100C)) 
+    GenTCScore_40C  = list(zip(MoleculeNames, GenTCScores_40C)) 
+    GenTCScore_100C  = list(zip(MoleculeNames, GenTCScores_100C)) 
+    GenHCScore_40C  = list(zip(MoleculeNames, GenHCScores_40C)) 
+    GenHCScore_100C  = list(zip(MoleculeNames, GenHCScores_100C)) 
+    GenMolecularComplexityScore  = list(zip(MoleculeNames, GenSCScores)) 
+    GenDVIScore  = list(zip(MoleculeNames, DVIScores)) 
+    GenToxicityScore  = list(zip(MoleculeNames, GenToxicityScores)) 
+
+    # Apply the normalization function
+    GenViscosity_normalized_molecule_scores_40C = [(1-x[1]) for x in GAF.min_max_normalize(GenViscosityScore_40C)]
+    GenViscosity_normalized_molecule_scores_100C = [(1-x[1]) for x in GAF.min_max_normalize(GenViscosityScore_100C)]
+
+    GenHC_normalized_molecule_scores_40C = [(x[1]) for x in GAF.min_max_normalize(GenHCScore_40C)]
+    GenHC_normalized_molecule_scores_100C = [(x[1]) for x in GAF.min_max_normalize(GenHCScore_100C)]
+
+    GenTC_normalized_molecule_scores_40C = [(x[1]) for x in GAF.min_max_normalize(GenTCScore_40C)]
+    GenTC_normalized_molecule_scores_100C = [(x[1]) for x in GAF.min_max_normalize(GenTCScore_100C)]
+
+    GenDVI_normalized_molecule_scores = [x[1] for x in GAF.min_max_normalize(GenDVIScore)]
+
+    GenerationDatabase['ViscNormalisedScore_40C'] = GenViscosity_normalized_molecule_scores_40C
+    GenerationDatabase['ViscNormalisedScore_100C'] = GenViscosity_normalized_molecule_scores_40C
+    GenerationDatabase['HCNormalisedScore_40C'] = GenHC_normalized_molecule_scores_40C
+    GenerationDatabase['HCNormalisedScore_100C'] = GenHC_normalized_molecule_scores_40C
+    GenerationDatabase['TCNormalisedScore_40C'] = GenTC_normalized_molecule_scores_40C
+    GenerationDatabase['TCNormalisedScore_100C'] = GenTC_normalized_molecule_scores_40C
+
+    GenerationDatabase['DVINormalisedScore'] = GenDVI_normalized_molecule_scores
+
+    # Combine scores into categories
+    GenerationDatabase['ViscScore'] = (
+        GenerationDatabase['ViscNormalisedScore_40C'] + GenerationDatabase['ViscNormalisedScore_100C']
+    )
+    MoleculeDatabase['HCScore'] = (
+        GenerationDatabase['HCNormalisedScore_40C'] + GenerationDatabase['HCNormalisedScore_100C']
+    )
+    GenerationDatabase['TCScore'] = (
+        GenerationDatabase['TCNormalisedScore_40C'] + GenerationDatabase['TCNormalisedScore_100C']
+    )
+
+    # Define initial weightings for each category and remaining scores (user-defined)
+    user_weights = {
+        'ViscScore': 20,  # Example weights; user-defined
+        'HCScore': 20,
+        'TCScore': 20,
+        'Toxicity': 20,
+        'SCScore': 20
+    }
+
+    # Normalize weights so they sum to 100
+    total_weight = sum(user_weights.values())
+    normalized_weights = {key: (value / total_weight) * 100 for key, value in user_weights.items()}
+
+    # Compute the total score using normalized weights
+    GenerationDatabase['TotalScore'] = (
+        GenerationDatabase['ViscScore'] * normalized_weights['ViscScore'] / 100 +
+        GenerationDatabase['HCScore'] * normalized_weights['HCScore'] / 100 +
+        GenerationDatabase['TCScore'] * normalized_weights['TCScore'] / 100 +
+        GenerationDatabase['Toxicity'] * normalized_weights['Toxicity'] / 100 +
+        GenerationDatabase['SCScore'] * normalized_weights['SCScore'] / 100
+    )
+                    
+    GenerationDatabase['NichedScore'] = GenerationDatabase['TotalScore'] / GenerationDatabase['SimilarityScore']
+
+    ### Make a pandas object with just the scores and the molecule ID
     GenerationMolecules = pd.Series(MoleculeDatabase.NichedScore.values, index=MoleculeDatabase.ID).dropna().to_dict()
 
     # Sort dictiornary according to target score
