@@ -123,6 +123,11 @@ while len(MoleculeDatabase) < GenerationSize:
     if GAF.GenMolChecks(result, MasterMoleculeList, MaxNumHeavyAtoms, MinNumHeavyAtoms, MaxAromRings=2) == None:
         MutMol = None
 
+    elif GAF.count_c_and_o(result[2]) > MaxNumHeavyAtoms:
+        print('Mol too heavy')
+        MutMol == None
+        continue
+
     else:
         HeavyAtoms = result[0].GetNumHeavyAtoms() # Get number of heavy atoms in molecule
         MutMol = result[0] # Get Mol object of mutated molecule
@@ -265,11 +270,11 @@ TC_normalized_molecule_scores_100C = [(x[1]) for x in GAF.min_max_normalize(TCSc
 DVI_normalized_molecule_scores = [x[1] for x in GAF.min_max_normalize(DVIScore)]
 
 MoleculeDatabase['ViscNormalisedScore_40C'] = Viscosity_normalized_molecule_scores_40C
-MoleculeDatabase['ViscNormalisedScore_100C'] = Viscosity_normalized_molecule_scores_40C
+MoleculeDatabase['ViscNormalisedScore_100C'] = Viscosity_normalized_molecule_scores_100C
 MoleculeDatabase['HCNormalisedScore_40C'] = HC_normalized_molecule_scores_40C
-MoleculeDatabase['HCNormalisedScore_100C'] = HC_normalized_molecule_scores_40C
+MoleculeDatabase['HCNormalisedScore_100C'] = HC_normalized_molecule_scores_100C
 MoleculeDatabase['TCNormalisedScore_40C'] = TC_normalized_molecule_scores_40C
-MoleculeDatabase['TCNormalisedScore_100C'] = TC_normalized_molecule_scores_40C
+MoleculeDatabase['TCNormalisedScore_100C'] = TC_normalized_molecule_scores_100C
 MoleculeDatabase['DVINormalisedScore'] = DVI_normalized_molecule_scores
 
 # Combine scores into categories
@@ -285,12 +290,13 @@ MoleculeDatabase['TCScore'] = (
 
 # Define initial weightings for each category and remaining scores (user-defined)
 user_weights = {
-    'ViscScore': 20,  # Example weights; user-defined
-    'HCScore': 20,
-    'TCScore': 20,
-    'Toxicity': 20,
-    'SCScore': 20
+    'ViscScore': 40,  # Example weights; user-defined
+    'HCScore': 15,
+    'TCScore': 25,
+    'Toxicity': 10,
+    'SCScore': 10
 }
+
 
 # Normalize weights so they sum to 100
 total_weight = sum(user_weights.values())
@@ -525,9 +531,6 @@ for generation in range(2, MaxGenerations + 1):
             print(E)
             traceback.print_exc()
 
-    print('Length of Mol Database', len(MoleculeDatabase))
-    print('Length of Gen Database', len(GenerationDatabase))
-
     #### Generate Scores
     MoleculeNames = MoleculeDatabase['ID'].tolist()
     ViscScores_40C = MoleculeDatabase['DViscosity40C'].tolist()
@@ -579,11 +582,11 @@ for generation in range(2, MaxGenerations + 1):
     DVI_normalized_molecule_scores = [x[1] for x in GAF.min_max_normalize(DVIScore)]
 
     MoleculeDatabase['ViscNormalisedScore_40C'] = Viscosity_normalized_molecule_scores_40C
-    MoleculeDatabase['ViscNormalisedScore_100C'] = Viscosity_normalized_molecule_scores_40C
+    MoleculeDatabase['ViscNormalisedScore_100C'] = Viscosity_normalized_molecule_scores_100C
     MoleculeDatabase['HCNormalisedScore_40C'] = HC_normalized_molecule_scores_40C
-    MoleculeDatabase['HCNormalisedScore_100C'] = HC_normalized_molecule_scores_40C
+    MoleculeDatabase['HCNormalisedScore_100C'] = HC_normalized_molecule_scores_100C
     MoleculeDatabase['TCNormalisedScore_40C'] = TC_normalized_molecule_scores_40C
-    MoleculeDatabase['TCNormalisedScore_100C'] = TC_normalized_molecule_scores_40C
+    MoleculeDatabase['TCNormalisedScore_100C'] = TC_normalized_molecule_scores_100C
 
     MoleculeDatabase['DVINormalisedScore'] = DVI_normalized_molecule_scores
 
@@ -600,12 +603,13 @@ for generation in range(2, MaxGenerations + 1):
 
     # Define initial weightings for each category and remaining scores (user-defined)
     user_weights = {
-        'ViscScore': 20,  # Example weights; user-defined
-        'HCScore': 20,
-        'TCScore': 20,
-        'Toxicity': 20,
-        'SCScore': 20
+        'ViscScore': 40,  # Example weights; user-defined
+        'HCScore': 15,
+        'TCScore': 25,
+        'Toxicity': 10,
+        'SCScore': 10
     }
+
 
     # Normalize weights so they sum to 100
     total_weight = sum(user_weights.values())
@@ -630,7 +634,7 @@ for generation in range(2, MaxGenerations + 1):
     GenHCScore_40C  = list(zip(MoleculeNames, GenHCScores_40C)) 
     GenHCScore_100C  = list(zip(MoleculeNames, GenHCScores_100C)) 
     GenMolecularComplexityScore  = list(zip(MoleculeNames, GenSCScores)) 
-    GenDVIScore  = list(zip(MoleculeNames, DVIScores)) 
+    GenDVIScore  = list(zip(MoleculeNames, GenDVIScores)) 
     GenToxicityScore  = list(zip(MoleculeNames, GenToxicityScores)) 
 
     # Apply the normalization function
@@ -646,19 +650,18 @@ for generation in range(2, MaxGenerations + 1):
     GenDVI_normalized_molecule_scores = [x[1] for x in GAF.min_max_normalize(GenDVIScore)]
 
     GenerationDatabase['ViscNormalisedScore_40C'] = GenViscosity_normalized_molecule_scores_40C
-    GenerationDatabase['ViscNormalisedScore_100C'] = GenViscosity_normalized_molecule_scores_40C
+    GenerationDatabase['ViscNormalisedScore_100C'] = GenViscosity_normalized_molecule_scores_100C
     GenerationDatabase['HCNormalisedScore_40C'] = GenHC_normalized_molecule_scores_40C
-    GenerationDatabase['HCNormalisedScore_100C'] = GenHC_normalized_molecule_scores_40C
+    GenerationDatabase['HCNormalisedScore_100C'] = GenHC_normalized_molecule_scores_100C
     GenerationDatabase['TCNormalisedScore_40C'] = GenTC_normalized_molecule_scores_40C
-    GenerationDatabase['TCNormalisedScore_100C'] = GenTC_normalized_molecule_scores_40C
-
+    GenerationDatabase['TCNormalisedScore_100C'] = GenTC_normalized_molecule_scores_100C
     GenerationDatabase['DVINormalisedScore'] = GenDVI_normalized_molecule_scores
 
     # Combine scores into categories
     GenerationDatabase['ViscScore'] = (
         GenerationDatabase['ViscNormalisedScore_40C'] + GenerationDatabase['ViscNormalisedScore_100C']
     )
-    MoleculeDatabase['HCScore'] = (
+    GenerationDatabase['HCScore'] = (
         GenerationDatabase['HCNormalisedScore_40C'] + GenerationDatabase['HCNormalisedScore_100C']
     )
     GenerationDatabase['TCScore'] = (
@@ -667,11 +670,11 @@ for generation in range(2, MaxGenerations + 1):
 
     # Define initial weightings for each category and remaining scores (user-defined)
     user_weights = {
-        'ViscScore': 20,  # Example weights; user-defined
-        'HCScore': 20,
-        'TCScore': 20,
-        'Toxicity': 20,
-        'SCScore': 20
+        'ViscScore': 40,  # Example weights; user-defined
+        'HCScore': 15,
+        'TCScore': 25,
+        'Toxicity': 10,
+        'SCScore': 10
     }
 
     # Normalize weights so they sum to 100
@@ -686,7 +689,7 @@ for generation in range(2, MaxGenerations + 1):
         GenerationDatabase['Toxicity'] * normalized_weights['Toxicity'] / 100 +
         GenerationDatabase['SCScore'] * normalized_weights['SCScore'] / 100
     )
-                    
+
     GenerationDatabase['NichedScore'] = GenerationDatabase['TotalScore'] / GenerationDatabase['SimilarityScore']
 
     ### Make a pandas object with just the scores and the molecule ID
@@ -708,4 +711,4 @@ for generation in range(2, MaxGenerations + 1):
 
     #Save the update Master database and generation database
     MoleculeDatabase.to_csv(f'{STARTINGDIR}/MoleculeDatabase.csv')
-    GenerationDatabase.to_csv(f'{STARTINGDIR}/Generation_{Generation}_Database.csv')
+    GenerationDatabase.to_csv(f'{STARTINGDIR}/Generation_{generation}_Database.csv')
