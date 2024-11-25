@@ -2411,7 +2411,7 @@ def Dens40ML(SMILES):
 
     input_data = pd.DataFrame([descriptor_dict], columns=X.columns)
 
-    model = joblib.load('retrained_xgboost_model_Density_40C.joblib')
+    model = joblib.load('/rds/general/user/eeo21/home/HIGH_THROUGHPUT_STUDIES/MLForTribology/GeneticAlgoMLRun/ModelsandDatasets/retrained_xgboost_model_Density_40C.joblib')
     prediction = model.predict(input_data)
 
     return prediction[0]
@@ -2435,7 +2435,7 @@ def Dens100ML(SMILES):
 
     input_data = pd.DataFrame([descriptor_dict], columns=X.columns)
 
-    model = joblib.load('retrained_xgboost_model_Density_100C.joblib')
+    model = joblib.load('/rds/general/user/eeo21/home/HIGH_THROUGHPUT_STUDIES/MLForTribology/GeneticAlgoMLRun/ModelsandDatasets/retrained_xgboost_model_Density_100C.joblib')
     prediction = model.predict(input_data)
 
     return prediction[0]
@@ -2459,7 +2459,7 @@ def Visc40ML(SMILES):
 
     input_data = pd.DataFrame([descriptor_dict], columns=X.columns)
 
-    model = joblib.load('retrained_xgboost_model_Viscosity_40C.joblib')
+    model = joblib.load('/rds/general/user/eeo21/home/HIGH_THROUGHPUT_STUDIES/MLForTribology/GeneticAlgoMLRun/ModelsandDatasets/retrained_xgboost_model_Viscosity_40C.joblib')
     prediction = model.predict(input_data)
 
     return prediction[0]
@@ -2483,7 +2483,7 @@ def Visc100ML(SMILES):
 
     input_data = pd.DataFrame([descriptor_dict], columns=X.columns)
 
-    model = joblib.load('retrained_xgboost_model_Viscosity_100C.joblib')
+    model = joblib.load('/rds/general/user/eeo21/home/HIGH_THROUGHPUT_STUDIES/MLForTribology/GeneticAlgoMLRun/ModelsandDatasets/retrained_xgboost_model_Viscosity_100C.joblib')
     prediction = model.predict(input_data)
 
     return prediction[0]
@@ -2507,7 +2507,7 @@ def HeatCapacity100ML(SMILES):
 
     input_data = pd.DataFrame([descriptor_dict], columns=X.columns)
 
-    model = joblib.load('retrained_xgboost_model_Heat_Capacity_100C.joblib')
+    model = joblib.load('/rds/general/user/eeo21/home/HIGH_THROUGHPUT_STUDIES/MLForTribology/GeneticAlgoMLRun/ModelsandDatasets/retrained_xgboost_model_Heat_Capacity_100C.joblib')
     prediction = model.predict(input_data)
 
     return prediction[0]
@@ -2531,7 +2531,7 @@ def HeatCapacity40ML(SMILES):
 
     input_data = pd.DataFrame([descriptor_dict], columns=X.columns)
 
-    model = joblib.load('retrained_xgboost_model_Heat_Capacity_40C.joblib')
+    model = joblib.load('/rds/general/user/eeo21/home/HIGH_THROUGHPUT_STUDIES/MLForTribology/GeneticAlgoMLRun/ModelsandDatasets/retrained_xgboost_model_Heat_Capacity_40C.joblib')
     prediction = model.predict(input_data)
 
     return prediction[0]
@@ -2555,7 +2555,7 @@ def ThermalConductivity40ML(SMILES):
 
     input_data = pd.DataFrame([descriptor_dict], columns=X.columns)
 
-    model = joblib.load('retrained_xgboost_model_Thermal_Conductivity_40C.joblib')
+    model = joblib.load('/rds/general/user/eeo21/home/HIGH_THROUGHPUT_STUDIES/MLForTribology/GeneticAlgoMLRun/ModelsandDatasets/retrained_xgboost_model_Thermal_Conductivity_40C.joblib')
     prediction = model.predict(input_data)
 
     return prediction[0]
@@ -2579,13 +2579,14 @@ def ThermalConductivity100ML(SMILES):
 
     input_data = pd.DataFrame([descriptor_dict], columns=X.columns)
 
-    model = joblib.load('retrained_xgboost_model_Thermal_Conductivity_100C.joblib')
+    model = joblib.load('/rds/general/user/eeo21/home/HIGH_THROUGHPUT_STUDIES/MLForTribology/GeneticAlgoMLRun/ModelsandDatasets/retrained_xgboost_model_Thermal_Conductivity_100C.joblib')
     prediction = model.predict(input_data)
 
     return prediction[0]
 
 def count_c_and_o(string):
-    count_c = string.count('C')
+    count_C = string.count('C')
     count_o = string.count('O')
-    Atom_count = count_c + count_o
+    count_c = string.count('c')
+    Atom_count = count_C + count_o + count_c
     return Atom_count

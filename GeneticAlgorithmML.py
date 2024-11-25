@@ -39,13 +39,13 @@ import shutil
 import traceback
 # from gt4sd.properties import PropertyPredictorRegistry
 
-file_path = 'C:/Users/eeo21/Desktop/Datasets/NISTCyclicMoleculeDataset_LogScale.csv'
+file_path = '/rds/general/user/eeo21/home/HIGH_THROUGHPUT_STUDIES/MLForTribology/GeneticAlgoMLRun/ModelsandDatasets/Viscosity_40C_Test_Descriptors.csv'
 dataset = pd.read_csv(file_path)
 
 Mols = dataset['SMILES']
 fragments = ['CCCC', 'CCCCC', 'C(CC)CCC', 'CCC(CCC)CC', 'CCCC(C)CC', 'CCCCCCCCC', 'CCCCCCCC', 'CCCCCC', 'C(CCCCC)C']
 
-Mols = [Chem.MolFromSmiles(x) for x in Mols]
+Mols = [Chem.MolFromSmiles(x) for x in Mols[:100]]
 fragments = [Chem.MolFromSmiles(x) for x in fragments]
 
 ### ATOM NUMBERS
@@ -75,7 +75,7 @@ MasterMoleculeList = [] #Keeping track of all generated molecules
 FirstGenSimList = []
 MaxNumHeavyAtoms = 40
 MinNumHeavyAtoms = 5
-MutationRate = 0.4
+MutationRate = 0.95
 showdiff = False # Whether or not to display illustration of each mutation
 GenerationSize = 50
 LOPLS = False # Whether or not to use OPLS or LOPLS, False uses OPLS
@@ -345,7 +345,7 @@ for generation in range(2, MaxGenerations + 1):
             # Molecule ID
             Name = f'Generation_{generation}_Molecule_{IDcounter}'
 
-            if NumHeavyAtoms > 45:
+            if NumHeavyAtoms > 32:
                 MutationList = ['RemoveAtom', 'ReplaceAtom', 'ReplaceBond', 'RemoveFragment']
             else:
                 MutationList = Mutations 
