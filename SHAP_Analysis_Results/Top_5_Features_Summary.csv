@@ -1,0 +1,41 @@
+Feature,Mean SHAP Value,Property
+BCUT2D_MRHI,0.0043854686,Thermal Conductivity at 40C
+HallKierAlpha,0.0032932425,Thermal Conductivity at 40C
+SlogP_VSA8,0.003099904,Thermal Conductivity at 40C
+VSA_EState8,0.0028202338,Thermal Conductivity at 40C
+BCUT2D_MWLOW,0.0027626134,Thermal Conductivity at 40C
+HallKierAlpha,0.0043811724,Thermal Conductivity at 100C
+BCUT2D_MRHI,0.004099147,Thermal Conductivity at 100C
+SlogP_VSA8,0.0030908885,Thermal Conductivity at 100C
+fr_unbrch_alkane,0.0026465852,Thermal Conductivity at 100C
+VSA_EState8,0.0025988994,Thermal Conductivity at 100C
+MaxPartialCharge,0.039791133,Density at 40C
+HallKierAlpha,0.016937608,Density at 40C
+RingCount,0.014898895,Density at 40C
+BertzCT,0.008030487,Density at 40C
+VSA_EState1,0.0060597504,Density at 40C
+MaxPartialCharge,0.03281117,Density at 100C
+HallKierAlpha,0.021220978,Density at 100C
+RingCount,0.012218331,Density at 100C
+BertzCT,0.009131445,Density at 100C
+VSA_EState1,0.0060693338,Density at 100C
+Ipc,0.3529209,Viscosity at 40C
+HeavyAtomMolWt,0.1112255,Viscosity at 40C
+BertzCT,0.091263175,Viscosity at 40C
+Chi3n,0.08145594,Viscosity at 40C
+BCUT2D_LOGPLOW,0.06723577,Viscosity at 40C
+Ipc,0.2757656,Viscosity at 100C
+HeavyAtomMolWt,0.102159165,Viscosity at 100C
+qed,0.047786772,Viscosity at 100C
+BalabanJ,0.046421405,Viscosity at 100C
+Chi3n,0.044509865,Viscosity at 100C
+Kappa1,0.17230459,Heat Capacity at 40C
+Chi0n,0.10246713,Heat Capacity at 40C
+Chi1n,0.010068188,Heat Capacity at 40C
+MolLogP,0.006224412,Heat Capacity at 40C
+NumRotatableBonds,0.0036790736,Heat Capacity at 40C
+Chi0n,0.21797611,Heat Capacity at 100C
+Kappa1,0.04492552,Heat Capacity at 100C
+Chi1n,0.015924782,Heat Capacity at 100C
+qed,0.0069056423,Heat Capacity at 100C
+MolLogP,0.005220658,Heat Capacity at 100C

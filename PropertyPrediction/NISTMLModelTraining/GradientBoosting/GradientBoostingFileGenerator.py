@@ -2,8 +2,8 @@ import os
 
 # Define properties and corresponding filenames
 properties = [
-    ("Thermal_Conductivity_40C", "Thermal Conductivity at 40Â°C", "Thermal Conductivity_40C"),
-    ("Thermal_Conductivity_100C", "Thermal Conductivity at 100Â°C", "Thermal Conductivity_100C"),
+    ("Thermal_Conductivity_40C", "Thermal Conductivity at 40Â°C", "Thermal_Conductivity_40C"),
+    ("Thermal_Conductivity_100C", "Thermal Conductivity at 100Â°C", "Thermal_Conductivity_100C"),
     ("Density_40C", "Density at 40Â°C", "Density_40C"), 
     ("Density_100C", "Density at 100Â°C", "Density_100C"),
     ("Viscosity_40C", "Viscosity at 40Â°C", "Viscosity_40C"),
@@ -49,13 +49,13 @@ X_train_scaled = scaler.fit_transform(X_train)
 X_val_scaled = scaler.transform(X_val)
 X_test_scaled = scaler.transform(X_test)
 
-# Define hyperparameters for grid search
 param_grid = {{
-    'n_estimators': [100, 200, 300],
-    'learning_rate': [0.01, 0.1, 0.2],
-    'max_depth': [3, 5, 10],
+    'n_estimators': [100, 200, 300, 500, 1000, 2000, 5000],
+    'learning_rate': [0.01, 0.05, 0.1, 0.2, 0.5],
+    'max_depth': [3, 4, 5, 6, 10, 20, 50, 100],
     'tree_method': ['hist'],  # Use GPU
 }}
+
 
 # Custom grid search function
 def custom_grid_search(X_train, y_train, X_test, y_test, param_grid):

@@ -2,14 +2,14 @@ import os
 
 # Define properties and corresponding filenames
 properties = [
-    ("Thermal_Conductivity_40C", "Thermal Conductivity at 40°C"),
-    ("Thermal_Conductivity_100C", "Thermal Conductivity at 100°C"),
-    ("Density_40C", "Density at 40°C"),
-    ("Density_100C", "Density at 100°C"),
-    ("Viscosity_40C", "Viscosity at 40°C"),
-    ("Viscosity_100C", "Viscosity at 100°C"),
-    ("Heat_Capacity_40C", "Heat Capacity at 40°C"),
-    ("Heat_Capacity_100C", "Heat Capacity at 100°C")
+    ("Thermal_Conductivity_40C", "Thermal Conductivity at 40C"),
+    ("Thermal_Conductivity_100C", "Thermal Conductivity at 100C"),
+    ("Density_40C", "Density at 40C"),
+    ("Density_100C", "Density at 100C"),
+    ("Viscosity_40C", "Viscosity at 40C"),
+    ("Viscosity_100C", "Viscosity at 100C"),
+    ("Heat_Capacity_40C", "Heat Capacity at 40C"),
+    ("Heat_Capacity_100C", "Heat Capacity at 100C")
 ]
 
 # Template for the training script
@@ -24,32 +24,32 @@ from sklearn.model_selection import ParameterGrid, cross_val_score
 from sklearn.metrics import mean_squared_error
 import csv
 
+# Set the property name
+property_name = "{property_name}"
+
 # Load the dataset for {description}
-file_path = "Datasets/{property_name}_Dataset.csv"
-data = pd.read_csv(file_path)
+RDS = True
+if RDS:
+    descriptors_df = pd.read_csv(f'/rds/general/user/eeo21/home/HIGH_THROUGHPUT_STUDIES/MLForTribology/Datasets/{property_name}_Descriptors.csv')
+    test_df = pd.read_csv(f'/rds/general/user/eeo21/home/HIGH_THROUGHPUT_STUDIES/MLForTribology/Datasets/{property_name}_Test_Descriptors.csv')
+else:
+    descriptors_df = pd.read_csv(f'Datasets/{property_name}_Descriptors.csv')
+    test_df = pd.read_csv(f'Datasets/{property_name}_Test_Descriptors.csv')
 
 # Function to convert SMILES to molecular descriptors
-def smiles_to_descriptors(smiles):
+def smiles_to_features(smiles):
     mol = Chem.MolFromSmiles(smiles)
-    if mol:
-        descriptors = np.array([
-            Descriptors.MolWt(mol),
-            Descriptors.TPSA(mol),
-            Descriptors.NumHAcceptors(mol),
-            Descriptors.NumHDonors(mol),
-            Descriptors.MolLogP(mol)
-        ])
-        return descriptors
-    else:
-        return np.array([np.nan]*5)
+    if mol is None:
+        return np.zeros(len(Descriptors._descList))  # Handle invalid SMILES
+    return np.array([desc(mol) for name, desc in Descriptors._descList])
 
 # Apply the conversion to the dataset
-data['descriptors'] = data['SMILES'].apply(smiles_to_descriptors)
-data = data.dropna(subset=['descriptors'])  # Drop rows with invalid SMILES
+descriptors_df['descriptors'] = descriptors_df['SMILES'].apply(smiles_to_features)
+descriptors_df = descriptors_df.dropna(subset=['descriptors'])  # Drop rows with invalid SMILES
 
 # Split descriptors and target variable
-X = np.array(data['descriptors'].tolist())
-y = data['{property_name}'].values
+X = np.array(descriptors_df['descriptors'].tolist())
+y = descriptors_df['{property_name}'].values
 
 # Define the KNN model and hyperparameters
 knn = KNeighborsRegressor()
@@ -66,7 +66,7 @@ def custom_grid_search(X, y, model, param_grid, cv=5):
     results = []
     param_list = list(ParameterGrid(param_grid))
     
-    with open('grid_search_results_{property_name}.csv', mode='w', newline='') as file:
+    with open(f'grid_search_results_{property_name}.csv', mode='w', newline='') as file:
         writer = csv.writer(file)
         writer.writerow(['params', 'mean_test_score', 'std_test_score', 'fit_time'])
 

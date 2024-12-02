@@ -2,15 +2,16 @@ import os
 
 # Define properties and corresponding filenames
 properties = [
-    ("Thermal_Conductivity_40C", "Thermal Conductivity at 40°C"),
-    ("Thermal_Conductivity_100C", "Thermal Conductivity at 100°C"),
-    ("Density_40C", "Density at 40°C"),
-    ("Density_100C", "Density at 100°C"),
-    ("Viscosity_40C", "Viscosity at 40°C"),
-    ("Viscosity_100C", "Viscosity at 100°C"),
-    ("Heat_Capacity_40C", "Heat Capacity at 40°C"),
-    ("Heat_Capacity_100C", "Heat Capacity at 100°C")
+    ("Thermal_Conductivity_40C", "Thermal Conductivity at 40C"),
+    ("Thermal_Conductivity_100C", "Thermal Conductivity at 100C"),
+    ("Density_40C", "Density at 40C"),
+    ("Density_100C", "Density at 100C"),
+    ("Viscosity_40C", "Viscosity at 40C"),
+    ("Viscosity_100C", "Viscosity at 100C"),
+    ("Heat_Capacity_40C", "Heat Capacity at 40C"),
+    ("Heat_Capacity_100C", "Heat Capacity at 100C")
 ]
+
 
 # Template for the training script
 script_template = """
@@ -26,8 +27,8 @@ from tensorflow.keras.preprocessing.text import Tokenizer
 from tensorflow.keras.preprocessing.sequence import pad_sequences
 
 # Load dataset for {description}
-dataset = pd.read_csv("Datasets/{property_name}_Train_SMILES.csv")
-test_dataset = pd.read_csv("Datasets/{property_name}_Test_SMILES.csv")
+dataset = pd.read_csv("/rds/general/user/eeo21/home/HIGH_THROUGHPUT_STUDIES/MLForTribology/Datasets/LandoltNISTDatasets/{property_name}_Train.csv")
+test_dataset = pd.read_csv("/rds/general/user/eeo21/home/HIGH_THROUGHPUT_STUDIES/MLForTribology/Datasets/LandoltNISTDatasets/{property_name}_Test.csv")
 
 # Tokenize SMILES strings
 tokenizer = Tokenizer(char_level=True)
