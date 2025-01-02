@@ -8,6 +8,8 @@ fitness function for several property predictions
 
 ############### ENVIRONMENT SETUP ############
 import subprocess
+import sys
+
 def runcmd(cmd, verbose = False, *args, **kwargs):
     #bascially allows python to run a bash command, and the code makes sure 
     #the error of the subproceess is communicated if it fails
@@ -17,6 +19,8 @@ def runcmd(cmd, verbose = False, *args, **kwargs):
         shell=True)
     
     return process
+
+sys.append('/rds/general/user/eeo21/home/HIGH_THROUGHPUT_STUDIES/MLForTribology/GeneticAlgoMLRun')
 
 ################# IMPORTS ###################
 import GeneticAlgorithmHelperFunction as GAF
@@ -37,10 +41,19 @@ import random
 import numpy as np
 import shutil
 import traceback
-# from gt4sd.properties import PropertyPredictorRegistry
+from gt4sd.properties import PropertyPredictorRegistry
 
 file_path = '/rds/general/user/eeo21/home/HIGH_THROUGHPUT_STUDIES/MLForTribology/GeneticAlgoMLRun/ModelsandDatasets/Viscosity_40C_Test_Descriptors.csv'
 dataset = pd.read_csv(file_path)
+
+# Define initial weightings for each category and remaining scores (user-defined)
+user_weights = {
+    'ViscScore': 20,  # Example weights; user-defined
+    'HCScore': 20,
+    'TCScore': 20,
+    'Toxicity': 20,
+    'SCScore': 20
+}
 
 Mols = dataset['SMILES']
 fragments = ['CCCC', 'CCCCC', 'C(CC)CCC', 'CCC(CCC)CC', 'CCCC(C)CC', 'CCCCCCCCC', 'CCCCCCCC', 'CCCCCC', 'C(CCCCC)C', 'CC=OOCC(CC=O)O(CO)CO']
@@ -293,15 +306,6 @@ MoleculeDatabase['TCScore'] = (
     (MoleculeDatabase['TCNormalisedScore_40C'] + MoleculeDatabase['TCNormalisedScore_100C'])/2
 )
 
-# Define initial weightings for each category and remaining scores (user-defined)
-user_weights = {
-    'ViscScore': 20,  # Example weights; user-defined
-    'HCScore': 20,
-    'TCScore': 20,
-    'Toxicity': 20,
-    'SCScore': 20
-}
-
 # Normalize weights so they sum to 100
 total_weight = sum(user_weights.values())
 normalized_weights = {key: (value / total_weight) * 100 for key, value in user_weights.items()}
@@ -311,6 +315,7 @@ MoleculeDatabase['TotalScore'] = (
     MoleculeDatabase['ViscScore'] * normalized_weights['ViscScore'] / 100 +
     MoleculeDatabase['HCScore'] * normalized_weights['HCScore'] / 100 +
     MoleculeDatabase['TCScore'] * normalized_weights['TCScore'] / 100 +
+    MoleculeDatabase['DVINormalisedScore'] * normalized_weights['DVIScore'] / 100 +
     MoleculeDatabase['ToxNormalisedScore'] * normalized_weights['Toxicity'] / 100 +
     MoleculeDatabase['SCSNormalisedScore'] * normalized_weights['SCScore'] / 100
 )
@@ -609,15 +614,6 @@ for generation in range(2, MaxGenerations + 1):
         (MoleculeDatabase['TCNormalisedScore_40C'] + MoleculeDatabase['TCNormalisedScore_100C'])/2
     )
 
-    # Define initial weightings for each category and remaining scores (user-defined)
-    user_weights = {
-        'ViscScore': 20,  # Example weights; user-defined
-        'HCScore': 20,
-        'TCScore': 20,
-        'Toxicity': 20,
-        'SCScore': 20
-    }
-
     # Normalize weights so they sum to 100
     total_weight = sum(user_weights.values())
     normalized_weights = {key: (value / total_weight) * 100 for key, value in user_weights.items()}
@@ -627,6 +623,7 @@ for generation in range(2, MaxGenerations + 1):
         MoleculeDatabase['ViscScore'] * normalized_weights['ViscScore'] / 100 +
         MoleculeDatabase['HCScore'] * normalized_weights['HCScore'] / 100 +
         MoleculeDatabase['TCScore'] * normalized_weights['TCScore'] / 100 +
+        MoleculeDatabase['DVINormalisedScore'] * normalized_weights['DVIScore'] / 100 +
         MoleculeDatabase['ToxNormalisedScore'] * normalized_weights['Toxicity'] / 100 +
         MoleculeDatabase['SCSNormalisedScore'] * normalized_weights['SCScore'] / 100
     )
@@ -679,15 +676,6 @@ for generation in range(2, MaxGenerations + 1):
         (GenerationDatabase['TCNormalisedScore_40C'] + GenerationDatabase['TCNormalisedScore_100C']) /2
     )
 
-    # Define initial weightings for each category and remaining scores (user-defined)
-    user_weights = {
-        'ViscScore': 20,  # Example weights; user-defined
-        'HCScore': 20,
-        'TCScore': 20,
-        'Toxicity': 20,
-        'SCScore': 20
-    }
-
     # Normalize weights so they sum to 100
     total_weight = sum(user_weights.values())
     normalized_weights = {key: (value / total_weight) * 100 for key, value in user_weights.items()}
@@ -697,6 +685,7 @@ for generation in range(2, MaxGenerations + 1):
         GenerationDatabase['ViscScore'] * normalized_weights['ViscScore'] / 100 +
         GenerationDatabase['HCScore'] * normalized_weights['HCScore'] / 100 +
         GenerationDatabase['TCScore'] * normalized_weights['TCScore'] / 100 +
+        GenerationDatabase['DVINormalisedScore'] * normalized_weights['DVIScore'] / 100 +
         GenerationDatabase['ToxNormalisedScore'] * normalized_weights['Toxicity'] / 100 +
         GenerationDatabase['SCSNormalisedScore'] * normalized_weights['SCScore'] / 100
     )
@@ -723,9 +712,3 @@ for generation in range(2, MaxGenerations + 1):
     #Save the update Master database and generation database
     MoleculeDatabase.to_csv(f'{STARTINGDIR}/MoleculeDatabase.csv')
     GenerationDatabase.to_csv(f'{STARTINGDIR}/Generation_{generation}_Database.csv')
-
-
-
-'''
-Normalise SCScore and Tox Score
-'''

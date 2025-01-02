@@ -72,11 +72,13 @@ def create_model(optimizer='adam', filters=128, kernel_size=3, dense_units=32, n
     return model
 
 # Perform manual grid search with cross-validation
+
 def manual_grid_search(model_params_grid, training_params_grid, X, y, k=5):
     model_keys, model_values = zip(*model_params_grid.items())
     train_keys, train_values = zip(*training_params_grid.items())
     best_score = float('inf')
     best_params = None
+    header_written = False  # Initialize header_written
 
     for model_v, train_v in product(product(*model_values), product(*train_values)):
         model_params = dict(zip(model_keys, model_v))
@@ -104,24 +106,18 @@ def manual_grid_search(model_params_grid, training_params_grid, X, y, k=5):
 
         # Save each model's performance to a CSV file
         result = {{
-            'Train Size': size,
             'Model Params': model_params,
             'Train Params': train_params,
             'Validation MSE': avg_val_score
         }}
 
         results_df = pd.DataFrame([result])
-        results_df.to_csv('cnn_model_training_results.csv', mode='a', header=not header_written, index=False)
-        header_written = True
+        results_df.to_csv('cnn_model_training_results_{property_name}.csv', mode='a', header=not header_written, index=False)
+        header_written = True  # Set header_written after writing the header
 
         if avg_val_score < best_score:
             best_score = avg_val_score
             best_params = {{**model_params, **train_params}}
-
-
-    if avg_val_score < best_score:
-        best_score = avg_val_score
-        best_params = {{**model_params, **train_params}}
 
     return best_params
 

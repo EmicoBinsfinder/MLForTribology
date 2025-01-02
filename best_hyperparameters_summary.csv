@@ -1,0 +1,8 @@
+Model,Best RMSE,Parameters
+CNN,0.0003466877557487,"{'Model Params': ""{'optimizer': 'adam', 'filters': 64, 'kernel_size': 7, 'dense_units': 64, 'num_layers': 3}"", 'Train Params': ""{'epochs': 100, 'batch_size': 128}""}"
+GMM,0.0204531741954023,"{'n_components': 1, 'covariance_type': 'full', 'max_iter': 100, 'init_params': 'kmeans', 'reg_covar': 1e-06, 'avg_train_time': 0.0286709785461425}"
+KNN,0.0006436406261571,"{'params': ""{'algorithm': 'ball_tree', 'leaf_size': 10, 'n_neighbors': 9, 'p': 1, 'weights': 'distance'}"", 'std_test_score': 0.0001090625851264, 'fit_time': 0.0396177768707275}"
+MLP,0.0004529888260967,"{'optimizer': 'adam', 'dense_units': 128, 'num_layers': 1, 'epochs': 100, 'batch_size': 64, 'data_size': 0.99}"
+RF,0.0001052504688402,"{'Params': ""{'n_estimators': 500, 'max_depth': None, 'min_samples_split': 2, 'min_samples_leaf': 1, 'max_features': 'sqrt'}"", 'Train Time': 1.0804174423217774}"
+SVM,7.95535938601455e-05,"{'Parameters': ""{'C': 0.01, 'epsilon': 0.001, 'kernel': 'linear'}"", 'Standard Deviation Test Score': 2.4744489068323765e-05, 'Rank': 1, 'Training Time': 0.1663118839263916}"
+XGBoost,0.0001023808393135,"{'Params': ""{'n_estimators': 2000, 'learning_rate': 0.01, 'max_depth': 4, 'tree_method': 'hist', 'use_label_encoder': False, 'eval_metric': 'rmse'}"", 'Test R2': 0.8725789293493237, 'Train Time': 5.299724578857422}"

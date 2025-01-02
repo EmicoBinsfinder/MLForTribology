@@ -1498,7 +1498,7 @@ def GetKVI(DVisc40, DVisc100, Dens40, Dens100, STARTINGDIR):
     KVisc40 = GetKVisc(DVisc40, Dens40)
     KVisc100 = GetKVisc(DVisc100, Dens100)
 
-    RefVals = pd.read_excel(os.path.join(STARTINGDIR, 'VILookupTable.xlsx'), index_col=None)
+    RefVals = pd.read_excel(os.path.join(STARTINGDIR, 'VILookupTable.csv'), index_col=None)
 
     if KVisc100 == None:
         VI = 0
