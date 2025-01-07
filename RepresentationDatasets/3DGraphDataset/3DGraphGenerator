@@ -1,0 +1,205 @@
+import pandas as pd
+import numpy as np
+import networkx as nx
+from rdkit import Chem
+from rdkit.Chem import AllChem
+import json
+
+# Load the dataset
+# file_path = 'GeneticAlgoRuns/CyclicMoleculeBenchmarkingDataset_NISTWEBBOOK.csv'
+# dataset = pd.read_csv(file_path)
+
+# # Column containing SMILES strings
+# smiles_column = 'SMILES'  # Update if necessary
+# if smiles_column not in dataset.columns:
+#     raise ValueError(f"Column '{smiles_column}' not found in dataset.")
+
+# def generate_3d_molecular_graph(smiles):
+#     try:
+#         mol = Chem.MolFromSmiles(smiles)
+#         if mol is None:
+#             return None
+        
+#         # Add hydrogens and generate 3D conformer
+#         mol = Chem.AddHs(mol)
+#         if not AllChem.EmbedMolecule(mol, AllChem.ETKDGv3()) == 0:
+#             return None  # Failed to generate conformer
+#         AllChem.UFFOptimizeMolecule(mol)
+        
+#         # Create a NetworkX graph
+#         graph = nx.Graph()
+        
+#         # Add nodes (atoms)
+#         for atom in mol.GetAtoms():
+#             pos = mol.GetConformer().GetAtomPosition(atom.GetIdx())
+#             graph.add_node(atom.GetIdx(), 
+#                            atomic_num=atom.GetAtomicNum(),
+#                            is_aromatic=atom.GetIsAromatic(),
+#                            hybridization=str(atom.GetHybridization()),
+#                            formal_charge=atom.GetFormalCharge(),
+#                            x=pos.x, y=pos.y, z=pos.z)
+        
+#         # Add edges (bonds)
+#         for bond in mol.GetBonds():
+#             graph.add_edge(bond.GetBeginAtomIdx(),
+#                            bond.GetEndAtomIdx(),
+#                            bond_type=str(bond.GetBondType()),
+#                            is_aromatic=bond.GetIsAromatic())
+        
+#         return graph
+#     except Exception as e:
+#         return None
+
+# # Generate 3D molecular graphs for all SMILES
+# graphs_with_properties = []
+# for idx, row in dataset.iterrows():
+#     if pd.notnull(row[smiles_column]):
+#         graph = generate_3d_molecular_graph(row[smiles_column])
+#         if graph is not None:
+#             graph_data = {
+#                 "graph": nx.node_link_data(graph),  # Convert graph to JSON-serializable format
+#                 "properties": row.drop(smiles_column).to_dict()  # Include molecular properties
+#             }
+#             graphs_with_properties.append(graph_data)
+
+# # Save graphs to JSON
+# output_path = '3D_Molecular_Graphs.json'
+# with open(output_path, 'w') as f:
+#     json.dump(graphs_with_properties, f, indent=4)
+
+# print(f"3D molecular graphs saved to: {output_path}")
+
+import json
+import plotly.graph_objects as go
+import networkx as nx
+
+# Load the JSON file with 3D molecular graphs
+json_path = '3D_Molecular_Graphs.json'
+
+with open(json_path, 'r') as f:
+    molecular_graphs = json.load(f)
+
+# Select an example graph (e.g., the first graph in the dataset)
+example_graph_data = molecular_graphs[345]["graph"]  # Adjust index to select a different graph
+example_properties = molecular_graphs[345]["properties"]
+
+# Atom properties for colors and sizes
+ATOM_COLORS = {
+    1: 'white',  # Hydrogen
+    6: 'gray',   # Carbon
+    7: 'blue',   # Nitrogen
+    8: 'red',    # Oxygen
+    16: 'yellow' # Sulfur
+}
+
+ATOM_RADII = {
+    1: 5,  # Hydrogen
+    6: 10, # Carbon
+    7: 12, # Nitrogen
+    8: 12, # Oxygen
+}
+
+# Bond colors based on bond type
+BOND_COLORS = {
+    'SINGLE': 'gray',
+    'DOUBLE': 'blue',
+    'TRIPLE': 'red',
+    'AROMATIC': 'green'
+}
+
+def plot_3d_molecular_graph(graph_data, title="3D Molecular Graph"):
+    # Convert node-link data back to a NetworkX graph
+    graph = nx.node_link_graph(graph_data)
+    
+    # Prepare node data
+    node_x = []
+    node_y = []
+    node_z = []
+    node_colors = []
+    node_sizes = []
+    node_text = []  # Hover text for nodes
+
+    for node, data in graph.nodes(data=True):
+        node_x.append(data['x'])
+        node_y.append(data['y'])
+        node_z.append(data['z'])
+        atomic_num = data['atomic_num']
+        node_colors.append(ATOM_COLORS.get(atomic_num, 'black'))  # Default to black for unknown atoms
+        node_sizes.append(ATOM_RADII.get(atomic_num, 8))  # Default size if unknown atom type
+        node_text.append(
+            f"Atomic Number: {atomic_num}<br>"
+            f"Hybridization: {data['hybridization']}<br>"
+            f"Charge: {data['formal_charge']}"
+        )
+
+    # Prepare edge data
+    edge_x = []
+    edge_y = []
+    edge_z = []
+    edge_colors = []  # Colors for different bond types
+    edge_text = []    # Hover text for edges
+
+    for u, v, data in graph.edges(data=True):
+        x0, y0, z0 = graph.nodes[u]['x'], graph.nodes[u]['y'], graph.nodes[u]['z']
+        x1, y1, z1 = graph.nodes[v]['x'], graph.nodes[v]['y'], graph.nodes[v]['z']
+        edge_x += [x0, x1, None]
+        edge_y += [y0, y1, None]
+        edge_z += [z0, z1, None]
+        bond_type = data.get('bond_type', 'UNKNOWN')
+        edge_colors.append(BOND_COLORS.get(bond_type, 'black'))  # Default to black for unknown bond types
+        edge_text.append(f"Bond Type: {bond_type}")
+
+    # Create Plotly traces
+    edge_trace = go.Scatter3d(
+        x=edge_x,
+        y=edge_y,
+        z=edge_z,
+        mode='lines',
+        line=dict(width=2, color='gray'),  # Default color; we'll assign bond-specific colors below
+        hoverinfo='none'  # Hover info not typically shown for edges
+    )
+
+    # Add colors for edges
+    edge_trace.marker = dict(color=edge_colors, opacity=0.7)
+
+    node_trace = go.Scatter3d(
+        x=node_x,
+        y=node_y,
+        z=node_z,
+        mode='markers',
+        marker=dict(
+            size=node_sizes,
+            color=node_colors,
+            opacity=0.8,
+            line=dict(color='darkblue', width=1)
+        ),
+        text=node_text,
+        hoverinfo='text'  # Display hover info only
+    )
+
+    # Create the figure
+    fig = go.Figure(
+        data=[edge_trace, node_trace],
+        layout=go.Layout(
+            title=title,
+            scene=dict(
+                xaxis_title='X',
+                yaxis_title='Y',
+                zaxis_title='Z',
+                xaxis=dict(showbackground=False),
+                yaxis=dict(showbackground=False),
+                zaxis=dict(showbackground=False)
+            ),
+            margin=dict(l=0, r=0, b=0, t=40)
+        )
+    )
+
+    fig.show()
+
+# Plot the selected graph
+plot_3d_molecular_graph(example_graph_data, title="3D Molecular Graph with Atom/Bond Properties")
+
+# Print associated properties
+print("Properties of the selected graph:")
+for key, value in example_properties.items():
+    print(f"{key}: {value}")
