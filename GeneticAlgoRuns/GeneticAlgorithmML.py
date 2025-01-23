@@ -20,7 +20,7 @@ def runcmd(cmd, verbose = False, *args, **kwargs):
     
     return process
 
-sys.append('/rds/general/user/eeo21/home/HIGH_THROUGHPUT_STUDIES/MLForTribology/GeneticAlgoMLRun')
+sys.path.append('/rds/general/user/eeo21/ephemeral/GeneticAlgoMLRun')
 
 ################# IMPORTS ###################
 import GeneticAlgorithmHelperFunction as GAF
@@ -43,7 +43,7 @@ import shutil
 import traceback
 from gt4sd.properties import PropertyPredictorRegistry
 
-file_path = '/rds/general/user/eeo21/home/HIGH_THROUGHPUT_STUDIES/MLForTribology/GeneticAlgoMLRun/ModelsandDatasets/Viscosity_40C_Test_Descriptors.csv'
+file_path = '/rds/general/user/eeo21/home/HIGH_THROUGHPUT_STUDIES/MLForTribology/GeneticAlgoMLRun/ModelsandDatasets/SeedDatabase.csv'
 dataset = pd.read_csv(file_path)
 
 # Define initial weightings for each category and remaining scores (user-defined)
@@ -52,6 +52,7 @@ user_weights = {
     'HCScore': 20,
     'TCScore': 20,
     'Toxicity': 20,
+    'DVIScore': 20,
     'SCScore': 20
 }
 
@@ -138,7 +139,7 @@ while len(MoleculeDatabase) < GenerationSize:
 
     elif GAF.count_c_and_o(result[2]) > MaxNumHeavyAtoms:
         print('Mol too heavy')
-        MutMol == None
+        MutMol = None
         continue
 
     else:
@@ -351,7 +352,7 @@ for generation in range(2, MaxGenerations + 1):
     OrderedMoleculeDatabase = MoleculeDatabase.sort_values(by='NichedScore', ascending=False)
 
     # Generation Dataframe to store molecules from each generation
-    GenerationDatabase = OrderedMoleculeDatabase.head(25)
+    GenerationDatabase = OrderedMoleculeDatabase.head(NumElite)
 
     GenerationMoleculeList = ScoreSortedMolecules[:NumElite]
 

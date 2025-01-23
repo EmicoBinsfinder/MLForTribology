@@ -747,12 +747,8 @@ def RemoveAtom(StartingMolecule, BondTypes, fromAromatic=False, showdiff=True):
         if len(RemoveAtomNeigbors) == 1:
             StartingMolecule.RemoveAtom(RemoveAtomIdx)
         elif len(RemoveAtomNeigbors) == 2:
-            try:
-                StartingMolecule.RemoveAtom(RemoveAtomIdx)
-                StartingMolecule.AddBond(RemoveAtomNeigbors[0].GetIdx(), RemoveAtomNeigbors[1].GetIdx(), rnd(BondTypes))
-            except:
-                print('Error adding bond between atoms in Remove Atom function, bond may already exist')
-                Mut_Mol, Mut_Mol_Sanitized, MutMolSMILES = None, None, None                
+            StartingMolecule.RemoveAtom(RemoveAtomIdx)
+            StartingMolecule.AddBond(RemoveAtomNeigbors[0].GetIdx(), RemoveAtomNeigbors[1].GetIdx(), rnd(BondTypes))
         else:
             print('Removed atom has illegal number of neighbors')
             Mut_Mol, Mut_Mol_Sanitized, MutMolSMILES = None, None, None
@@ -2626,3 +2622,18 @@ def ReplaceCandidate(Mols, BondTypes, AtomicNumbers, Atoms, fragments,
     
     return result
 
+
+"""
+
+Allow change in ratio depending on score
+Change fragments to key 10 key fragment types
+
+- Need to record the full generation being compared
+- Need to scale DVI better
+
+
+Run array job of different hyperparameters
+- Diff Num Elite, Mut Rate, Target properties
+
+
+"""

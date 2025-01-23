@@ -261,7 +261,7 @@ surf_generations = ax.plot_surface(
 # Add color bar
 mappable_generations = plt.cm.ScalarMappable(cmap='jet')
 mappable_generations.set_array(generations)
-fig.colorbar(mappable_generations, ax=ax, shrink=0.5, aspect=10, label="Best Generation (Lower is Better)")
+fig.colorbar(mappable_generations, ax=ax, shrink=0.5, aspect=10, label="Best Generation")
 
 # Axis labels
 ax.set_xlabel("Mutation Rate")
@@ -270,5 +270,5 @@ ax.set_zlabel("Generation Size")
 
 # Title
 plt.title("3D Surface Plot: Best Generation Heatmap")
-
+plt.savefig(f'F:/PhD/HIGH_THROUGHPUT_STUDIES/generated_parameter_combinations/outputs/Optimisation1.png')
 plt.show()
