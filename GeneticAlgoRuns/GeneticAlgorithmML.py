@@ -283,7 +283,7 @@ TC_normalized_molecule_scores_40C = [(x[1]) for x in GAF.min_max_normalize(TCSco
 TC_normalized_molecule_scores_100C = [(x[1]) for x in GAF.min_max_normalize(TCScore_100C)]
 DVI_normalized_molecule_scores = [x[1] for x in GAF.min_max_normalize(DVIScore)]
 Tox_normalized_molecule_scores = [(1-x[1]) for x in GAF.min_max_normalize(ToxicityScore)]
-SC_normalized_molecule_scores = [x[1] for x in GAF.min_max_normalize(MolecularComplexityScore)]
+SC_normalized_molecule_scores = [(1-x[1]) for x in GAF.min_max_normalize(MolecularComplexityScore)]
 
 MoleculeDatabase['ViscNormalisedScore_40C'] = Viscosity_normalized_molecule_scores_40C
 MoleculeDatabase['ViscNormalisedScore_100C'] = Viscosity_normalized_molecule_scores_100C
@@ -591,7 +591,7 @@ for generation in range(2, MaxGenerations + 1):
 
     DVI_normalized_molecule_scores = [x[1] for x in GAF.min_max_normalize(DVIScore)]
     Tox_normalized_molecule_scores = [(1-x[1]) for x in GAF.min_max_normalize(ToxicityScore)]
-    SC_normalized_molecule_scores = [x[1] for x in GAF.min_max_normalize(MolecularComplexityScore)]
+    SC_normalized_molecule_scores = [(1-x[1]) for x in GAF.min_max_normalize(MolecularComplexityScore)]
 
     MoleculeDatabase['ViscNormalisedScore_40C'] = Viscosity_normalized_molecule_scores_40C
     MoleculeDatabase['ViscNormalisedScore_100C'] = Viscosity_normalized_molecule_scores_100C
