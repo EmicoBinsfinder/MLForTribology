@@ -297,13 +297,13 @@ MoleculeDatabase['ToxNormalisedScore'] = Tox_normalized_molecule_scores
 MoleculeDatabase['SCSNormalisedScore'] = SC_normalized_molecule_scores
 
 # Combine scores into categories
-MoleculeDatabase['ViscScore'] = (
+MoleculeDatabase['Normalised_ViscScore'] = (
     (MoleculeDatabase['ViscNormalisedScore_40C'] + MoleculeDatabase['ViscNormalisedScore_100C']) /2
 )
-MoleculeDatabase['HCScore'] = (
+MoleculeDatabase['Normalised_HCScore'] = (
     (MoleculeDatabase['HCNormalisedScore_40C'] + MoleculeDatabase['HCNormalisedScore_100C'])/2
 )
-MoleculeDatabase['TCScore'] = (
+MoleculeDatabase['Normalised_TCScore'] = (
     (MoleculeDatabase['TCNormalisedScore_40C'] + MoleculeDatabase['TCNormalisedScore_100C'])/2
 )
 

@@ -13,7 +13,7 @@ import pandas as pd
 import re
 from math import log10
 import os
-from gt4sd.properties import PropertyPredictorRegistry
+# from gt4sd.properties import PropertyPredictorRegistry
 from rdkit import DataStructs
 from rdkit.Chem import rdFingerprintGenerator
 import numpy as np
@@ -1349,7 +1349,7 @@ def limit_oxygen_atoms(molecule, max_oxygen_count):
     # Check if the count is within the limit
     return oxygen_count >= max_oxygen_count
 
-def GenMolChecks(result, GenerationMolecules, MaxNumHeavyAtoms, MinNumHeavyAtoms, MaxAromRings):
+def GenMolChecks(result, GenerationMolecules, MaxNumHeavyAtoms, MinNumHeavyAtoms, MaxAromRings=3):
 
     try:
         NumRings = result[0].GetRingInfo().NumRings()

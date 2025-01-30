@@ -1,42 +1,210 @@
 ############### ENVIRONMENT SETUP AND IMPORTS ############
-import subprocess
-import sys
 import pandas as pd
 import numpy as np
-from random import sample, random, choice
+from random import random, choice
 from copy import deepcopy
 from rdkit import Chem
 import traceback
 import GeneticAlgorithmHelperFunction as GAF  # Assuming this contains your helper functions
+import os
+from random import choice as rnd
+import subprocess
+from pymoo.indicators.hv import HV  # For hypervolume calculation
+
 
 # File paths and initialization
-file_path = '/rds/general/user/eeo21/home/HIGH_THROUGHPUT_STUDIES/MLForTribology/GeneticAlgoMLRun/ModelsandDatasets/SeedDatabase.csv'
+file_path = 'C:/Users/eeo21/Desktop/Datasets/SeedDatabase.csv'
+# file_path = '/rds/general/user/eeo21/home/HIGH_THROUGHPUT_STUDIES/MLForTribology/GeneticAlgoMLRun/ModelsandDatasets/SeedDatabase.csv'
 dataset = pd.read_csv(file_path)
 
 STARTINGDIR = deepcopy(os.getcwd())
-PYTHONPATH = 'python3'
 
-# Parameters
-GenerationSize = 50
-MutationRate = 0.95
+def runcmd(cmd, verbose = False, *args, **kwargs):
+    #bascially allows python to run a bash command, and the code makes sure 
+    #the error of the subproceess is communicated if it fails
+    process = subprocess.run(
+        cmd,
+        text=True,
+        shell=True)
+    
+    return process
+
+# Genetic algorithm parameters
+GenerationSize = 5
+MutationRate = 0.85
 MaxGenerations = 500
-MaxNumHeavyAtoms = 40
+MaxNumHeavyAtoms = 45
 MinNumHeavyAtoms = 5
-NumElite = 25
+NumElite = 5
 MaxMutationAttempts = 2000
-Fails = 0
+showdiff = False
+
+Napthalenes = ['C12=CC=CC=C2C=CC=C1', 'C1CCCC2=CC=CC=C12', 'C1CCCC2CCCCC12', 'C1CCC2=CC=CC=C12']
+Mutations = ['AddAtom', 'ReplaceAtom', 'ReplaceBond', 'RemoveAtom', 'AddFragment', 'RemoveFragment', 'Napthalenate', 'Esterify', 'Glycolate']
+fragments = ['CCCC', 'CCCCC', 'C(CC)CCC', 'CCC(CCC)CC', 'CCCC(C)CC', 'CCCCCCCCC', 'CCCCCCCC', 'CCCCCC', 'C(CCCCC)C', 'CC=OOCC(CC=O)O(CO)CO']
+
+Mols = dataset['SMILES']
+Mols = [Chem.MolFromSmiles(x) for x in Mols[:100]]
+ReplaceMols = Mols
+fragments = [Chem.MolFromSmiles(x) for x in fragments]
+
+### ATOM NUMBERS
+Atoms = ['C', 'O']
+AtomMolObjects = [Chem.MolFromSmiles(x) for x in Atoms]
+AtomicNumbers = []
+
+# Getting Atomic Numbers for Addable Atoms
+for Object in AtomMolObjects:
+     for atom in Object.GetAtoms():
+          AtomicNumbers.append(atom.GetAtomicNum())         
+
+### BOND TYPES
+BondTypes = [Chem.BondType.SINGLE, Chem.BondType.DOUBLE]
 
 # Objectives for NSGA-II
 objectives = ['ViscScore', 'HCScore', 'TCScore', 'Toxicity', 'DVIScore', 'SCScore']
+objectives_to_invert = ['Toxicity', 'ViscScore', 'SCScore']  # Lower is better for these objectives
 
 # Initialization
 Mols = dataset['SMILES']
-Mols = [Chem.MolFromSmiles(x) for x in Mols[:200]]
+Mols = [Chem.MolFromSmiles(x) for x in Mols]
 MasterMoleculeList = []
 IDcounter = 1
 Generation = 1
 
-# Helper Functions
+def evaluate_population(GenSimList, MOLSMILESList, MoleculeDatabase, GenerationDatabase):
+
+    for Molecule, MOLSMILES in GenSimList:
+        try:
+            ### Similarity Scores
+            Scores = GAF.TanimotoSimilarity(MOLSMILES, MOLSMILESList)
+            AvScore = 1 - (sum(Scores) / GenerationSize) # The higher the score, the less similar the molecule is to others
+
+            ## SCScore
+            SCScore = GAF.SCScore(MOLSMILES)
+            SCScoreNorm = SCScore/5
+
+            ## Toxicity
+            ToxNorm = GAF.Toxicity(MOLSMILES)
+
+            ### Viscosity
+            DVisc40 = GAF.Visc40ML(MOLSMILES)
+            DVisc100 = GAF.Visc100ML(MOLSMILES)
+
+            ### Density
+            Dens40 = GAF.Dens40ML(MOLSMILES)
+            Dens100 = GAF.Dens100ML(MOLSMILES)
+
+            ### Heat Capacity
+            HC40 = GAF.HeatCapacity40ML(MOLSMILES)
+            HC100 = GAF.HeatCapacity100ML(MOLSMILES)
+
+            ### Thermal Conductivity
+            TC40 = GAF.ThermalConductivity40ML(MOLSMILES)
+            TC100 = GAF.ThermalConductivity100ML(MOLSMILES)
+
+            ## Viscosity Index
+            DVI = GAF.GetDVI(DVisc40, DVisc100)
+
+            #Update Molecule Database
+            IDNumber = int(Molecule.split('_')[-1])
+            MoleculeDatabase.at[IDNumber, 'Density100C'] = Dens100 #Density 40C
+            MoleculeDatabase.at[IDNumber, 'Density40C'] = Dens40 #Density 100C
+            MoleculeDatabase.at[IDNumber, 'DViscosity40C'] = DVisc40 #DVisc 40C
+            MoleculeDatabase.at[IDNumber, 'DViscosity100C'] = DVisc100 #DVisc 100C
+            MoleculeDatabase.at[IDNumber, 'HeatCapacity_40C'] = HC40
+            MoleculeDatabase.at[IDNumber, 'HeatCapacity_100C'] = HC100
+            MoleculeDatabase.at[IDNumber, 'ThermalConductivity_40C'] = TC40
+            MoleculeDatabase.at[IDNumber, 'ThermalConductivity_100C'] = TC100
+            MoleculeDatabase.at[IDNumber, 'DVI'] = DVI
+            MoleculeDatabase.at[IDNumber, 'Toxicity'] = ToxNorm
+            MoleculeDatabase.at[IDNumber, 'SCScore'] = SCScoreNorm
+            MoleculeDatabase.at[IDNumber, 'SimilarityScore'] = AvScore
+
+            #Update Generation Database
+            GenerationDatabase.at[IDNumber, 'Density100C'] = Dens100 #Density 40C
+            GenerationDatabase.at[IDNumber, 'Density40C'] = Dens40 #Density 100C
+            GenerationDatabase.at[IDNumber, 'DViscosity40C'] = DVisc40 #DVisc 40C
+            GenerationDatabase.at[IDNumber, 'DViscosity100C'] = DVisc100 #DVisc 100C
+            GenerationDatabase.at[IDNumber, 'HeatCapacity_40C'] = HC40
+            GenerationDatabase.at[IDNumber, 'HeatCapacity_100C'] = HC100
+            GenerationDatabase.at[IDNumber, 'ThermalConductivity_40C'] = TC40
+            GenerationDatabase.at[IDNumber, 'ThermalConductivity_100C'] = TC100
+            GenerationDatabase.at[IDNumber, 'DVI'] = DVI
+            GenerationDatabase.at[IDNumber, 'Toxicity'] = ToxNorm
+            GenerationDatabase.at[IDNumber, 'SCScore'] = SCScoreNorm
+            GenerationDatabase.at[IDNumber, 'SimilarityScore'] = AvScore
+
+        except Exception as E:
+            print(E)
+            traceback.print_exc()
+
+    #### Generate Scores
+    ViscScores_40C = MoleculeDatabase['DViscosity40C'].tolist()
+    ViscScores_100C = MoleculeDatabase['DViscosity100C'].tolist()
+
+    HCScores_40C = MoleculeDatabase['HeatCapacity_40C'].tolist()
+    HCScores_100C = MoleculeDatabase['HeatCapacity_100C'].tolist()
+
+    TCScores_40C = MoleculeDatabase['DViscosity40C'].tolist()
+    TCScores_100C = MoleculeDatabase['DViscosity100C'].tolist()
+
+    SCScores = MoleculeDatabase['SCScore'].tolist()
+    DVIScores = MoleculeDatabase['DVI'].tolist()
+    ToxicityScores = MoleculeDatabase['Toxicity'].tolist()
+    SimilarityScores = MoleculeDatabase['SimilarityScore'].tolist()
+    MoleculeNames = MoleculeDatabase['ID'].tolist()
+
+    ViscosityScore_40C  = list(zip(MoleculeNames, ViscScores_40C)) 
+    ViscosityScore_100C  = list(zip(MoleculeNames, ViscScores_100C)) 
+
+    TCScore_40C  = list(zip(MoleculeNames, TCScores_40C)) 
+    TCScore_100C  = list(zip(MoleculeNames, TCScores_100C)) 
+
+    HCScore_40C  = list(zip(MoleculeNames, HCScores_40C)) 
+    HCScore_100C  = list(zip(MoleculeNames, HCScores_100C)) 
+
+    MolecularComplexityScore  = list(zip(MoleculeNames, SCScores)) 
+
+    DVIScore  = list(zip(MoleculeNames, DVIScores)) 
+
+    ToxicityScore  = list(zip(MoleculeNames, ToxicityScores)) 
+
+    # Apply the normalization function
+    Viscosity_normalized_molecule_scores_40C = [(1-x[1]) for x in GAF.min_max_normalize(ViscosityScore_40C)]
+    Viscosity_normalized_molecule_scores_100C = [(1-x[1]) for x in GAF.min_max_normalize(ViscosityScore_100C)]
+    HC_normalized_molecule_scores_40C = [(x[1]) for x in GAF.min_max_normalize(HCScore_40C)]
+    HC_normalized_molecule_scores_100C = [(x[1]) for x in GAF.min_max_normalize(HCScore_100C)]
+    TC_normalized_molecule_scores_40C = [(x[1]) for x in GAF.min_max_normalize(TCScore_40C)]
+    TC_normalized_molecule_scores_100C = [(x[1]) for x in GAF.min_max_normalize(TCScore_100C)]
+    DVI_normalized_molecule_scores = [x[1] for x in GAF.min_max_normalize(DVIScore)]
+    Tox_normalized_molecule_scores = [(1-x[1]) for x in GAF.min_max_normalize(ToxicityScore)]
+    SC_normalized_molecule_scores = [(1-x[1]) for x in GAF.min_max_normalize(MolecularComplexityScore)]
+
+    MoleculeDatabase['ViscNormalisedScore_40C'] = Viscosity_normalized_molecule_scores_40C
+    MoleculeDatabase['ViscNormalisedScore_100C'] = Viscosity_normalized_molecule_scores_100C
+    MoleculeDatabase['HCNormalisedScore_40C'] = HC_normalized_molecule_scores_40C
+    MoleculeDatabase['HCNormalisedScore_100C'] = HC_normalized_molecule_scores_100C
+    MoleculeDatabase['TCNormalisedScore_40C'] = TC_normalized_molecule_scores_40C
+    MoleculeDatabase['TCNormalisedScore_100C'] = TC_normalized_molecule_scores_100C
+
+    MoleculeDatabase['Normalized_DVIScore'] = DVI_normalized_molecule_scores
+    MoleculeDatabase['Normalized_Viscosity'] = Tox_normalized_molecule_scores
+    MoleculeDatabase['Normalized_SCScore'] = SC_normalized_molecule_scores
+
+    # Combine scores into categories
+    MoleculeDatabase['Normalized_ViscScore'] = (
+        (MoleculeDatabase['ViscNormalisedScore_40C'] + MoleculeDatabase['ViscNormalisedScore_100C']) /2
+    )
+    MoleculeDatabase['Normalized_HCScore'] = (
+        (MoleculeDatabase['HCNormalisedScore_40C'] + MoleculeDatabase['HCNormalisedScore_100C'])/2
+    )
+    MoleculeDatabase['Normalized_TCScore'] = (
+        (MoleculeDatabase['TCNormalisedScore_40C'] + MoleculeDatabase['TCNormalisedScore_100C'])/2
+    )
+
+    return MoleculeDatabase, GenerationDatabase
+
 def pareto_front_sorting(population, objectives):
     """
     Perform non-dominated sorting on the population based on the given objectives.
@@ -82,18 +250,25 @@ def crowding_distance_assignment(front, population, objectives):
     Compute crowding distance for solutions in a single Pareto front.
     """
     crowding_distances = np.zeros(len(front))
+    sorted_front = population.loc[front]
+    
     for obj in objectives:
-        sorted_indices = np.argsort(population.iloc[front][obj].values)
-        sorted_front = np.array(front)[sorted_indices]
+        sorted_indices = sorted_front.sort_values(by=obj).index
+        sorted_values = sorted_front.loc[sorted_indices, obj].values
 
-        crowding_distances[sorted_indices[0]] = float('inf')
-        crowding_distances[sorted_indices[-1]] = float('inf')
+        try:
+            crowding_distances[sorted_indices[0]] = float('inf')
+            crowding_distances[sorted_indices[-1]] = float('inf')
+        except IndexError:
+            crowding_distances[-1] = float('inf')
 
-        obj_values = population.iloc[sorted_front][obj].values
-        obj_range = max(obj_values) - min(obj_values)
+
+        obj_range = sorted_values[-1] - sorted_values[0]
         if obj_range > 0:
-            for i in range(1, len(front) - 1):
-                crowding_distances[sorted_indices[i]] += (obj_values[i + 1] - obj_values[i - 1]) / obj_range
+            for i in range(1, len(sorted_indices) - 1):
+                crowding_distances[i] += (
+                    sorted_values[i + 1] - sorted_values[i - 1]
+                ) / obj_range
 
     return crowding_distances
 
@@ -114,89 +289,171 @@ def select_next_generation(population, fronts, objectives, population_size):
 
     return population.iloc[next_generation]
 
+def calculate_hypervolume(pareto_front, objectives, reference_point):
+    objective_values = pareto_front[objectives].to_numpy()
+    hv_indicator = HV(ref_point=reference_point)
+    return hv_indicator(objective_values)
+
 # Initialize Population
-MoleculeDatabase = pd.DataFrame(columns=['SMILES', 'MolObject', 'MutationList', 'HeavyAtoms', 'ID', 'MolMass', 'Predecessor', 'Score', 'Density100C',
-                                         'DViscosity40C', 'DViscosity100C', 'DVI', 'Toxicity', 'SCScore', 'Density40C', 'SimilarityScore',
-                                         'ThermalConductivity_40C', 'ThermalConductivity_100C', 'HeatCapacity_40C', 'HeatCapacity_100C'])
+print('Initialising Popuplation')
 
+# Master Dataframe where molecules from all generations will be stored
+MoleculeDatabase = pd.DataFrame(columns=['SMILES', 'MolObject', 'MutationList', 'HeavyAtoms', 'ID', 'MolMass', 'Predecessor', 'Score', 'Density100C', 'DViscosity40C',
+                                        'DViscosity100C', 'DVI', 'Toxicity', 'SCScore', 'Density40C', 'SimilarityScore',
+                                        'ThermalConductivity_40C', 'ThermalConductivity_100C', 'HeatCapacity_40C', 'HeatCapacity_100C'])
+
+# Generation Dataframe to store molecules from each generation
+GenerationDatabase = pd.DataFrame(columns=['SMILES', 'MolObject', 'MutationList', 'HeavyAtoms', 'ID', 'MolMass', 'Predecessor', 'Score', 'Density100C', 'DViscosity40C',
+                                        'DViscosity100C', 'DVI', 'Toxicity', 'SCScore', 'Density40C', 'SimilarityScore',
+                                        'ThermalConductivity_40C', 'ThermalConductivity_100C', 'HeatCapacity_40C', 'HeatCapacity_100C'])
+
+GenSimList = []
 while len(MoleculeDatabase) < GenerationSize:
-    StartingMolecule = choice(Mols)
-    Mutation = choice(['AddAtom', 'ReplaceAtom', 'ReplaceBond', 'RemoveAtom', 'AddFragment', 'RemoveFragment'])
-    result = GAF.Mutate(StartingMolecule, Mutation, None, None, None, None, False)
-    if result and GAF.GenMolChecks(result, MasterMoleculeList, MaxNumHeavyAtoms, MinNumHeavyAtoms):
-        HeavyAtoms = result[0].GetNumHeavyAtoms()
-        MolMass = GAF.GetMolMass(result[0])
-        SMILES = result[2]
-        MoleculeDatabase = GAF.DataUpdate(MoleculeDatabase, IDcounter, SMILES, result[0], HeavyAtoms, [None, None, Mutation], f'Molecule_{IDcounter}', MolMass)
-        MasterMoleculeList.append(SMILES)
-        IDcounter += 1
 
-# Global Pareto Archive
-GlobalParetoArchive = pd.DataFrame(columns=MoleculeDatabase.columns)
+    print('\n###########################################################')
+    StartingMolecule = rnd(Mols) #Select starting molecule
+
+    print(len(MoleculeDatabase))
+
+    Mutation = rnd(Mutations)
+    AromaticMolecule = fragments[-1]
+
+    # Perform mutation 
+    result = GAF.Mutate(StartingMolecule, Mutation, AromaticMolecule, AtomicNumbers, BondTypes, Atoms, showdiff, Fragments=fragments, Napthalenes=Napthalenes, Mols=ReplaceMols)
+
+    # Implement checks based on predetermined criteria (MolLength, Illegal Substructs etc.)
+    if GAF.GenMolChecks(result, MasterMoleculeList, MaxNumHeavyAtoms, MinNumHeavyAtoms, MaxAromRings=2) == None:
+        MutMol = None
+
+    elif GAF.count_c_and_o(result[2]) > MaxNumHeavyAtoms:
+        print('Mol too heavy')
+        MutMol = None
+        continue
+
+    else:
+        HeavyAtoms = result[0].GetNumHeavyAtoms() # Get number of heavy atoms in molecule
+        MutMol = result[0] # Get Mol object of mutated molecule
+        MolMass = GAF.GetMolMass(MutMol) # Get estimate of of molecular mass 
+        MutMolSMILES = result[2] # SMILES of mutated molecule
+        Predecessor = [None] # Get history of last two mutations performed on candidate
+        ID = IDcounter
+    
+        try:
+            Name = f'Generation_1_Molecule_{ID}' # Set name of Molecule as its SMILES string
+
+            # Update Molecule database
+            MoleculeDatabase = GAF.DataUpdate(MoleculeDatabase, IDCounter=IDcounter, MutMolSMILES=MutMolSMILES, MutMol=MutMol, HeavyAtoms=HeavyAtoms,
+                                                MutationList=[None, None, Mutation], ID=Name, MolMass=MolMass, Predecessor=Predecessor)
+
+            GenerationDatabase = GAF.DataUpdate(GenerationDatabase, IDCounter=IDcounter, MutMolSMILES=MutMolSMILES, MutMol=MutMol, HeavyAtoms=HeavyAtoms,
+                                                MutationList=[None, None, Mutation], ID=Name, MolMass=MolMass, Predecessor=Predecessor)
+            
+            # Generate list of molecules to simulate in this generation
+            GenSimList.append([Name, MutMolSMILES])
+            MasterMoleculeList.append(MutMolSMILES) #Keep track of already generated molecules
+            print(f'Final Molecule SMILES: {MutMolSMILES}')
+            IDcounter +=1 
+
+        except Exception as E:
+            print(E)
+            traceback.print_exc()
+            continue
+
+MoleculeDatabase.to_csv(f'{STARTINGDIR}/MoleculeDatabase.csv')
+GenerationDatabase.to_csv(f'{STARTINGDIR}/Generation_{Generation}_Database.csv')
+
+no_improvement_generations = 0
+convergence_threshold = 1e-4
+previous_hypervolume = 0
+EarlyStop = 50
+
+MOLSMILESList = [x[1] for x in GenSimList]
 
 # Main NSGA-II Loop
 for Generation in range(1, MaxGenerations + 1):
     print(f"### Generation {Generation} ###")
 
-    # Perform non-dominated sorting for the current population
-    pareto_fronts, ranks = pareto_front_sorting(MoleculeDatabase, objectives)
+    # Evaluate objectives and normalize scores
+    MoleculeDatabase = evaluate_population(GenSimList, MOLSMILESList, MoleculeDatabase, GenerationDatabase)
 
-    # Assign crowding distances for diversity
+    # Perform non-dominated sorting
+    pareto_fronts, ranks = pareto_front_sorting(MoleculeDatabase, [f"Normalized_{obj}" for obj in objectives])
+
+    print(pareto_fronts)
+    print(ranks)
+
+    # Assign crowding distances
     for front in pareto_fronts:
-        MoleculeDatabase.loc[front, 'CrowdingDistance'] = crowding_distance_assignment(front, MoleculeDatabase, objectives)
+        MoleculeDatabase.loc[front, 'CrowdingDistance'] = crowding_distance_assignment(front, MoleculeDatabase, [f"Normalized_{obj}" for obj in objectives])
 
-    # Select next generation
-    next_generation = select_next_generation(MoleculeDatabase, pareto_fronts, objectives, GenerationSize)
+    # Select the next generation
+    next_generation = select_next_generation(MoleculeDatabase, pareto_fronts, [f"Normalized_{obj}" for obj in objectives], GenerationSize)
 
-    # Save the current generation to a CSV
+    # Save the current generation and global archive
     next_generation.to_csv(f"{STARTINGDIR}/Generation_{Generation}_Database.csv", index=False)
-
-    # Update Global Pareto Archive
     combined_population = pd.concat([GlobalParetoArchive, next_generation]).reset_index(drop=True)
-    combined_pareto_fronts, _ = pareto_front_sorting(combined_population, objectives)
+    combined_pareto_fronts, _ = pareto_front_sorting(combined_population, [f"Normalized_{obj}" for obj in objectives])
     GlobalParetoArchive = combined_population.iloc[combined_pareto_fronts[0]].reset_index(drop=True)
-
-    # Save the updated Pareto Archive to a CSV
     GlobalParetoArchive.to_csv(f"{STARTINGDIR}/GlobalParetoArchive.csv", index=False)
 
-    # Apply mutation to molecules in the current generation
+    # Apply mutations to generate new molecules
     mutated_population = []
-    for index, molecule in next_generation.iterrows():
-        if random() <= MutationRate:  # Apply mutation with probability = MutationRate
+    for _, molecule in next_generation.iterrows():
+            # Perform NSGA-II steps
+        current_hypervolume = calculate_hypervolume(GlobalParetoArchive)
+
+        if abs(current_hypervolume - previous_hypervolume) < convergence_threshold:
+            no_improvement_generations += 1
+            if no_improvement_generations >= EarlyStop:
+                print("Converged: No significant improvement for 10 generations.")
+                break
+        else:
+            no_improvement_generations = 0
+
+        previous_hypervolume = current_hypervolume
+
+        if rnd() <= MutationRate:
             try:
                 StartingMolecule = Chem.MolFromSmiles(molecule['SMILES'])
-                Mutation = choice(['AddAtom', 'ReplaceAtom', 'ReplaceBond', 'RemoveAtom', 'AddFragment', 'RemoveFragment'])
-                result = GAF.Mutate(StartingMolecule, Mutation, None, None, None, None, False)
+                if GAF.count_c_and_o(result[2]) > 32:
+                    MutationList = ['RemoveFragment','ReplaceCandidate']
+                else:
+                    MutationList = Mutations
+
+                result = GAF.Mutate(
+                    StartingMolecule, rnd(Mutations), None, None, None, None, showdiff,
+                    Fragments=fragments, Napthalenes=Napthalenes, Mols=ReplaceMols
+                )
 
                 if result and GAF.GenMolChecks(result, MasterMoleculeList, MaxNumHeavyAtoms, MinNumHeavyAtoms):
                     HeavyAtoms = result[0].GetNumHeavyAtoms()
                     MolMass = GAF.GetMolMass(result[0])
                     SMILES = result[2]
-
-                    # Add mutated molecule to the list
                     mutated_population.append({
                         'SMILES': SMILES,
                         'MolObject': result[0],
-                        'MutationList': molecule['MutationList'] + [Mutation],
+                        'MutationList': molecule['MutationList'] + [Mutation] if molecule['MutationList'] else [Mutation],
                         'HeavyAtoms': HeavyAtoms,
                         'ID': f'Molecule_{IDcounter}',
                         'MolMass': MolMass,
-                        **{key: None for key in objectives}  # Reset objectives to be recalculated
+                        **{key: None for key in objectives}
                     })
+
                     MasterMoleculeList.append(SMILES)
                     IDcounter += 1
                 else:
-                    mutated_population.append(molecule)  # Keep the original if mutation fails
-
+                    mutated_population.append(molecule)
             except Exception as e:
-                print(f"Mutation failed for molecule {molecule['ID']}: {e}")
+                print(f"Mutation failed: {e}")
                 traceback.print_exc()
-                mutated_population.append(molecule)  # Keep the original molecule in case of failure
+                mutated_population.append(molecule)
         else:
-            mutated_population.append(molecule)  # No mutation, keep original
+            mutated_population.append(molecule)
 
-    # Convert mutated population to DataFrame
+    # Update MoleculeDatabase with the new generation
     MoleculeDatabase = pd.DataFrame(mutated_population)
 
-    # Recalculate objectives for all molecules
-    MoleculeDatabase = evaluate_population(MoleculeDatabase, fitness_functions)
+# Save final Pareto archive
+GlobalParetoArchive.to_csv(f"{STARTINGDIR}/FinalParetoArchive.csv", index=False)
+print("Optimization completed. Final Pareto archive saved.")
+
