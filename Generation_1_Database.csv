@@ -1,6 +1,0 @@
-,SMILES,MolObject,MutationList,HeavyAtoms,ID,MolMass,Predecessor,Score,Density100C,DViscosity40C,DViscosity100C,DVI,Toxicity,SCScore,Density40C,SimilarityScore,ThermalConductivity_40C,ThermalConductivity_100C,HeatCapacity_40C,HeatCapacity_100C
-1,CCC=CCCCCC=CCOC(=O)CCC,<rdkit.Chem.rdchem.Mol object at 0x000001BD83EF4660>,"[None, None, 'RemoveAtom']",17,Generation_1_Molecule_1,238.37099999999998,[None],,,,,,,,,,,,,
-2,C=C(CCCCOC=CCCCCC(=O)OC)COCCCCCC,<rdkit.Chem.rdchem.Mol object at 0x000001BD83EF46D0>,"[None, None, 'Glycolate']",25,Generation_1_Molecule_2,354.53099999999995,[None],,,,,,,,,,,,,
-3,CCCC=C(C)CCC1Cc2ccccc2C1CCCC=CCCCCC,<rdkit.Chem.rdchem.Mol object at 0x000001BD83EF4820>,"[None, None, 'RemoveAtom']",27,Generation_1_Molecule_3,366.633,[None],,,,,,,,,,,,,
-4,C=C(OC(=O)CCOC(=O)CCCCCCCCCCCCC(=O)OCC(C)CCO)C(C)CC,<rdkit.Chem.rdchem.Mol object at 0x000001BD83EF4970>,"[None, None, 'AddAtom']",35,Generation_1_Molecule_4,498.70099999999996,[None],,,,,,,,,,,,,
-5,CCCCCCCCC(CCCCC)CCCCC(=O)COCOCCCC,<rdkit.Chem.rdchem.Mol object at 0x000001BD83EF47B0>,"[None, None, 'AddAtom']",28,Generation_1_Molecule_5,398.67199999999997,[None],,,,,,,,,,,,,
