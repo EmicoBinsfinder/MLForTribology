@@ -1670,7 +1670,7 @@ def TanimotoSimilarity(SMILES, SMILESList):
 
     SMILESms = Chem.MolFromSmiles(SMILES)
     # Generate Morgan fingerprints
-    fpgen = rdFingerprintGenerator.GetMorganGenerator(radius=8)
+    fpgen = rdFingerprintGenerator.GetMorganGenerator(radius=8, nBits=2048)
     SMILESfps = fpgen.GetFingerprint(SMILESms)
     fps = [fpgen.GetFingerprint(x) for x in ms]
 
