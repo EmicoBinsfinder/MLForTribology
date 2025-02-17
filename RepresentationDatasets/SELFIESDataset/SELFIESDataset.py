@@ -2,7 +2,7 @@ import pandas as pd
 import selfies as sf
 
 # Load the uploaded dataset
-input_file = 'GeneticAlgoRuns/CyclicMoleculeBenchmarkingDataset_NISTWEBBOOK.csv'
+input_file = 'TransformedDataset.csv'
 dataset = pd.read_csv(input_file)
 
 # Specify the column containing SMILES strings
