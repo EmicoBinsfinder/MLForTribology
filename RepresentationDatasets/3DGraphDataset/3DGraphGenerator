@@ -66,8 +66,8 @@ def smiles_to_graph(smiles, properties):
             "is_aromatic": bond.GetIsAromatic(),
             "is_in_ring": bond.IsInRing(),
             "bond_length": bond_length,
-            "bond_angles": bond_angles,
-            "torsion_angles": torsion_angles
+            # "bond_angles": bond_angles,
+            # "torsion_angles": torsion_angles
         })
     
     return {"nodes": atom_features, "edges": edge_features, "global_properties": properties}
