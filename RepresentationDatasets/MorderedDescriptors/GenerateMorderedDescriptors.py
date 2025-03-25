@@ -39,16 +39,16 @@ def compute_rdkit_3d(smiles):
     return {}
 
 # Compute 2D and 3D descriptors
-# rdkit_2d_descs = [compute_rdkit_2d(smiles) for smiles in smiles_list]
+rdkit_2d_descs = [compute_rdkit_2d(smiles) for smiles in smiles_list]
 mordred_2d_descs = [calc_2D(Chem.MolFromSmiles(smiles)).asdict() if Chem.MolFromSmiles(smiles) else {} for smiles in smiles_list]
 
-# rdkit_3d_descs = [compute_rdkit_3d(smiles) for smiles in smiles_list]
+rdkit_3d_descs = [compute_rdkit_3d(smiles) for smiles in smiles_list]
 mordred_3d_descs = [calc_3D(Chem.MolFromSmiles(smiles)).asdict() if Chem.MolFromSmiles(smiles) else {} for smiles in smiles_list]
 
 # Convert to DataFrames
-# rdkit_2d_df = pd.DataFrame(rdkit_2d_descs)
+rdkit_2d_df = pd.DataFrame(rdkit_2d_descs)
 mordred_2d_df = pd.DataFrame(mordred_2d_descs)
-# rdkit_3d_df = pd.DataFrame(rdkit_3d_descs)
+rdkit_3d_df = pd.DataFrame(rdkit_3d_descs)
 mordred_3d_df = pd.DataFrame(mordred_3d_descs)
 
 # Merge 2D descriptors and target properties
@@ -73,12 +73,12 @@ def clean_descriptor_dataset(df):
     return df_cleaned
 
 # Clean both datasets
-# desc_2d_cleaned = clean_descriptor_dataset(desc_2d_df)
-# desc_3d_cleaned = clean_descriptor_dataset(desc_3d_df)
+desc_2d_cleaned = clean_descriptor_dataset(desc_2d_df)
+desc_3d_cleaned = clean_descriptor_dataset(desc_3d_df)
 
 # Save cleaned datasets
 desc_2d_df.to_csv("2D_Molecular_Descriptors_Cleaned.csv", index=False)
 desc_3d_df.to_csv("3D_Molecular_Descriptors_Cleaned.csv", index=False)
 
-print("✅ 2D and 3D molecular descriptors generated and cleaned successfully!")
-print("📂 Files saved as: 2D_Molecular_Descriptors_Cleaned.csv, 3D_Molecular_Descriptors_Cleaned.csv")
+print("2D and 3D molecular descriptors generated and cleaned successfully!")
+print("Files saved as: 2D_Molecular_Descriptors_Cleaned.csv, 3D_Molecular_Descriptors_Cleaned.csv")

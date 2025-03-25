@@ -24,15 +24,14 @@ print(os.getcwd())
 
 STARTINGDIR = deepcopy(os.getcwd())
 
-def runcmd(cmd, verbose = False, *args, **kwargs):
-    #bascially allows python to run a bash command, and the code makes sure 
-    #the error of the subproceess is communicated if it fails
-    process = subprocess.run(
-        cmd,
-        text=True,
-        shell=True)
-    
-    return process
+# File paths and initialization
+# file_path = 'C:/Users/eeo21/Desktop/Datasets/SeedDatabase.csv'
+file_path = '/rds/general/user/eeo21/home/HIGH_THROUGHPUT_STUDIES/MLForTribology/GeneticAlgoMLRun/ModelsandDatasets/SeedDatabase.csv'
+dataset = pd.read_csv(file_path)
+
+print(os.getcwd())
+
+STARTINGDIR = deepcopy(os.getcwd())
 
 # Genetic algorithm parameters
 GenerationSize = 50
@@ -42,10 +41,7 @@ MaxNumHeavyAtoms = 45
 MinNumHeavyAtoms = 5
 MaxMutationAttempts = 2000
 showdiff = False
-no_improvement_generations = 0
-convergence_threshold = 1e-4
-previous_hypervolume = 0
-EarlyStop = 50
+NumElite = 10
 
 Napthalenes = ['C12=CC=CC=C2C=CC=C1', 'C1CCCC2=CC=CC=C12', 'C1CCCC2CCCCC12', 'C1CCC2=CC=CC=C12']
 Mutations = ['AddAtom', 'ReplaceAtom', 'ReplaceBond', 'RemoveAtom', 'AddFragment', 'RemoveFragment', 'Napthalenate', 'Esterify', 'Glycolate']
@@ -227,6 +223,122 @@ def evaluate_population(GenSimList, MOLSMILESList, MoleculeDatabase, GenerationD
 
     return MoleculeDatabase, GenerationDatabase
 
+def crowding_distance_assignment(front_indices, population, objectives):
+    """
+    Compute the summed crowding distance for solutions in a single Pareto front.
+
+    Args:
+        front_indices (list): List of indices of molecules in the Pareto front.
+        population (DataFrame): The entire population DataFrame.
+        objectives (list): List of objective function names (normalized).
+    
+    Returns:
+        dict: A dictionary mapping each molecule index to its summed crowding distance.
+    """
+    # Ensure front_indices is a flat list of integers
+    front_indices = [idx for sublist in front_indices for idx in (sublist if isinstance(sublist, list) else [sublist])]
+    
+    # Ensure indices are aligned with DataFrame index
+    front_indices = [idx for idx in front_indices if idx in population.index]
+
+    if len(front_indices) == 0:
+        return {}
+
+    # Initialize crowding distances for each molecule in the front
+    crowding_distances = {idx: 0 for idx in front_indices}
+
+    for obj in objectives:
+        # Sort the front based on the current objective
+        sorted_indices = sorted(front_indices, key=lambda idx: population.loc[idx, obj])
+
+        # Assign infinite distance to boundary solutions
+        if len(sorted_indices) > 1:
+            crowding_distances[sorted_indices[0]] = 1
+            crowding_distances[sorted_indices[-1]] = 0.3
+
+        obj_values = population.loc[sorted_indices, obj].values
+        obj_range = max(obj_values) - min(obj_values) if len(obj_values) > 1 else 0
+
+        # Compute crowding distance for intermediate solutions
+        if obj_range > 0:
+            for i in range(1, len(sorted_indices) - 1):
+                prev_val = obj_values[i - 1]
+                next_val = obj_values[i + 1]
+                idx = sorted_indices[i]
+                crowding_distances[idx] += (next_val - prev_val) / obj_range  # Summing across objectives
+
+    return crowding_distances
+
+# Initialize Population
+print('Initialising Popuplation')
+
+# Master Dataframe where molecules from all generations will be stored
+MoleculeDatabase = pd.DataFrame(columns=['SMILES', 'MolObject', 'MutationList', 'HeavyAtoms', 'ID', 'MolMass', 'Predecessor', 'Score', 'Density100C', 'DViscosity40C',
+                                        'DViscosity100C', 'DVI', 'Toxicity', 'SCScore', 'Density40C', 'SimilarityScore',
+                                        'ThermalConductivity_40C', 'ThermalConductivity_100C', 'HeatCapacity_40C', 'HeatCapacity_100C'])
+
+# Generation Dataframe to store molecules from each generation
+GenerationDatabase = pd.DataFrame(columns=['SMILES', 'MolObject', 'MutationList', 'HeavyAtoms', 'ID', 'MolMass', 'Predecessor', 'Score', 'Density100C', 'DViscosity40C',
+                                        'DViscosity100C', 'DVI', 'Toxicity', 'SCScore', 'Density40C', 'SimilarityScore',
+                                        'ThermalConductivity_40C', 'ThermalConductivity_100C', 'HeatCapacity_40C', 'HeatCapacity_100C'])
+
+GenSimList = []
+
+while len(GenSimList) < GenerationSize:
+
+    print('\n###########################################################')
+    StartingMolecule = rnd(Mols) #Select starting molecule
+
+    print(len(MoleculeDatabase))
+
+    Mutation = rnd(Mutations)
+    AromaticMolecule = fragments[-1]
+    try:
+        # Perform mutation 
+        result = GAF.Mutate(StartingMolecule, Mutation, AromaticMolecule, AtomicNumbers, BondTypes, Atoms, showdiff, Fragments=fragments, Napthalenes=Napthalenes, Mols=ReplaceMols)
+
+        # Implement checks based on predetermined criteria (MolLength, Illegal Substructs etc.)
+        if GAF.GenMolChecks(result, MasterMoleculeList, MaxNumHeavyAtoms, MinNumHeavyAtoms, MaxAromRings=2) == None:
+            MutMol = None
+
+        elif GAF.count_c_and_o(result[2]) > MaxNumHeavyAtoms:
+            print('Mol too heavy')
+            MutMol = None
+            continue
+
+        else:
+            HeavyAtoms = result[0].GetNumHeavyAtoms() # Get number of heavy atoms in molecule
+            MutMol = result[0] # Get Mol object of mutated molecule
+            MolMass = GAF.GetMolMass(MutMol) # Get estimate of of molecular mass 
+            MutMolSMILES = result[2] # SMILES of mutated molecule
+            Predecessor = [None] # Get history of last two mutations performed on candidate
+            ID = IDcounter
+
+            Name = f'Generation_1_Molecule_{ID}' # Set name of Molecule as its SMILES string
+
+            # Update Molecule database
+            MoleculeDatabase = GAF.DataUpdate(MoleculeDatabase, IDCounter=IDcounter, MutMolSMILES=MutMolSMILES, MutMol=MutMol, HeavyAtoms=HeavyAtoms,
+                                                MutationList=[None, None, Mutation], ID=Name, MolMass=MolMass, Predecessor=Predecessor)
+
+            GenerationDatabase = GAF.DataUpdate(GenerationDatabase, IDCounter=IDcounter, MutMolSMILES=MutMolSMILES, MutMol=MutMol, HeavyAtoms=HeavyAtoms,
+                                                MutationList=[None, None, Mutation], ID=Name, MolMass=MolMass, Predecessor=Predecessor)
+            
+            # Generate list of molecules to simulate in this generation
+            GenSimList.append([Name, MutMolSMILES])
+            MasterMoleculeList.append(MutMolSMILES) #Keep track of already generated molecules
+            print(f'Final Molecule SMILES: {MutMolSMILES}')
+            IDcounter +=1 
+
+    except Exception as E:
+        print(E)
+#         traceback.print_exc()
+        continue
+
+no_improvement_generations = 100
+convergence_threshold = 1e-4
+previous_hypervolume = 0
+EarlyStop = 50
+
 def pareto_front_sorting(population, objectives):
     """
     Perform non-dominated sorting on the population based on the given objectives.
@@ -299,74 +411,6 @@ def pareto_front_sorting(population, objectives):
 
     return fronts, population_with_ranks
 
-def crowding_distance_assignment(front_indices, population, objectives):
-    """
-    Compute the summed crowding distance for solutions in a single Pareto front.
-
-    Args:
-        front_indices (list): List of indices of molecules in the Pareto front.
-        population (DataFrame): The entire population DataFrame.
-        objectives (list): List of objective function names (normalized).
-    
-    Returns:
-        dict: A dictionary mapping each molecule index to its summed crowding distance.
-    """
-    # Ensure front_indices is a flat list of integers
-    front_indices = [idx for sublist in front_indices for idx in (sublist if isinstance(sublist, list) else [sublist])]
-    
-    # Ensure indices are aligned with DataFrame index
-    front_indices = [idx for idx in front_indices if idx in population.index]
-
-    if len(front_indices) == 0:
-        return {}
-
-    # Initialize crowding distances for each molecule in the front
-    crowding_distances = {idx: 0 for idx in front_indices}
-
-    for obj in objectives:
-        # Sort the front based on the current objective
-        sorted_indices = sorted(front_indices, key=lambda idx: population.loc[idx, obj])
-
-        # Assign infinite distance to boundary solutions
-        if len(sorted_indices) > 1:
-            crowding_distances[sorted_indices[0]] = 1
-            crowding_distances[sorted_indices[-1]] = 0.3
-
-        obj_values = population.loc[sorted_indices, obj].values
-        obj_range = max(obj_values) - min(obj_values) if len(obj_values) > 1 else 0
-
-        # Compute crowding distance for intermediate solutions
-        if obj_range > 0:
-            for i in range(1, len(sorted_indices) - 1):
-                prev_val = obj_values[i - 1]
-                next_val = obj_values[i + 1]
-                idx = sorted_indices[i]
-                crowding_distances[idx] += (next_val - prev_val) / obj_range  # Summing across objectives
-
-    return crowding_distances
-
-def select_next_generation(population, fronts, population_size):
-    """
-    Select the next generation based on Pareto fronts and precomputed crowding distance.
-    """
-    next_generation = []
-    
-    for front in fronts:
-        if len(next_generation) + len(front) <= population_size:
-            next_generation.extend(front)
-        else:
-            front_df = population.loc[front].copy()
-            
-            front_df = front_df.sort_values(by="CrowdingDistance", ascending=False)
-
-            remaining_slots = population_size - len(next_generation)
-            selected_indices = front_df.index[:remaining_slots].tolist()
-            
-            next_generation.extend(selected_indices)
-            break  # Stop after filling the population size
-
-    return population.loc[next_generation].reset_index(drop=True)
-
 def extract_top_candidates(population, pareto_fronts, objectives, num_candidates):
     """
     Extract the top `num_candidates` molecules based on:
@@ -418,83 +462,16 @@ def extract_top_candidates(population, pareto_fronts, objectives, num_candidates
     return selected_candidates.reset_index(drop=True)
 
 
-# Initialize Population
-print('Initialising Popuplation')
-
-# Master Dataframe where molecules from all generations will be stored
-MoleculeDatabase = pd.DataFrame(columns=['SMILES', 'MolObject', 'MutationList', 'HeavyAtoms', 'ID', 'MolMass', 'Predecessor', 'Score', 'Density100C', 'DViscosity40C',
-                                        'DViscosity100C', 'DVI', 'Toxicity', 'SCScore', 'Density40C', 'SimilarityScore',
-                                        'ThermalConductivity_40C', 'ThermalConductivity_100C', 'HeatCapacity_40C', 'HeatCapacity_100C'])
-
-# Generation Dataframe to store molecules from each generation
-GenerationDatabase = pd.DataFrame(columns=['SMILES', 'MolObject', 'MutationList', 'HeavyAtoms', 'ID', 'MolMass', 'Predecessor', 'Score', 'Density100C', 'DViscosity40C',
-                                        'DViscosity100C', 'DVI', 'Toxicity', 'SCScore', 'Density40C', 'SimilarityScore',
-                                        'ThermalConductivity_40C', 'ThermalConductivity_100C', 'HeatCapacity_40C', 'HeatCapacity_100C'])
-
-GenSimList = []
-
-while len(GenSimList) < GenerationSize:
-
-    print('\n###########################################################')
-    StartingMolecule = rnd(Mols) #Select starting molecule
-
-    print(len(MoleculeDatabase))
-
-    Mutation = rnd(Mutations)
-    AromaticMolecule = fragments[-1]
-    try:
-        # Perform mutation 
-        result = GAF.Mutate(StartingMolecule, Mutation, AromaticMolecule, AtomicNumbers, BondTypes, Atoms, showdiff, Fragments=fragments, Napthalenes=Napthalenes, Mols=ReplaceMols)
-
-        # Implement checks based on predetermined criteria (MolLength, Illegal Substructs etc.)
-        if GAF.GenMolChecks(result, MasterMoleculeList, MaxNumHeavyAtoms, MinNumHeavyAtoms, MaxAromRings=2) == None:
-            MutMol = None
-
-        elif GAF.count_c_and_o(result[2]) > MaxNumHeavyAtoms:
-            print('Mol too heavy')
-            MutMol = None
-            continue
-
-        else:
-            HeavyAtoms = result[0].GetNumHeavyAtoms() # Get number of heavy atoms in molecule
-            MutMol = result[0] # Get Mol object of mutated molecule
-            MolMass = GAF.GetMolMass(MutMol) # Get estimate of of molecular mass 
-            MutMolSMILES = result[2] # SMILES of mutated molecule
-            Predecessor = [None] # Get history of last two mutations performed on candidate
-            ID = IDcounter
-
-            Name = f'Generation_1_Molecule_{ID}' # Set name of Molecule as its SMILES string
-
-            # Update Molecule database
-            MoleculeDatabase = GAF.DataUpdate(MoleculeDatabase, IDCounter=IDcounter, MutMolSMILES=MutMolSMILES, MutMol=MutMol, HeavyAtoms=HeavyAtoms,
-                                                MutationList=[None, None, Mutation], ID=Name, MolMass=MolMass, Predecessor=Predecessor)
-
-            GenerationDatabase = GAF.DataUpdate(GenerationDatabase, IDCounter=IDcounter, MutMolSMILES=MutMolSMILES, MutMol=MutMol, HeavyAtoms=HeavyAtoms,
-                                                MutationList=[None, None, Mutation], ID=Name, MolMass=MolMass, Predecessor=Predecessor)
-            
-            # Generate list of molecules to simulate in this generation
-            GenSimList.append([Name, MutMolSMILES])
-            MasterMoleculeList.append(MutMolSMILES) #Keep track of already generated molecules
-            print(f'Final Molecule SMILES: {MutMolSMILES}')
-            IDcounter +=1 
-
-    except Exception as E:
-        print(E)
-#         traceback.print_exc()
-        continue
-
-
 # Track already evaluated molecules to avoid redundant computation
-# evaluated_smiles = set(MoleculeDatabase['SMILES'].tolist())
 evaluated_smiles = set()
 
 MOLSMILESList = [x[1] for x in GenSimList]
-# new_molecules = [mol for mol in GenSimList if mol[1] not in evaluated_smiles]
+
+hypervolume_history = []
 
 # for Generation in range(1, MaxGenerations + 1):
-for Generation in range(1, 3):
+for Generation in range(1, 5):
     print(f"### Generation {Generation} ###")
-    print(GenSimList)
 
     # Evaluate only new molecules
     new_molecules = [mol for mol in GenSimList if mol[1] not in evaluated_smiles]
@@ -506,7 +483,7 @@ for Generation in range(1, 3):
     
     # Perform non-dominated sorting
     pareto_fronts, MoleculeDatabase = pareto_front_sorting(MoleculeDatabase, [f"Normalized_{obj}" for obj in objectives])
-
+    
     pareto_fronts = [[MoleculeDatabase.index[i] for i in front] for front in pareto_fronts]
 
     # Assign crowding distances
@@ -516,10 +493,35 @@ for Generation in range(1, 3):
             if idx in MoleculeDatabase.index:
                 MoleculeDatabase.at[idx, 'CrowdingDistance'] = distance
                 
+    MoleculeDatabase.to_csv(f'{STARTINGDIR}/MoleculeDatabase.csv')
+                
     GenerationDatabase = extract_top_candidates(MoleculeDatabase, pareto_fronts, [f"Normalized_{obj}" for obj in objectives], NumElite)
     GenSimList = GenerationDatabase[['ID', 'SMILES']].values.tolist()
-    print(GenSimList)
-    print(GenerationDatabase)
+  
+    # Calculate Hypervolume for current generation
+    try:
+        front_points = GenerationDatabase[[f"Normalized_{obj}" for obj in objectives]].values
+        ref_point = np.array([1.1] * len(objectives))  # Assuming normalized scores in [0, 1]
+        hv = HV(ref_point=ref_point)
+        hv_value = hv(front_points)
+        hypervolume_history.append(hv_value)
+        print(f"Hypervolume for Generation {Generation}: {hv_value}")
+    except Exception as e:
+        print(f"Failed to calculate hypervolume for Generation {Generation}: {e}")
+
+    # Optional: Early stopping based on hypervolume convergence
+    if Generation > 1:  # Skip for first generation
+        improvement = abs(hypervolume_history[-1] - hypervolume_history[-2])
+        if improvement < convergence_threshold:
+            no_improvement_generations += 1
+        else:
+            no_improvement_generations = 0
+
+        if no_improvement_generations >= EarlyStop:
+            print(f"Early stopping at Generation {Generation} — no improvement in hypervolume.")
+            break
+
+    GenerationDatabase.to_csv(f'{STARTINGDIR}/Generation_{Generation}_Database.csv')
     
     while len(GenSimList) < GenerationSize:
         MutMol = None
@@ -607,9 +609,17 @@ for Generation in range(1, 3):
                 print(E)
                 traceback.print_exc()
                 continue
+        
                 
     MOLSMILESList = [x[1] for x in GenSimList]
-    
-    print(GenSimList)
+    MoleculeDatabase.to_csv(f'{STARTINGDIR}/MoleculeDatabase.csv')
             
-#     sys.exit()
+import matplotlib.pyplot as plt
+
+plt.plot(range(1, len(hypervolume_history)+1), hypervolume_history, marker='o')
+plt.xlabel('Generation')
+plt.ylabel('Hypervolume')
+plt.title('Hypervolume Over Generations')
+plt.grid(True)
+plt.savefig(f'{STARTINGDIR}/hypervolume_plot.png')
+plt.show()
